@@ -1,6 +1,6 @@
 import { ObjectId } from "mongoose";
-
 export class CyclesUpdateDTO{
-    cycles:ObjectId;
+    cycles?:Object;
     currentMoney:Number;
+    svdId:ObjectId;
 }

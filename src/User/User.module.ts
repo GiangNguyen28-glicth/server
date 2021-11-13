@@ -9,20 +9,21 @@ import { UserController } from "./User.controller";
 import { UserService } from "./User.service";
 import { OTP, OTPSchema } from "./Schema/sms.schema";
 import { JwtStrategy } from "./JWT/jwt.strategy";
+import { SavingsDepositModule } from "src/SavingsDeposit/savingsdeposit.module";
 @Module({
-    imports:[forwardRef(() =>MailModule),
+    imports:[forwardRef(() =>MailModule),forwardRef(()=>SavingsDepositModule),
         MongooseModule.forFeature([{name:User.name,schema:UserSchema}]),
         MongooseModule.forFeature([{name:OTP.name,schema:OTPSchema}]),
         PassportModule.register({ defaultStrategy: 'jwt' }),
         JwtModule.register({
-          secret: 'topSecret51',
+          secret:'topSecret51',
           signOptions:{
             expiresIn: 3600,
           }
         })],
     controllers:[UserController],
     providers:[UserService,RolesGuard,JwtStrategy],
-    exports:[UserService]
+    exports: [UserService,JwtStrategy, PassportModule]
 })
 export class UserModule{
 

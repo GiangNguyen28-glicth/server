@@ -16,14 +16,15 @@ export class SavingsDeposit{
     @Prop({ type : Date, default: Date.now })
     startDate:Date; // ngay gui
 
-    @Prop({type:Date})
+    @Prop({type:Date,default:null})
     endDate:Date;  // ngay rut
 
-    @Prop({type:mongoose.Schema.Types.ObjectId,ref:'User'})
+    @Prop({type:mongoose.Schema.Types.ObjectId,ref:'User',required:true})
     @Type(()=>User)
     userId:User;
 
-    @Prop([{type:CyclesUpdate}])
+    @Prop()
+    @Type(()=>CyclesUpdate)
     cyclesupdate:[CyclesUpdate];
 }
 export const SavingsDepositSchema=SchemaFactory.createForClass(SavingsDeposit);

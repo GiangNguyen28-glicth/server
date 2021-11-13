@@ -1,7 +1,9 @@
 import { IsObject, IsOptional, Max, Min } from "class-validator";
-import { CyclesUpdate } from "src/CyclesUpdate/Schema/CyclesUpdate.schema";
-
+import { ObjectId } from "mongoose";
 export class SavingsDepositDTO{
+    @Min(10)
+    @Max(50)
     deposits:Number;
-    cyclesupdate:Object;
+    option:Number;
+    userId:ObjectId;
 }

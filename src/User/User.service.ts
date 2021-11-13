@@ -1,5 +1,5 @@
 import { BadRequestException, forwardRef, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
+import { InjectConnection, InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { UserDTO, UserRole } from "./DTO/user.dto";
 import { User, UserDocument } from "./Schema/User.Schema";
@@ -12,7 +12,10 @@ import { InjectTwilio, TwilioClient } from "nestjs-twilio";
 import { Twilio } from "twilio";
 import { changePassword } from "./DTO/ChangePassword.dto";
 import { IReponse } from "src/Utils/IReponse";
-
+import { SavingsDepositService } from "src/SavingsDeposit/SavingsDeposit.service";
+import * as mongoose from 'mongoose';
+import { updateSvdDTO } from "./DTO/updateSvd.dto";
+import { SavingsDeposit } from "src/SavingsDeposit/Schema/SavingsDeposit.Schema";
 @Injectable()
 export class UserService{
   
@@ -20,6 +23,9 @@ export class UserService{
     @InjectModel(User.name) private usermodel:Model<UserDocument>,
     @InjectModel(OTP.name) private otpmodel:Model<OTPDocument>,
     @InjectTwilio() private readonly twilioClient: TwilioClient,
+    @InjectConnection() private readonly connection: mongoose.Connection,
+    @Inject(forwardRef(() => SavingsDepositService))
+    private savingsdepositservice: SavingsDepositService,
     @Inject(forwardRef(() => MailService))
     private mailservice: MailService,
     private jwtservice:JwtService){
@@ -60,6 +66,30 @@ export class UserService{
           }
         }
     } 
+
+
+    async deleteUser(id):Promise<IReponse<User>>{
+      const session =await this.connection.startSession();
+      await session.startTransaction()
+      try{
+        const userExisting=await this.usermodel.findOne({_id:id});
+        if(!userExisting){
+          return{
+            code:200,
+            success:false,
+            message:"User not existing"
+          }
+        }
+        const savingsdeposit=userExisting.savingsDeposit;
+      }catch(err){
+        session.abortTransaction();
+        return{
+          code:200,
+          success:false,
+          message:err.message
+        }
+      }
+    }
 
 
     async getByEmail(email:string):Promise<User>{
@@ -180,5 +210,11 @@ export class UserService{
 				success: true,
 				message: 'User password reset successfully',
 			}
+    }
+    
+    async updateSvd(input:SavingsDeposit,user:User):Promise<void>{
+      const result=await this.usermodel.findByIdAndUpdate({_id:user._id});
+      result.savingsDeposit.push(input);
+      result.save();
     }
 }

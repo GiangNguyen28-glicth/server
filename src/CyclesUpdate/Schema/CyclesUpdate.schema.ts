@@ -3,12 +3,13 @@ import { Transform, Type } from "class-transformer";
 import { ObjectId } from "mongoose";
 import * as mongoose from 'mongoose';
 import { Cycles } from "src/Cycles/Schema/Cycles.chema";
+import { SavingsDeposit } from "src/SavingsDeposit/Schema/SavingsDeposit.Schema";
 export type CyclesUpdateDocument=CyclesUpdate & Document;
 @Schema()
 export class CyclesUpdate{
     @Transform(({value})=>value.toString())
     _id:ObjectId;
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Cycles'}) // chu ki
+    @Prop({ type: Cycles, ref: 'Cycles'}) // chu ki
     @Type(()=>Cycles)
     cycles:Cycles;
     @Prop({type:Number})
@@ -17,5 +18,8 @@ export class CyclesUpdate{
     startDate:Date; // ngay bat dau chu ki moi
     @Prop({type:Date})
     endDate:Date; // 1 thang sau start date
+    @Prop({type:mongoose.Schema.Types.ObjectId,ref:'SavingsDeposit'})
+    @Type(()=>SavingsDeposit)
+    svdId:SavingsDeposit;
 }
 export const CyclesUpdateSchema=SchemaFactory.createForClass(CyclesUpdate);
