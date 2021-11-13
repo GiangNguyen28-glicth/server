@@ -30,6 +30,8 @@ export class MailService{
             html: `<b>Hello world?</b> <a href="${url}"> confirm Email</a>`, // html body
           });
       }
+
+      
       async decodeConfirmationToken(token: string) {
       
         try {
@@ -48,6 +50,8 @@ export class MailService{
           throw new BadRequestException('Bad confirmation token');
         }
       }
+
+
       async confirmEmail(email: string) {
         const user = await this.userService.getByEmail(email);
         if (user.isEmailConfirmed) {
@@ -55,6 +59,8 @@ export class MailService{
         }
         await this.userService.markEmailAsConfirmed(email);
       }
+
+
       async resendConfirmationLink(id) {
         const user = await this.userService.getByID(id);
         if (!user||user.isEmailConfirmed) {

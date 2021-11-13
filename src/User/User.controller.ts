@@ -1,18 +1,19 @@
 import { Body, Controller, Post, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { GetUser } from "src/decorators/getuser.decorators";
+import { IReponse } from "src/Utils/IReponse";
 import { changePassword } from "./DTO/ChangePassword.dto";
 import { ConfirmPhoneDTO } from "./DTO/ConfirmPhone.dto";
 import { PhoneNumberDTO } from "./DTO/phoneNumber.dto";
 import { UserDTO } from "./DTO/user.dto";
 import { User } from "./Schema/User.Schema";
-import { UserReponse } from "./User.Reponse";
+// import { UserReponse } from "./User.Reponse";
 import { UserService } from "./User.service";
 @Controller()
 export class UserController{
     constructor(private userservice:UserService){}
     @Post('/signup')
-    async register(@Body() userdto:UserDTO):Promise<UserReponse>{
+    async register(@Body() userdto:UserDTO):Promise<IReponse<User>>{
         return this.userservice.register(userdto);
     }
 
@@ -37,7 +38,7 @@ export class UserController{
 
     @Post('/change-password')
     @UseGuards(AuthGuard())
-    async changePassword(@GetUser() user:User,@Body() changepassword:changePassword):Promise<UserReponse>{
+    async changePassword(@GetUser() user:User,@Body() changepassword:changePassword):Promise<IReponse<User>>{
         return this.userservice.changPassword(user._id,changepassword);
     }
 }

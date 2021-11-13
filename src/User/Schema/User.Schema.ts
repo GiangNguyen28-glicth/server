@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Transform, Type } from "class-transformer";
-import { ObjectId } from "mongoose";
-import { SavingsDeposit } from "src/Deposit/Schema/SavingsDeposit.Schema";
+import { ObjectId } from "mongoose";;
 import { UserRole } from "../DTO/user.dto";
 import * as mongoose from 'mongoose';
+import { SavingsDeposit } from "src/SavingsDeposit/Schema/SavingsDeposit.Schema";
 export type UserDocument=User & Document;
 @Schema({
     toJSON: {
@@ -14,24 +14,37 @@ export type UserDocument=User & Document;
 export class User{
     @Transform(({value})=>value.toString())
     _id:ObjectId;
+
     @Prop()
     firstName:string;
+
     @Prop()
     lastName:string;
+
     @Prop()
     password?:string;
-    @Prop()
+
+    @Prop({unique:true})
     phoneNumber:string;
-    @Prop()
+
+    @Prop({unique:true})
     email:string;
+
+    @Prop({default:0})
+    currentMoney?:Number;
+    
     @Prop({default:false})
     isEmailConfirmed?:boolean;
-    @Prop()
+
+    @Prop({unique:true})
     CMND:string;
+
     @Prop({type:Date, default: Date.now,expires:10})
-	createdAt?: Date
+	isExprise?: Date
+
     @Prop()
     role:UserRole;
+
     @Prop({type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'SavingsDeposit' }],default:[]})
     @Type(()=>SavingsDeposit)
     savingsDeposit?:SavingsDeposit[];

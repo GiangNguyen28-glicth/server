@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import * as paypal from "paypal-rest-sdk"
 @Injectable()
 export class PaypalService{
-    async Pay(response,id){
+    async Pay(response){
         let product=[
           {
              "name": "6177744acb4a49150a63fc1a",
@@ -10,8 +10,6 @@ export class PaypalService{
             "price": "1.20",
             "currency": "USD",
             "quantity": 1,
-            // "_id": "6177744acb4a49150a63fc1a",
-            // "categories": "6146fa725a0ef299a84efccc",
           },
           {
             "name": "6177744acb4a49150a63fcsss",
@@ -19,8 +17,6 @@ export class PaypalService{
             "price": "2.10",
             "currency": "USD",
             "quantity": 1,
-            // "_id": "6177744acb4a49150a63fc1a",
-            // "categories": "6146fa725a0ef299a84efccc",
           }
         ];
         const create_payment_json = {
@@ -35,12 +31,10 @@ export class PaypalService{
             "transactions": [{
                 "item_list": {
                     "items":product
-                    // [{"name":"Red Sox Hat","sku":"001","price":"1.20","currency":"USD","quantity":1}
-                    // ,{"name":"Red Sox Hat","sku":"001","price":"1.20","currency":"USD","quantity":1}]
                 },
                 "amount": {
                     "currency": "USD",
-                    "total": "2.40"
+                    "total": "3.30"
                 },
                 "description": "Hat for the best team ever"
             }]
@@ -52,8 +46,6 @@ export class PaypalService{
             });
             paypal.payment.create(create_payment_json,function (error, payment) {
             if (error) {
-                console.log("XABCASAD");
-                console.log(error.message)
                 throw error;
             } else {
                 for(let i = 0;i < payment.links.length;i++){

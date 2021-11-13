@@ -4,16 +4,18 @@ import { Model } from "mongoose";
 import { UserDTO, UserRole } from "./DTO/user.dto";
 import { User, UserDocument } from "./Schema/User.Schema";
 import * as bcrypt from 'bcrypt';
-import { UserReponse } from "./User.Reponse";
+// import { UserReponse } from "./User.Reponse";
 import { MailService } from "src/Mail/mail.service";
 import { JwtService } from "@nestjs/jwt";
 import { OTP, OTPDocument } from "src/User/Schema/sms.schema";
 import { InjectTwilio, TwilioClient } from "nestjs-twilio";
 import { Twilio } from "twilio";
 import { changePassword } from "./DTO/ChangePassword.dto";
+import { IReponse } from "src/Utils/IReponse";
 
 @Injectable()
 export class UserService{
+  
     constructor(
     @InjectModel(User.name) private usermodel:Model<UserDocument>,
     @InjectModel(OTP.name) private otpmodel:Model<OTPDocument>,
@@ -25,7 +27,7 @@ export class UserService{
     }
 
 
-    async register(userdto:UserDTO):Promise<UserReponse>{
+    async register(userdto:UserDTO):Promise<IReponse<User>>{
       const role=UserRole.USER;
         const { firstName, lastName,password,email,phoneNumber,CMND } =userdto;
         userdto.role=role;
@@ -45,7 +47,7 @@ export class UserService{
             (await user).save();
             return {
               code:200, success:true,message:"Success",
-              user:{
+              objectreponse:{
                 _id:(await user)._id,phoneNumber,email,CMND,firstName,lastName,role
               }
             };
@@ -136,14 +138,22 @@ export class UserService{
     }
 
 
-    async changPassword(userId,changepassword:changePassword):Promise<UserReponse>{
+    async changPassword(userId,changepassword:changePassword):Promise<IReponse<User>>{
       const {newPassword,ConfirmPassword}=changepassword;
       const resetPasswordRecord = await this.otpmodel.findOne({userId:userId});
-      if(!resetPasswordRecord){
+      console.log(resetPasswordRecord.isPhoneNumberConfirmed);
+      if(!resetPasswordRecord&&resetPasswordRecord.isPhoneNumberConfirmed){
         return{
           code: 400,
 					success: false,
 					message: 'Invalid or expired password reset OTP',
+        }
+      }
+      if(!resetPasswordRecord.isPhoneNumberConfirmed){
+        return{
+          code: 400,
+					success: false,
+					message: 'OTP ?',
         }
       }
       const user = await this.usermodel.findOne({_id:userId});
@@ -169,7 +179,6 @@ export class UserService{
 				code: 200,
 				success: true,
 				message: 'User password reset successfully',
-				user
 			}
     }
 }
