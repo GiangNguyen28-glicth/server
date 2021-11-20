@@ -1,10 +1,11 @@
-import { Body, Controller, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Post, Put, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { GetUser } from "src/decorators/getuser.decorators";
 import { IReponse } from "src/Utils/IReponse";
 import { changePassword } from "./DTO/ChangePassword.dto";
 import { ConfirmPhoneDTO } from "./DTO/ConfirmPhone.dto";
 import { PhoneNumberDTO } from "./DTO/phoneNumber.dto";
+import { UpdateProfileDTO } from "./DTO/UpdateProfile.dto";
 import { UserDTO } from "./DTO/user.dto";
 import { User } from "./Schema/User.Schema";
 // import { UserReponse } from "./User.Reponse";
@@ -23,6 +24,11 @@ export class UserController{
         return this.userservice.Login({email,password});
     }
 
+    @Put('/updateprofile')
+    @UseGuards(AuthGuard())
+    async updateprofile(@Body() updatepfl:UpdateProfileDTO,@GetUser() user:User):Promise<IReponse<User>>{
+        return this.userservice.updateProfile(updatepfl,user._id);
+    }
 
     @Post('/forgot-password')
     async forgotpassword(@Body() phoneNumber:PhoneNumberDTO):Promise<{accesstoken:string}>{
@@ -40,5 +46,10 @@ export class UserController{
     @UseGuards(AuthGuard())
     async changePassword(@GetUser() user:User,@Body() changepassword:changePassword):Promise<IReponse<User>>{
         return this.userservice.changPassword(user._id,changepassword);
+    }
+    @Put('/update-password')
+    @UseGuards(AuthGuard())
+    async updatePassword(@Body() changepassword:changePassword,@GetUser()user:User):Promise<IReponse<User>>{
+        return this.userservice.updatePassword(changepassword,user);
     }
 }

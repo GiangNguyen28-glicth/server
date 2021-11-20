@@ -11,13 +11,13 @@ export class SavingsDeposit{
     _id:ObjectId;
 
     @Prop()
-    deposits:Number; // tien gui
+    deposits:number; // tien gui
 
-    @Prop({ type : Date, default: Date.now })
-    startDate:Date; // ngay gui
+    @Prop()
+    option:number;
 
-    @Prop({type:Date,default:null})
-    endDate:Date;  // ngay rut
+    @Prop({type:Date,default:Date.now})
+    createAt:Date;
 
     @Prop({type:mongoose.Schema.Types.ObjectId,ref:'User',required:true})
     @Type(()=>User)

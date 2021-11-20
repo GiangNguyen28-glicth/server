@@ -4,7 +4,6 @@ import { Model } from "mongoose";
 import { UserDTO, UserRole } from "./DTO/user.dto";
 import { User, UserDocument } from "./Schema/User.Schema";
 import * as bcrypt from 'bcrypt';
-// import { UserReponse } from "./User.Reponse";
 import { MailService } from "src/Mail/mail.service";
 import { JwtService } from "@nestjs/jwt";
 import { OTP, OTPDocument } from "src/User/Schema/sms.schema";
@@ -14,8 +13,9 @@ import { changePassword } from "./DTO/ChangePassword.dto";
 import { IReponse } from "src/Utils/IReponse";
 import { SavingsDepositService } from "src/SavingsDeposit/SavingsDeposit.service";
 import * as mongoose from 'mongoose';
-import { updateSvdDTO } from "./DTO/updateSvd.dto";
 import { SavingsDeposit } from "src/SavingsDeposit/Schema/SavingsDeposit.Schema";
+import { UpdateProfileDTO } from "./DTO/UpdateProfile.dto";
+import { Action, HistoryAction } from "./DTO/HistoryAction.obj";
 @Injectable()
 export class UserService{
   
@@ -66,8 +66,6 @@ export class UserService{
           }
         }
     } 
-
-
     async deleteUser(id):Promise<IReponse<User>>{
       const session =await this.connection.startSession();
       await session.startTransaction()
@@ -91,6 +89,15 @@ export class UserService{
       }
     }
 
+    async updateProfile(updateprofile:UpdateProfileDTO,id):Promise<IReponse<User>>{
+      const userExisting= await this.usermodel.findOneAndUpdate({_id:id},updateprofile);
+      return{
+        code:200,
+        success:true,
+        message:"Update profile success"
+      }
+
+    }
 
     async getByEmail(email:string):Promise<User>{
       return await this.usermodel.findOne({email:email});
@@ -99,7 +106,7 @@ export class UserService{
 
     async markEmailAsConfirmed(email: string):Promise<User> {
       return this.usermodel.findOneAndUpdate({email:email}, {
-        createdAt:null,
+        isExprise:null,
         isEmailConfirmed: true,
       });
     }
@@ -121,7 +128,6 @@ export class UserService{
           throw new UnauthorizedException('Please Check Account');
       }
     }
-
 
     async forgotpassword(phoneNumber:string):Promise<{accesstoken:string}>{
       const user=await this.usermodel.findOne({phoneNumber:phoneNumber});
@@ -216,5 +222,53 @@ export class UserService{
       const result=await this.usermodel.findByIdAndUpdate({_id:user._id});
       result.savingsDeposit.push(input);
       result.save();
+    }
+
+    async updatePassword(changepassword:changePassword,user:User):Promise<IReponse<User>>{
+      const {oldPassword,newPassword,ConfirmPassword}=changepassword;
+      if((await bcrypt.compare(oldPassword,user.password))){
+        if(newPassword==ConfirmPassword){
+          const salt = await bcrypt.genSalt();
+          const hashedpassword = await bcrypt.hash(newPassword, salt);
+          await this.usermodel.findOneAndUpdate({_id:user._id},{password:hashedpassword});
+          return{
+            code:200,
+            success:true,
+            message:"Update Password Success"
+          }
+        }
+        else{
+          return{
+            code:400,
+            success:false,
+            message:"Password not match"
+          }
+        }
+      }
+      else{
+        return{
+          code:400,
+          success:false,
+          message:"Please check old password"
+        }
+      }
+    }
+
+    async updateMoney(action:string,money:number,user:User):Promise<void>{
+      let newMoney;
+      if(action===Action.OPENPASSBOOK){
+        newMoney=user.currentMoney-money;
+      }
+      else if(action==Action.NAPTIENPAYPAL||action==Action.NAPTIENATM){
+        newMoney=user.currentMoney+money;
+      }
+      const userExisting=await this.usermodel.findOneAndUpdate({_id:user._id},{currentMoney:newMoney});
+    }
+
+    async updateNewAction(historyaction:HistoryAction,user:User):Promise<void>{
+       const userExisting=await this.usermodel.findOne({_id:user._id});
+       userExisting.historyaction.push(historyaction);
+       userExisting.update();
+       userExisting.save();
     }
 }

@@ -3,7 +3,7 @@ import { ObjectId } from "mongoose";
 export class SavingsDepositDTO{
     @Min(10)
     @Max(50)
-    deposits:Number;
-    option:Number;
+    deposits:number;
+    option:number;
     userId:ObjectId;
 }

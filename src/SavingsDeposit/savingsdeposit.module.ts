@@ -5,10 +5,11 @@ import { SavingsDeposit, SavingsDepositSchema } from "./Schema/SavingsDeposit.Sc
 import { MongooseModule } from "@nestjs/mongoose";
 import { CyclesUpdateModule } from "src/CyclesUpdate/CyclesUpdate.module";
 import { UserModule } from "src/User/User.module";
+import { OptionModule } from "src/Option/Option.module";
 
 @Module({
     imports:[MongooseModule.forFeature([{name:SavingsDeposit.name,schema:SavingsDepositSchema}]),
-    forwardRef(()=>UserModule),CyclesUpdateModule],
+    forwardRef(()=>UserModule),CyclesUpdateModule,OptionModule],
     controllers:[SavingsDepositController],
     providers:[SavingsDepositService],
     exports:[SavingsDepositService]

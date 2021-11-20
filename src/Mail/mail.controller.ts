@@ -1,5 +1,4 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
+import { Controller, Get, Post, Query, UseGuards } from "@nestjs/common";;
 import { GetUser } from "src/decorators/getuser.decorators";
 import { User } from "src/User/Schema/User.Schema";
 import { confirmEmail } from "./confirm.dto";

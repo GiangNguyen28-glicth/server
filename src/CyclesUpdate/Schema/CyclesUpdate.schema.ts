@@ -2,16 +2,14 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Transform, Type } from "class-transformer";
 import { ObjectId } from "mongoose";
 import * as mongoose from 'mongoose';
-import { Cycles } from "src/Cycles/Schema/Cycles.chema";
 import { SavingsDeposit } from "src/SavingsDeposit/Schema/SavingsDeposit.Schema";
 export type CyclesUpdateDocument=CyclesUpdate & Document;
 @Schema()
 export class CyclesUpdate{
     @Transform(({value})=>value.toString())
     _id:ObjectId;
-    @Prop({ type: Cycles, ref: 'Cycles'}) // chu ki
-    @Type(()=>Cycles)
-    cycles:Cycles;
+    @Prop()
+    value:number;
     @Prop({type:Number})
     currentMoney:Number;
     @Prop({type:Date})
