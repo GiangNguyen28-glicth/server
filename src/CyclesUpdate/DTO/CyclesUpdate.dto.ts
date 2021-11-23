@@ -1,5 +1,8 @@
 import { ObjectId } from "mongoose";
 export class CyclesUpdateDTO{
-    currentMoney:Number;
-    svdId:ObjectId;
+    currentMoney:number;
+    startDate:Date;
+    endDate:Date;
+    value:number;
+    passbookId:ObjectId;
 }

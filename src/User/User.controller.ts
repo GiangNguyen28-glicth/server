@@ -1,9 +1,12 @@
-import { Body, Controller, Post, Put, UseGuards } from "@nestjs/common";
+import { Body, CacheInterceptor, CacheKey, CacheTTL, Controller, Get, Post, Put, UseGuards, UseInterceptors } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { GetUser } from "src/decorators/getuser.decorators";
+import { Checkout } from "src/Paypal/DTO/checkout.dto";
 import { IReponse } from "src/Utils/IReponse";
+import { CacheKeyUser} from "./DTO/cache.user.key.dto";
 import { changePassword } from "./DTO/ChangePassword.dto";
 import { ConfirmPhoneDTO } from "./DTO/ConfirmPhone.dto";
+import { HistoryAction } from "./DTO/HistoryAction.obj";
 import { PhoneNumberDTO } from "./DTO/phoneNumber.dto";
 import { UpdateProfileDTO } from "./DTO/UpdateProfile.dto";
 import { UserDTO } from "./DTO/user.dto";
@@ -20,6 +23,9 @@ export class UserController{
 
 
     @Post('/signin')
+    @UseInterceptors(CacheInterceptor)
+    @CacheKey(CacheKeyUser.GET_CACHE_KEY_USER)
+    @CacheTTL(1220)
     async signin(@Body(){email,password}):Promise<{accesstoken:string}>{
         return this.userservice.Login({email,password});
     }
@@ -51,5 +57,17 @@ export class UserController{
     @UseGuards(AuthGuard())
     async updatePassword(@Body() changepassword:changePassword,@GetUser()user:User):Promise<IReponse<User>>{
         return this.userservice.updatePassword(changepassword,user);
+    }
+
+    @Post('/addmoney')
+    @UseGuards(AuthGuard())
+    async Addmoney(@Body() checkout:Checkout,@GetUser()user:User):Promise<IReponse<User>>{
+        return this.userservice.NaptienATM(checkout,user)
+    }
+
+    @Get('/getalltransaction')
+    @UseGuards(AuthGuard())
+    async GetAllTransaction(@GetUser() user:User):Promise<[HistoryAction]>{
+        return this.userservice.getAllTransaction(user);
     }
 }

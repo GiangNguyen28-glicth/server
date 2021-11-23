@@ -1,4 +1,4 @@
-import { forwardRef, Module } from "@nestjs/common";
+import { CacheModule, forwardRef, Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
 import { MongooseModule } from "@nestjs/mongoose";
 import { PassportModule } from "@nestjs/passport";
@@ -9,9 +9,9 @@ import { UserController } from "./User.controller";
 import { UserService } from "./User.service";
 import { OTP, OTPSchema } from "./Schema/sms.schema";
 import { JwtStrategy } from "./JWT/jwt.strategy";
-import { SavingsDepositModule } from "src/SavingsDeposit/savingsdeposit.module";
+import { PassBookModule } from "src/PassBook/PassBook.module";
 @Module({
-    imports:[forwardRef(() =>MailModule),forwardRef(()=>SavingsDepositModule),
+    imports:[forwardRef(() =>MailModule),forwardRef(()=>PassBookModule),
         MongooseModule.forFeature([{name:User.name,schema:UserSchema}]),
         MongooseModule.forFeature([{name:OTP.name,schema:OTPSchema}]),
         PassportModule.register({ defaultStrategy: 'jwt' }),
@@ -20,7 +20,7 @@ import { SavingsDepositModule } from "src/SavingsDeposit/savingsdeposit.module";
           signOptions:{
             expiresIn: 3600,
           }
-        })],
+        }),CacheModule.register()],
     controllers:[UserController],
     providers:[UserService,RolesGuard,JwtStrategy],
     exports: [UserService,JwtStrategy, PassportModule]

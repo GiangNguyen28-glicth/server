@@ -5,11 +5,11 @@ import { TwilioModule } from 'nestjs-twilio';
 import { CartModule } from './Cart/Cart.module';
 import { CyclesUpdateModule } from './CyclesUpdate/CyclesUpdate.module';
 import { OptionModule } from './Option/Option.module';
+import { PassBookModule } from './PassBook/PassBook.module';
 import { PaypalModule } from './Paypal/Paypal.module';
-import { SavingsDepositModule } from './SavingsDeposit/savingsdeposit.module';
 import { UserModule } from './User/User.module';
 @Module({
-  imports: [UserModule,OptionModule,CyclesUpdateModule,PaypalModule,SavingsDepositModule,
+  imports: [UserModule,OptionModule,CyclesUpdateModule,PaypalModule,PassBookModule,
   CartModule, ConfigModule.forRoot({isGlobal:true}),
   MongooseModule.forRoot(process.env.DATABASE_URL),
   TwilioModule.forRoot({

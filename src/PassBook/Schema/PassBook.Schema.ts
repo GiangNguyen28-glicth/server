@@ -4,9 +4,9 @@ import { Date, ObjectId } from "mongoose";
 import * as mongoose from "mongoose";
 import { User } from "src/User/Schema/User.Schema";
 import { CyclesUpdate } from "src/CyclesUpdate/Schema/CyclesUpdate.schema";
-export type SavingsDepositDocument=SavingsDeposit & Document;
+export type PassBookDocument=PassBook & Document;
 @Schema()
-export class SavingsDeposit{
+export class PassBook{
     @Transform(({value})=>value.toString())
     _id:ObjectId;
 
@@ -19,12 +19,15 @@ export class SavingsDeposit{
     @Prop({type:Date,default:Date.now})
     createAt:Date;
 
+    @Prop({default:false})
+    status:boolean;
+
     @Prop({type:mongoose.Schema.Types.ObjectId,ref:'User',required:true})
     @Type(()=>User)
-    userId:User;
+    userId:ObjectId;
 
     @Prop()
     @Type(()=>CyclesUpdate)
     cyclesupdate:[CyclesUpdate];
 }
-export const SavingsDepositSchema=SchemaFactory.createForClass(SavingsDeposit);
+export const PassBookSchema=SchemaFactory.createForClass(PassBook);

@@ -3,7 +3,6 @@ import { Transform, Type } from "class-transformer";
 import { ObjectId } from "mongoose";;
 import { UserRole } from "../DTO/user.dto";
 import * as mongoose from 'mongoose';
-import { SavingsDeposit } from "src/SavingsDeposit/Schema/SavingsDeposit.Schema";
 import { HistoryAction } from "../DTO/HistoryAction.obj";
 export type UserDocument=User & Document;
 @Schema({
@@ -47,9 +46,6 @@ export class User{
     role:UserRole;
     @Prop()
     historyaction?:[HistoryAction];
-    @Prop({type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'SavingsDeposit' }],default:[]})
-    @Type(()=>SavingsDeposit)
-    savingsDeposit?:SavingsDeposit[];
     fullName?:string;
 }
 const UserSchema=SchemaFactory.createForClass(User);

@@ -1,6 +1,6 @@
 import { IsObject, IsOptional, Max, Min } from "class-validator";
 import { ObjectId } from "mongoose";
-export class SavingsDepositDTO{
+export class PassBookDTO{
     @Min(10)
     @Max(50)
     deposits:number;

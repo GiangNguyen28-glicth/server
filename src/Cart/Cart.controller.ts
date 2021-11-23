@@ -15,11 +15,11 @@ export class CartController{
     async addtoCart(@Body() cartdto:CartDTO,@GetUser() user:User):Promise<IReponse<Cart>>{
         return this.cartservice.addtoCart(cartdto,user);
     }
-    @Post('/checkout')
-    @UseGuards(AuthGuard())
-    async checkout(@GetUser() user:User):Promise<IReponse<Cart>>{
-        return this.cartservice.checkout(user);
-    }
+    // @Post('/checkout')
+    // @UseGuards(AuthGuard())
+    // async checkout(@GetUser() user:User):Promise<IReponse<Cart>>{
+    //     return this.cartservice.checkout(user);
+    // }
 
     @Post('/dividepassbook/:quantity')
     @UseGuards(AuthGuard())

@@ -11,6 +11,7 @@ export class MailController{
     async confirm(@Query() token:confirmEmail) {
       const email = await this.mailservice.decodeConfirmationToken(token.token);
       await this.mailservice.confirmEmail(email);
+      return "Confirm success"
     }
     @Get('/resend-confirm-email')
     async resendConfirmationLink(@GetUser() user:User){

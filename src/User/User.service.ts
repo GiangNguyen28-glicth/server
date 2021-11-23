@@ -1,4 +1,4 @@
-import { BadRequestException, forwardRef, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, Body, forwardRef, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { InjectConnection, InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { UserDTO, UserRole } from "./DTO/user.dto";
@@ -11,11 +11,14 @@ import { InjectTwilio, TwilioClient } from "nestjs-twilio";
 import { Twilio } from "twilio";
 import { changePassword } from "./DTO/ChangePassword.dto";
 import { IReponse } from "src/Utils/IReponse";
-import { SavingsDepositService } from "src/SavingsDeposit/SavingsDeposit.service";
 import * as mongoose from 'mongoose';
-import { SavingsDeposit } from "src/SavingsDeposit/Schema/SavingsDeposit.Schema";
 import { UpdateProfileDTO } from "./DTO/UpdateProfile.dto";
 import { Action, HistoryAction } from "./DTO/HistoryAction.obj";
+import { Checkout } from "src/Paypal/DTO/checkout.dto";
+import { PassBookService } from "src/PassBook/PassBook.service";
+import { PassBook } from "src/PassBook/Schema/PassBook.Schema";
+import { CacheKeyUser} from "./DTO/cache.user.key.dto";
+import { ClearCache } from "src/Utils/clear.cache";
 @Injectable()
 export class UserService{
   
@@ -24,8 +27,8 @@ export class UserService{
     @InjectModel(OTP.name) private otpmodel:Model<OTPDocument>,
     @InjectTwilio() private readonly twilioClient: TwilioClient,
     @InjectConnection() private readonly connection: mongoose.Connection,
-    @Inject(forwardRef(() => SavingsDepositService))
-    private savingsdepositservice: SavingsDepositService,
+    @Inject(forwardRef(() => PassBookService))
+    private passbookservice: PassBookService,
     @Inject(forwardRef(() => MailService))
     private mailservice: MailService,
     private jwtservice:JwtService){
@@ -35,7 +38,8 @@ export class UserService{
 
     async register(userdto:UserDTO):Promise<IReponse<User>>{
       const role=UserRole.USER;
-        const { firstName, lastName,password,email,phoneNumber,CMND } =userdto;
+      let phoneNumber="+84"+userdto.phoneNumber.slice(1,userdto.phoneNumber.length);
+        const { firstName, lastName,password,email,CMND } =userdto;
         userdto.role=role;
         const userExisting= await this.usermodel.findOne({phoneNumber:phoneNumber});
         if(userExisting){
@@ -78,13 +82,9 @@ export class UserService{
             message:"User not existing"
           }
         }
-        const savingsdeposit=userExisting.savingsDeposit;
       }catch(err){
         session.abortTransaction();
-        return{
-          code:200,
-          success:false,
-          message:err.message
+        return{code:200,success:false,message:err.message
         }
       }
     }
@@ -119,6 +119,9 @@ export class UserService{
 
     async Login({email,password}):Promise<{accesstoken:string}>{ 
       const user=await this.usermodel.findOne({email:email});
+      if(CacheKeyUser.GET_CACHE_KEY_USER==""){
+        CacheKeyUser.GET_CACHE_KEY_USER=user._id.toString();
+      }
       if (user && (await bcrypt.compare(password, user.password))&&user.isEmailConfirmed) {
           let id=user._id;
           const payload= {id};
@@ -130,21 +133,23 @@ export class UserService{
     }
 
     async forgotpassword(phoneNumber:string):Promise<{accesstoken:string}>{
-      const user=await this.usermodel.findOne({phoneNumber:phoneNumber});
+      let phonereplace="+84"+phoneNumber.slice(1,phoneNumber.length);
+      console.log(phonereplace);
+      const user=await this.usermodel.findOne({phoneNumber:phonereplace});
       if(!user){
         throw new UnauthorizedException('Phone Number not existing');
       }
       await this.otpmodel.findOneAndDelete({phoneNumber:user.phoneNumber});
       const otp=await this.otpmodel.create({userId:user._id,phoneNumber:phoneNumber})
       otp.save();
-      this.sendSMS(phoneNumber);
+      this.sendSMS(user.phoneNumber);
       let _id=user._id;
       const payload= {_id};
       const accesstoken = await this.jwtservice.sign(payload);
       return {accesstoken};
     }
 
-    async sendSMS(phoneNumber:string) {
+    async sendSMS(phoneNumber:string) { 
       const serviceSid = process.env.TWILIO_VERIFICATION_SERVICE_SID;
       return this.twilioClient.verify.services(serviceSid)
         .verifications
@@ -194,33 +199,23 @@ export class UserService{
       }
       const user = await this.usermodel.findOne({_id:userId});
       if (!user) {
-				return {
-					code: 400,
-					success: false,
-					message: 'User no longer exists',
-				}
+				return {	code: 400,success: false,message: 'User no longer exists',}
 			}
       if(newPassword!=ConfirmPassword){
-        return{
-          code:400,
-          success:false,
-          message:"password does not match"
+        return{code:400,success:false,message:"password does not match"
         }
       }
       const salt = await bcrypt.genSalt();
       const hashedpassword = await bcrypt.hash(newPassword, salt);
       await this.usermodel.findOneAndUpdate({ _id:userId }, { password: hashedpassword })
       await resetPasswordRecord.deleteOne();
-      return {
-				code: 200,
-				success: true,
-				message: 'User password reset successfully',
+      return {code: 200,success: true,message: 'User password reset successfully',
 			}
     }
     
-    async updateSvd(input:SavingsDeposit,user:User):Promise<void>{
+    async updateSvd(input:PassBook,user:User):Promise<void>{
       const result=await this.usermodel.findByIdAndUpdate({_id:user._id});
-      result.savingsDeposit.push(input);
+      // result.savingsDeposit.push(input);
       result.save();
     }
 
@@ -231,26 +226,14 @@ export class UserService{
           const salt = await bcrypt.genSalt();
           const hashedpassword = await bcrypt.hash(newPassword, salt);
           await this.usermodel.findOneAndUpdate({_id:user._id},{password:hashedpassword});
-          return{
-            code:200,
-            success:true,
-            message:"Update Password Success"
-          }
+          return{code:200,success:true,message:"Update Password Success"}
         }
         else{
-          return{
-            code:400,
-            success:false,
-            message:"Password not match"
-          }
+          return{code:400,success:false,message:"Password not match"}
         }
       }
       else{
-        return{
-          code:400,
-          success:false,
-          message:"Please check old password"
-        }
+        return{code:400,success:false,message:"Please check old password"}
       }
     }
 
@@ -271,4 +254,22 @@ export class UserService{
        userExisting.update();
        userExisting.save();
     }
+
+    async NaptienATM(@Body() checkout:Checkout,user:User):Promise<IReponse<User>>{
+      await this.updateMoney(Action.NAPTIENATM,checkout.money,user);
+      const historyaction=new HistoryAction();
+      historyaction.action=Action.NAPTIENATM;
+      historyaction.createAt=new Date();
+      historyaction.money=checkout.money;
+      await this.updateNewAction(historyaction,user);
+      return{
+        code:200,success:true,message:"Nap tien thanh cong"
+      }
+    }
+
+    async getAllTransaction(user:User):Promise<[HistoryAction]>{
+      const result= await this.usermodel.findOne({_id:user._id});
+      return result.historyaction;
+    }
+
 }
