@@ -134,7 +134,7 @@ let UserService = class UserService {
             .create({ to: phoneNumber, channel: 'sms' });
     }
     async confirmPhoneNumber(userId, phoneNumber, verificationCode) {
-        const serviceSid = process.env.TWILIO_VERIFICATION_SERVICE_SID;
+        const serviceSid = "AC6c195ae195ad3154101bdcb5a6f4a778";
         const otp = await this.otpmodel.findOne({ userId: userId });
         if (otp.isPhoneNumberConfirmed) {
             throw new common_1.BadRequestException('Phone number already confirmed');
