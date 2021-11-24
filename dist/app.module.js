@@ -26,8 +26,8 @@ AppModule = __decorate([
             Cart_module_1.CartModule, config_1.ConfigModule.forRoot({ isGlobal: true }),
             mongoose_1.MongooseModule.forRoot(process.env.DATABASE_URL),
             nestjs_twilio_1.TwilioModule.forRoot({
-                accountSid: process.env.TWILIO_ACCOUNT_SID,
-                authToken: process.env.TWILIO_AUTH_TOKEN,
+                accountSid: "AC6c195ae195ad3154101bdcb5a6f4a778",
+                authToken: "9b38cccd9011ad0c95bffe594a0169d0",
             })
         ],
         controllers: [app_controller_1.AppController],

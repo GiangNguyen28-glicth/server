@@ -120,7 +120,7 @@ let PassBookService = class PassBookService {
         }
         ;
         if (passbook.status) {
-            console.log("Passbook is not Active");
+            console.log("Passbook is Active");
             return null;
         }
         ;

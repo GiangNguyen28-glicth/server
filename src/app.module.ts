@@ -14,8 +14,8 @@ import { UserModule } from './User/User.module';
   CartModule, ConfigModule.forRoot({isGlobal:true}),
   MongooseModule.forRoot(process.env.DATABASE_URL),
   TwilioModule.forRoot({
-    accountSid: process.env.TWILIO_ACCOUNT_SID,
-    authToken: process.env.TWILIO_AUTH_TOKEN,
+    accountSid: "AC6c195ae195ad3154101bdcb5a6f4a778",
+    authToken: "9b38cccd9011ad0c95bffe594a0169d0",
   })
   ],
   controllers: [AppController],

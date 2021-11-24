@@ -113,7 +113,7 @@ export class PassBookService{
     async withdrawMoneyPassbook(passbookid,user:User):Promise<PassBook>{
         const passbook=await this.passbookmodel.findOne({_id:passbookid,userId:user._id}); 
         if(!passbook){console.log("Passbook not found"); return null};
-        if(passbook.status){console.log("Passbook is not Active"); return null};
+        if(passbook.status){console.log("Passbook is Active");return null};
         const {data,money}=await this.getTotalCycles(passbookid,user);
         passbook.update({status:true});
         passbook.save();

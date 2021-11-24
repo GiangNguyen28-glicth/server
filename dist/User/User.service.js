@@ -41,7 +41,7 @@ let UserService = class UserService {
         this.mailservice = mailservice;
         this.jwtservice = jwtservice;
         this.cache = cache;
-        this.twilioClient = new twilio_1.Twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+        this.twilioClient = new twilio_1.Twilio("AC6c195ae195ad3154101bdcb5a6f4a778", "9b38cccd9011ad0c95bffe594a0169d0");
     }
     async register(userdto) {
         const role = user_dto_1.UserRole.USER;
@@ -50,11 +50,7 @@ let UserService = class UserService {
         userdto.role = role;
         const userExisting = await this.usermodel.findOne({ phoneNumber: phoneNumber });
         if (userExisting) {
-            return {
-                code: 500,
-                success: false,
-                message: "User Existing"
-            };
+            return { code: 500, success: false, message: "User Existing" };
         }
         try {
             const salt = await bcrypt.genSalt();
@@ -70,11 +66,7 @@ let UserService = class UserService {
             };
         }
         catch (err) {
-            return {
-                code: 500,
-                success: false,
-                message: `Failed Because ${err.message}`,
-            };
+            return { code: 500, success: false, message: `Failed Because ${err.message}` };
         }
     }
     async deleteUser(id) {
@@ -83,11 +75,7 @@ let UserService = class UserService {
         try {
             const userExisting = await this.usermodel.findOne({ _id: id });
             if (!userExisting) {
-                return {
-                    code: 200,
-                    success: false,
-                    message: "User not existing"
-                };
+                return { code: 200, success: false, message: "User not existing" };
             }
         }
         catch (err) {
@@ -98,11 +86,7 @@ let UserService = class UserService {
     }
     async updateProfile(updateprofile, id) {
         const userExisting = await this.usermodel.findOneAndUpdate({ _id: id }, updateprofile);
-        return {
-            code: 200,
-            success: true,
-            message: "Update profile success"
-        };
+        return { code: 200, success: true, message: "Update profile success" };
     }
     async getByEmail(email) {
         return await this.usermodel.findOne({ email: email });
@@ -130,7 +114,6 @@ let UserService = class UserService {
     }
     async forgotpassword(phoneNumber) {
         let phonereplace = "+84" + phoneNumber.slice(1, phoneNumber.length);
-        console.log(phonereplace);
         const user = await this.usermodel.findOne({ phoneNumber: phonereplace });
         if (!user) {
             throw new common_1.UnauthorizedException('Phone Number not existing');
@@ -145,7 +128,7 @@ let UserService = class UserService {
         return { accesstoken };
     }
     async sendSMS(phoneNumber) {
-        const serviceSid = process.env.TWILIO_VERIFICATION_SERVICE_SID;
+        const serviceSid = "VA034959ee2470c4c29c135bd6a4e9368d";
         return this.twilioClient.verify.services(serviceSid)
             .verifications
             .create({ to: phoneNumber, channel: 'sms' });
@@ -174,11 +157,7 @@ let UserService = class UserService {
         const resetPasswordRecord = await this.otpmodel.findOne({ userId: userId });
         console.log(resetPasswordRecord.isPhoneNumberConfirmed);
         if (!resetPasswordRecord && resetPasswordRecord.isPhoneNumberConfirmed) {
-            return {
-                code: 400,
-                success: false,
-                message: 'Invalid or expired password reset OTP',
-            };
+            return { code: 400, success: false, message: 'Invalid or expired password reset OTP' };
         }
         if (!resetPasswordRecord.isPhoneNumberConfirmed) {
             return {
