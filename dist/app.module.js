@@ -11,6 +11,7 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const mongoose_1 = require("@nestjs/mongoose");
 const nestjs_twilio_1 = require("nestjs-twilio");
+const app_controller_1 = require("./app.controller");
 const Cart_module_1 = require("./Cart/Cart.module");
 const CyclesUpdate_module_1 = require("./CyclesUpdate/CyclesUpdate.module");
 const Option_module_1 = require("./Option/Option.module");
@@ -29,7 +30,7 @@ AppModule = __decorate([
                 authToken: process.env.TWILIO_AUTH_TOKEN,
             })
         ],
-        controllers: [],
+        controllers: [app_controller_1.AppController],
         providers: [],
     })
 ], AppModule);

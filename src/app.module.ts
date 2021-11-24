@@ -2,6 +2,7 @@ import {  Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TwilioModule } from 'nestjs-twilio';
+import { AppController } from './app.controller';
 import { CartModule } from './Cart/Cart.module';
 import { CyclesUpdateModule } from './CyclesUpdate/CyclesUpdate.module';
 import { OptionModule } from './Option/Option.module';
@@ -17,7 +18,7 @@ import { UserModule } from './User/User.module';
     authToken: process.env.TWILIO_AUTH_TOKEN,
   })
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [],
 })
 export class AppModule {}
