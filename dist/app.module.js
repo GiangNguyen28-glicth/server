@@ -27,7 +27,7 @@ AppModule = __decorate([
             mongoose_1.MongooseModule.forRoot(process.env.DATABASE_URL),
             nestjs_twilio_1.TwilioModule.forRoot({
                 accountSid: "AC6c195ae195ad3154101bdcb5a6f4a778",
-                authToken: "9b38cccd9011ad0c95bffe594a0169d0",
+                authToken: "74dfac367ba511dd8919c04a7ac480e8",
             })
         ],
         controllers: [app_controller_1.AppController],
