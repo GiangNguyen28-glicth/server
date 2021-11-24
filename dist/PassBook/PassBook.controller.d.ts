@@ -7,8 +7,9 @@ export declare class PassBookController {
     private passbookservice;
     constructor(passbookservice: PassBookService);
     saveSavingdeposit(passbookdto: PassBookDTO, user: User): Promise<IReponse<PassBook>>;
-    getTotalCycles(id: any): Promise<any>;
+    getTotalCycles(passbookid: any, user: User): Promise<any>;
     getPassbook(user: User): Promise<any>;
     getPassbookIsActive(user: User): Promise<any>;
     GetPassbookById(user: User, id: any): Promise<PassBook>;
+    withdrawMoneyPassbook(user: User, passbookid: any): Promise<PassBook>;
 }

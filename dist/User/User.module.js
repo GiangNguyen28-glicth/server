@@ -19,6 +19,7 @@ const User_service_1 = require("./User.service");
 const sms_schema_1 = require("./Schema/sms.schema");
 const jwt_strategy_1 = require("./JWT/jwt.strategy");
 const PassBook_module_1 = require("../PassBook/PassBook.module");
+const clear_cache_1 = require("../Utils/clear.cache");
 let UserModule = class UserModule {
 };
 UserModule = __decorate([
@@ -34,7 +35,7 @@ UserModule = __decorate([
                 }
             }), common_1.CacheModule.register()],
         controllers: [User_controller_1.UserController],
-        providers: [User_service_1.UserService, role_guard_1.RolesGuard, jwt_strategy_1.JwtStrategy],
+        providers: [User_service_1.UserService, role_guard_1.RolesGuard, jwt_strategy_1.JwtStrategy, clear_cache_1.ClearCache],
         exports: [User_service_1.UserService, jwt_strategy_1.JwtStrategy, passport_1.PassportModule]
     })
 ], UserModule);

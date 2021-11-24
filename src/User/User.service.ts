@@ -31,7 +31,8 @@ export class UserService{
     private passbookservice: PassBookService,
     @Inject(forwardRef(() => MailService))
     private mailservice: MailService,
-    private jwtservice:JwtService){
+    private jwtservice:JwtService,
+    private cache:ClearCache){
       this.twilioClient = new Twilio(process.env.TWILIO_ACCOUNT_SID,process.env.TWILIO_AUTH_TOKEN)
     }
 
@@ -119,9 +120,6 @@ export class UserService{
 
     async Login({email,password}):Promise<{accesstoken:string}>{ 
       const user=await this.usermodel.findOne({email:email});
-      if(CacheKeyUser.GET_CACHE_KEY_USER==""){
-        CacheKeyUser.GET_CACHE_KEY_USER=user._id.toString();
-      }
       if (user && (await bcrypt.compare(password, user.password))&&user.isEmailConfirmed) {
           let id=user._id;
           const payload= {id};
@@ -242,7 +240,7 @@ export class UserService{
       if(action===Action.OPENPASSBOOK){
         newMoney=user.currentMoney-money;
       }
-      else if(action==Action.NAPTIENPAYPAL||action==Action.NAPTIENATM){
+      else if(action==Action.NAPTIENPAYPAL||action==Action.NAPTIENATM||action==Action.WITHDRAWAL){
         newMoney=user.currentMoney+money;
       }
       const userExisting=await this.usermodel.findOneAndUpdate({_id:user._id},{currentMoney:newMoney});

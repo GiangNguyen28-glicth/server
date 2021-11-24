@@ -30,10 +30,9 @@ const HistoryAction_obj_1 = require("./DTO/HistoryAction.obj");
 const checkout_dto_1 = require("../Paypal/DTO/checkout.dto");
 const PassBook_service_1 = require("../PassBook/PassBook.service");
 const PassBook_Schema_1 = require("../PassBook/Schema/PassBook.Schema");
-const cache_user_key_dto_1 = require("./DTO/cache.user.key.dto");
 const clear_cache_1 = require("../Utils/clear.cache");
 let UserService = class UserService {
-    constructor(usermodel, otpmodel, twilioClient, connection, passbookservice, mailservice, jwtservice) {
+    constructor(usermodel, otpmodel, twilioClient, connection, passbookservice, mailservice, jwtservice, cache) {
         this.usermodel = usermodel;
         this.otpmodel = otpmodel;
         this.twilioClient = twilioClient;
@@ -41,6 +40,7 @@ let UserService = class UserService {
         this.passbookservice = passbookservice;
         this.mailservice = mailservice;
         this.jwtservice = jwtservice;
+        this.cache = cache;
         this.twilioClient = new twilio_1.Twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
     }
     async register(userdto) {
@@ -118,9 +118,6 @@ let UserService = class UserService {
     }
     async Login({ email, password }) {
         const user = await this.usermodel.findOne({ email: email });
-        if (cache_user_key_dto_1.CacheKeyUser.GET_CACHE_KEY_USER == "") {
-            cache_user_key_dto_1.CacheKeyUser.GET_CACHE_KEY_USER = user._id.toString();
-        }
         if (user && (await bcrypt.compare(password, user.password)) && user.isEmailConfirmed) {
             let id = user._id;
             const payload = { id };
@@ -231,7 +228,7 @@ let UserService = class UserService {
         if (action === HistoryAction_obj_1.Action.OPENPASSBOOK) {
             newMoney = user.currentMoney - money;
         }
-        else if (action == HistoryAction_obj_1.Action.NAPTIENPAYPAL || action == HistoryAction_obj_1.Action.NAPTIENATM) {
+        else if (action == HistoryAction_obj_1.Action.NAPTIENPAYPAL || action == HistoryAction_obj_1.Action.NAPTIENATM || action == HistoryAction_obj_1.Action.WITHDRAWAL) {
             newMoney = user.currentMoney + money;
         }
         const userExisting = await this.usermodel.findOneAndUpdate({ _id: user._id }, { currentMoney: newMoney });
@@ -275,7 +272,8 @@ UserService = __decorate([
     __metadata("design:paramtypes", [mongoose_2.Model,
         mongoose_2.Model, Object, mongoose.Connection, PassBook_service_1.PassBookService,
         mail_service_1.MailService,
-        jwt_1.JwtService])
+        jwt_1.JwtService,
+        clear_cache_1.ClearCache])
 ], UserService);
 exports.UserService = UserService;
 //# sourceMappingURL=User.service.js.map

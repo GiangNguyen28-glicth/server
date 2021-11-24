@@ -51,7 +51,6 @@ export class OptionService{
 
     async GetValueByYear(Year:number):Promise<any>{
         const date=new Date();
-        Year=2020;
         let arr=[];
         const currentvalue=await this.optionmodel.find();
         for(var i in currentvalue){

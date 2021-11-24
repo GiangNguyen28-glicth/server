@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CachKeyPassbook = void 0;
-class CachKeyPassbook {
+exports.CacheKeyPassbook = void 0;
+class CacheKeyPassbook {
 }
-exports.CachKeyPassbook = CachKeyPassbook;
-CachKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PROFIT = "";
-CachKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PASSBOOK = "";
-CachKeyPassbook.GET_PASSBOOK_CACHE_KEY_IS_ACTIVE = "";
+exports.CacheKeyPassbook = CacheKeyPassbook;
+CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PROFIT = "";
+CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PASSBOOK = "";
+CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_IS_ACTIVE = "";
 //# sourceMappingURL=cache.key.dto.js.map

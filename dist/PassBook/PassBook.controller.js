@@ -29,8 +29,8 @@ let PassBookController = class PassBookController {
         passbookdto.userId = user._id;
         return this.passbookservice.saveSavingsdeposit(passbookdto, user);
     }
-    async getTotalCycles(id) {
-        return this.passbookservice.getTotalCycles(id);
+    async getTotalCycles(passbookid, user) {
+        return this.passbookservice.getTotalCycles(passbookid, user);
     }
     async getPassbook(user) {
         return this.passbookservice.GetAllPassbookByUserId(user);
@@ -40,6 +40,9 @@ let PassBookController = class PassBookController {
     }
     async GetPassbookById(user, id) {
         return this.passbookservice.GetPassBookById(id, user);
+    }
+    async withdrawMoneyPassbook(user, passbookid) {
+        return this.passbookservice.withdrawMoneyPassbook(passbookid, user);
     }
 };
 __decorate([
@@ -51,18 +54,16 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PassBookController.prototype, "saveSavingdeposit", null);
 __decorate([
-    (0, common_1.Get)('/check/:id'),
-    (0, common_1.UseInterceptors)(common_1.CacheInterceptor),
-    (0, common_1.CacheKey)(cache_key_dto_1.CachKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PROFIT),
-    (0, common_1.CacheTTL)(1220),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)('/check/:passbookid'),
+    __param(0, (0, common_1.Param)('passbookid')),
+    __param(1, (0, getuser_decorators_1.GetUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, User_Schema_1.User]),
     __metadata("design:returntype", Promise)
 ], PassBookController.prototype, "getTotalCycles", null);
 __decorate([
     (0, common_1.UseInterceptors)(common_1.CacheInterceptor),
-    (0, common_1.CacheKey)(cache_key_dto_1.CachKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PASSBOOK),
+    (0, common_1.CacheKey)(cache_key_dto_1.CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PASSBOOK),
     (0, common_1.CacheTTL)(1220),
     (0, common_1.Get)('/getpassbook'),
     __param(0, (0, getuser_decorators_1.GetUser)()),
@@ -85,6 +86,14 @@ __decorate([
     __metadata("design:paramtypes", [User_Schema_1.User, Object]),
     __metadata("design:returntype", Promise)
 ], PassBookController.prototype, "GetPassbookById", null);
+__decorate([
+    (0, common_1.Post)('/withdrawMoneyPassbook/:passbookid'),
+    __param(0, (0, getuser_decorators_1.GetUser)()),
+    __param(1, (0, common_1.Param)('passbookid')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [User_Schema_1.User, Object]),
+    __metadata("design:returntype", Promise)
+], PassBookController.prototype, "withdrawMoneyPassbook", null);
 PassBookController = __decorate([
     (0, common_1.Controller)('/passbook'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),

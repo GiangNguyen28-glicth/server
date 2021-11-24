@@ -18,7 +18,6 @@ const passport_1 = require("@nestjs/passport");
 const getuser_decorators_1 = require("../decorators/getuser.decorators");
 const checkout_dto_1 = require("../Paypal/DTO/checkout.dto");
 const IReponse_1 = require("../Utils/IReponse");
-const cache_user_key_dto_1 = require("./DTO/cache.user.key.dto");
 const ChangePassword_dto_1 = require("./DTO/ChangePassword.dto");
 const ConfirmPhone_dto_1 = require("./DTO/ConfirmPhone.dto");
 const phoneNumber_dto_1 = require("./DTO/phoneNumber.dto");
@@ -67,9 +66,6 @@ __decorate([
 ], UserController.prototype, "register", null);
 __decorate([
     (0, common_1.Post)('/signin'),
-    (0, common_1.UseInterceptors)(common_1.CacheInterceptor),
-    (0, common_1.CacheKey)(cache_user_key_dto_1.CacheKeyUser.GET_CACHE_KEY_USER),
-    (0, common_1.CacheTTL)(1220),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

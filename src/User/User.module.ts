@@ -10,6 +10,7 @@ import { UserService } from "./User.service";
 import { OTP, OTPSchema } from "./Schema/sms.schema";
 import { JwtStrategy } from "./JWT/jwt.strategy";
 import { PassBookModule } from "src/PassBook/PassBook.module";
+import { ClearCache } from "src/Utils/clear.cache";
 @Module({
     imports:[forwardRef(() =>MailModule),forwardRef(()=>PassBookModule),
         MongooseModule.forFeature([{name:User.name,schema:UserSchema}]),
@@ -22,7 +23,7 @@ import { PassBookModule } from "src/PassBook/PassBook.module";
           }
         }),CacheModule.register()],
     controllers:[UserController],
-    providers:[UserService,RolesGuard,JwtStrategy],
+    providers:[UserService,RolesGuard,JwtStrategy,ClearCache],
     exports: [UserService,JwtStrategy, PassportModule]
 })
 export class UserModule{

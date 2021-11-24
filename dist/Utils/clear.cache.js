@@ -28,6 +28,15 @@ let ClearCache = class ClearCache {
             }
         });
     }
+    async getCache(cachekey) {
+        const keys = await this.cacheManager.store.keys();
+        keys.forEach((key) => {
+            if (key.startsWith(cachekey)) {
+                const temp = this.cacheManager.get(key);
+                console.log(temp);
+            }
+        });
+    }
 };
 ClearCache = __decorate([
     (0, common_1.Injectable)(),

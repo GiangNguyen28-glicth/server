@@ -3,4 +3,5 @@ export declare class ClearCache {
     private cacheManager;
     constructor(cacheManager: Cache);
     clearCache(cachekey: string): Promise<void>;
+    getCache(cachekey: string): Promise<void>;
 }
