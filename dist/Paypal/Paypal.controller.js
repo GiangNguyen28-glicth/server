@@ -32,6 +32,9 @@ let PaypalController = class PaypalController {
     Success(response, request) {
         return this.paypalservice.Success(response, request);
     }
+    Cancel(response, request) {
+        return "Cancel";
+    }
 };
 __decorate([
     (0, common_1.Post)('/checkout'),
@@ -58,6 +61,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], PaypalController.prototype, "Success", null);
+__decorate([
+    (0, common_1.Get)('/cancel'),
+    __param(0, (0, common_1.Res)()),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", void 0)
+], PaypalController.prototype, "Cancel", null);
 PaypalController = __decorate([
     (0, common_1.Controller)('/paypal'),
     __metadata("design:paramtypes", [Paypay_service_1.PaypalService])

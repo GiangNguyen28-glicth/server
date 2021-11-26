@@ -19,9 +19,14 @@ export class PaypalController{
     Home(){
         
     }
+
     @Get('/success')
     Success(@Res() response:Response,@Req() request:Request){
        return this.paypalservice.Success(response,request);
     }
     
+    @Get('/cancel')
+    Cancel(@Res() response:Response,@Req() request:Request){
+       return "Cancel"
+    }
 }

@@ -29,8 +29,8 @@ let PaypalService = class PaypalService {
                 "payment_method": "paypal"
             },
             "redirect_urls": {
-                "return_url": "http://localhost:3000/paypal/success",
-                "cancel_url": "http://localhost:3000/cancel"
+                "return_url": "https://server-one-kappa.vercel.app/paypal/success",
+                "cancel_url": "https://server-one-kappa.vercel.app/paypal/paypal/cancel"
             },
             "transactions": [{
                     "amount": {
