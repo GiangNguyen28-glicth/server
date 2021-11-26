@@ -3,7 +3,7 @@ import { Transform, Type } from "class-transformer";
 import { Date, ObjectId } from "mongoose";
 import * as mongoose from "mongoose";
 import { User } from "src/User/Schema/User.Schema";
-import { CyclesUpdate } from "src/CyclesUpdate/Schema/CyclesUpdate.schema";
+import { CyclesUpdateDTO } from "../DTO/CyclesUpdateDTO";
 export type PassBookDocument=PassBook & Document;
 @Schema()
 export class PassBook{
@@ -26,8 +26,7 @@ export class PassBook{
     @Type(()=>User)
     userId:ObjectId;
 
-    @Prop()
-    @Type(()=>CyclesUpdate)
-    cyclesupdate:[CyclesUpdate];
+    @Prop({type:Object})
+    cyclesupdate:Object;
 }
 export const PassBookSchema=SchemaFactory.createForClass(PassBook);

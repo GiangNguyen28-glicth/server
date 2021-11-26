@@ -9,7 +9,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PassBookModule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
-const CyclesUpdate_module_1 = require("../CyclesUpdate/CyclesUpdate.module");
 const User_module_1 = require("../User/User.module");
 const Option_module_1 = require("../Option/Option.module");
 const PassBook_controller_1 = require("./PassBook.controller");
@@ -21,7 +20,7 @@ let PassBookModule = class PassBookModule {
 PassBookModule = __decorate([
     (0, common_1.Module)({
         imports: [mongoose_1.MongooseModule.forFeature([{ name: PassBook_Schema_1.PassBook.name, schema: PassBook_Schema_1.PassBookSchema }]),
-            (0, common_1.forwardRef)(() => User_module_1.UserModule), CyclesUpdate_module_1.CyclesUpdateModule, Option_module_1.OptionModule, common_1.CacheModule.register()],
+            (0, common_1.forwardRef)(() => User_module_1.UserModule), Option_module_1.OptionModule, common_1.CacheModule.register()],
         controllers: [PassBook_controller_1.PassBookController],
         providers: [PassBook_service_1.PassBookService, clear_cache_1.ClearCache],
         exports: [PassBook_service_1.PassBookService]

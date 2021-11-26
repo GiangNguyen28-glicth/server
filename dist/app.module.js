@@ -13,7 +13,6 @@ const mongoose_1 = require("@nestjs/mongoose");
 const nestjs_twilio_1 = require("nestjs-twilio");
 const app_controller_1 = require("./app.controller");
 const Cart_module_1 = require("./Cart/Cart.module");
-const CyclesUpdate_module_1 = require("./CyclesUpdate/CyclesUpdate.module");
 const Option_module_1 = require("./Option/Option.module");
 const PassBook_module_1 = require("./PassBook/PassBook.module");
 const Paypal_module_1 = require("./Paypal/Paypal.module");
@@ -22,7 +21,7 @@ let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [User_module_1.UserModule, Option_module_1.OptionModule, CyclesUpdate_module_1.CyclesUpdateModule, Paypal_module_1.PaypalModule, PassBook_module_1.PassBookModule,
+        imports: [User_module_1.UserModule, Option_module_1.OptionModule, Paypal_module_1.PaypalModule, PassBook_module_1.PassBookModule,
             Cart_module_1.CartModule, config_1.ConfigModule.forRoot({ isGlobal: true }),
             mongoose_1.MongooseModule.forRoot(process.env.DATABASE_URL),
             nestjs_twilio_1.TwilioModule.forRoot({

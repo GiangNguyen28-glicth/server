@@ -14,7 +14,6 @@ const mongoose_1 = require("@nestjs/mongoose");
 const class_transformer_1 = require("class-transformer");
 const mongoose = require("mongoose");
 const User_Schema_1 = require("../../User/Schema/User.Schema");
-const CyclesUpdate_schema_1 = require("../../CyclesUpdate/Schema/CyclesUpdate.schema");
 let PassBook = class PassBook {
 };
 __decorate([
@@ -43,9 +42,8 @@ __decorate([
     __metadata("design:type", Object)
 ], PassBook.prototype, "userId", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
-    (0, class_transformer_1.Type)(() => CyclesUpdate_schema_1.CyclesUpdate),
-    __metadata("design:type", Array)
+    (0, mongoose_1.Prop)({ type: Object }),
+    __metadata("design:type", Object)
 ], PassBook.prototype, "cyclesupdate", void 0);
 PassBook = __decorate([
     (0, mongoose_1.Schema)()

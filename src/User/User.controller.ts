@@ -1,4 +1,4 @@
-import { Body, CacheInterceptor, CacheKey, CacheTTL, Controller, Get, Post, Put, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Get, Post, Put, UseGuards, UseInterceptors } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { GetUser } from "src/decorators/getuser.decorators";
 import { Checkout } from "src/Paypal/DTO/checkout.dto";
@@ -11,7 +11,6 @@ import { PhoneNumberDTO } from "./DTO/phoneNumber.dto";
 import { UpdateProfileDTO } from "./DTO/UpdateProfile.dto";
 import { UserDTO } from "./DTO/user.dto";
 import { User } from "./Schema/User.Schema";
-// import { UserReponse } from "./User.Reponse";
 import { UserService } from "./User.service";
 @Controller()
 export class UserController{

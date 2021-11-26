@@ -5,7 +5,7 @@ export declare class UserDTO {
     phoneNumber: string;
     email: string;
     CMND: string;
-    city: string;
+    address: string;
     role?: UserRole;
 }
 export declare enum UserRole {

@@ -46,11 +46,7 @@ export class CartService{
         const result=await this.cartmodel.create({userId:user._id,option:cartdto.option,
             endDate:endDate,deposits:cartdto.deposits,totalProfit:totalProfit});
         result.save();
-        return{
-            code:200,
-            success:true,
-            message:"Add to cart Success",
-            objectreponse:result
+        return{code:200,success:true,message:"Add to cart Success",objectreponse:result
         }
     }
 

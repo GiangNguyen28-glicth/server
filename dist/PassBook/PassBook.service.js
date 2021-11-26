@@ -17,9 +17,6 @@ exports.PassBookService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose = require("mongoose");
-const CyclesUpdate_service_1 = require("../CyclesUpdate/CyclesUpdate.service");
-const CyclesUpdate_dto_1 = require("../CyclesUpdate/DTO/CyclesUpdate.dto");
-const CyclesUpdate_schema_1 = require("../CyclesUpdate/Schema/CyclesUpdate.schema");
 const Option_service_1 = require("../Option/Option.service");
 const HistoryAction_obj_1 = require("../User/DTO/HistoryAction.obj");
 const User_Schema_1 = require("../User/Schema/User.Schema");
@@ -28,13 +25,13 @@ const IReponse_1 = require("../Utils/IReponse");
 const cache_key_dto_1 = require("./DTO/cache.key.dto");
 const PassBook_Schema_1 = require("./Schema/PassBook.Schema");
 const cache_manager_1 = require("cache-manager");
+const CyclesUpdateDTO_1 = require("./DTO/CyclesUpdateDTO");
 let PassBookService = class PassBookService {
-    constructor(passbookmodel, cacheManager, connection, userservice, cyclesupdateservice, optionservice) {
+    constructor(passbookmodel, cacheManager, connection, userservice, optionservice) {
         this.passbookmodel = passbookmodel;
         this.cacheManager = cacheManager;
         this.connection = connection;
         this.userservice = userservice;
-        this.cyclesupdateservice = cyclesupdateservice;
         this.optionservice = optionservice;
     }
     async saveSavingsdeposit(passbookdto, user) {
@@ -67,9 +64,9 @@ let PassBookService = class PassBookService {
         }
         const startDate = new Date(`${svd.createAt}`);
         let result = [];
-        const startcycle = new CyclesUpdate_dto_1.CyclesUpdateDTO();
+        const startcycle = new CyclesUpdateDTO_1.CyclesUpdateDTO();
         while (startDate <= endDate) {
-            const startcycle = new CyclesUpdate_dto_1.CyclesUpdateDTO();
+            const startcycle = new CyclesUpdateDTO_1.CyclesUpdateDTO();
             value = await this.optionservice.GetValueOption(startDate, svd.option);
             startcycle.startDate = new Date(startDate);
             startDate.setMonth(startDate.getMonth() + svd.option);
@@ -85,6 +82,7 @@ let PassBookService = class PassBookService {
         const diffDays = (date, otherDate) => Math.ceil(Math.abs(date - otherDate) / (1000 * 60 * 60 * 24));
         const date = diffDays(endDate, result[result.length - 1].startDate);
         money = money + money * 0.0001 * (date - 1) / 360;
+        result[result.length - 1].endDate = endDate;
         await this.cacheManager.set(cache_key_dto_1.CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PROFIT, { data: result, money: money }, { ttl: 1000 });
         return {
             data: result,
@@ -116,6 +114,7 @@ let PassBookService = class PassBookService {
         }
         ;
         const { data, money } = await this.getTotalCycles(passbookid, user);
+        passbook.cyclesupdate = { data, money };
         passbook.update({ status: true });
         passbook.save();
         await this.userservice.updateMoney(HistoryAction_obj_1.Action.WITHDRAWAL, money, user);
@@ -129,7 +128,6 @@ PassBookService = __decorate([
     __param(2, (0, mongoose_1.InjectConnection)()),
     __param(3, (0, common_1.Inject)((0, common_1.forwardRef)(() => User_service_1.UserService))),
     __metadata("design:paramtypes", [mongoose.Model, typeof (_a = typeof cache_manager_1.Cache !== "undefined" && cache_manager_1.Cache) === "function" ? _a : Object, mongoose.Connection, User_service_1.UserService,
-        CyclesUpdate_service_1.CyclesUpdateService,
         Option_service_1.OptionService])
 ], PassBookService);
 exports.PassBookService = PassBookService;

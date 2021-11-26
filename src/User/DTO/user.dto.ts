@@ -18,7 +18,7 @@ export class UserDTO{
     @IsEmail()
     email:string;
     CMND:string;
-    city:string;
+    address:string;
     @IsOptional()
     role?:UserRole
 }

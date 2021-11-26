@@ -90,7 +90,6 @@ let OptionService = class OptionService {
             }
         }
         await this.cacheManager.set(Year.toString, arr, { ttl: 1000 });
-        console.log(arr);
         return arr;
     }
 };

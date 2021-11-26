@@ -17,7 +17,6 @@ import { Action, HistoryAction } from "./DTO/HistoryAction.obj";
 import { Checkout } from "src/Paypal/DTO/checkout.dto";
 import { PassBookService } from "src/PassBook/PassBook.service";
 import { PassBook } from "src/PassBook/Schema/PassBook.Schema";
-import { CacheKeyUser} from "./DTO/cache.user.key.dto";
 import { ClearCache } from "src/Utils/clear.cache";
 @Injectable()
 export class UserService{
@@ -40,7 +39,7 @@ export class UserService{
     async register(userdto:UserDTO):Promise<IReponse<User>>{
       const role=UserRole.USER;
       let phoneNumber="+84"+userdto.phoneNumber.slice(1,userdto.phoneNumber.length);
-        const { firstName, lastName,password,email,CMND,city } =userdto;
+        const { firstName, lastName,password,email,CMND,address } =userdto;
         userdto.role=role;
         const userExisting= await this.usermodel.findOne({phoneNumber:phoneNumber});
         if(userExisting){
@@ -49,13 +48,13 @@ export class UserService{
         try{
             const salt = await bcrypt.genSalt();
             const hashedpassword = await bcrypt.hash(password, salt);
-            const user = this.usermodel.create({firstName,lastName,password:hashedpassword,email,phoneNumber,CMND,city,role});
+            const user = this.usermodel.create({firstName,lastName,password:hashedpassword,email,phoneNumber,CMND,address,role});
             this.mailservice.sendEmail(email);
             (await user).save();
             return {
               code:200, success:true,message:"Success",
               objectreponse:{
-                _id:(await user)._id,phoneNumber,email,CMND,firstName,lastName,city,role
+                _id:(await user)._id,phoneNumber,email,CMND,firstName,lastName,address,role
               }
             };
         }

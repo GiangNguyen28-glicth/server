@@ -40,7 +40,7 @@ export class User{
     CMND:string;
 
     @Prop()
-    city:string;
+    address:string;
 
     @Prop({type:Date, default: Date.now,expires:60*60*5})
 	isExprise?: Date

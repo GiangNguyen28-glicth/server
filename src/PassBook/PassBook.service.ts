@@ -1,9 +1,6 @@
 import { CACHE_MANAGER, forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectConnection, InjectModel } from "@nestjs/mongoose";
 import * as mongoose from 'mongoose';
-import { CyclesUpdateService } from "src/CyclesUpdate/CyclesUpdate.service";
-import { CyclesUpdateDTO } from "src/CyclesUpdate/DTO/CyclesUpdate.dto";
-import { CyclesUpdate } from "src/CyclesUpdate/Schema/CyclesUpdate.schema";
 import { OptionService } from "src/Option/Option.service";
 import { Action } from "src/User/DTO/HistoryAction.obj";
 import { User } from "src/User/Schema/User.Schema";
@@ -13,6 +10,7 @@ import { CacheKeyPassbook } from "./DTO/cache.key.dto";
 import { PassBookDTO } from "./DTO/PassBook.dto";
 import { PassBook, PassBookDocument } from "./Schema/PassBook.Schema";
 import { Cache } from 'cache-manager';
+import { CyclesUpdateDTO } from "./DTO/CyclesUpdateDTO";
 @Injectable()
 export class PassBookService{
 
@@ -22,21 +20,14 @@ export class PassBookService{
     @InjectConnection() private readonly connection: mongoose.Connection,
     @Inject(forwardRef(()=>UserService))
     private userservice:UserService,
-    private cyclesupdateservice:CyclesUpdateService,
     private optionservice:OptionService,
     ){}
 
     async saveSavingsdeposit(passbookdto:PassBookDTO,user:User):Promise<IReponse<PassBook>>{
         const session = await this.connection.startSession();
         session.startTransaction();
-        try{
-            // let cyclesupdatedto : CyclesUpdateDTO=new CyclesUpdateDTO();
-            // cyclesupdatedto.currentMoney=savingsdeposit.deposits;            
+        try{        
             const svdp=await this.passbookmodel.create(passbookdto);
-            // this.cacheservice.clearCache(CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PASSBOOK);
-            // cyclesupdatedto.svdId=svdp._id;
-            // const cycles=await this.cyclesupdateservice.saveCyclesUpdate(cyclesupdatedto);
-            // svdp.cyclesupdate.push(cycles);
             svdp.save();
             await this.userservice.updateSvd(svdp,user);
             return{ code:200,success:true,message:"Succes",
@@ -79,6 +70,7 @@ export class PassBookService{
         const diffDays = (date, otherDate) => Math.ceil(Math.abs(date - otherDate) / (1000 * 60 * 60 * 24));
         const date=diffDays(endDate, result[result.length-1].startDate);
         money=money+money*0.0001*(date-1)/360;
+        result[result.length-1].endDate=endDate;
         await this.cacheManager.set(CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PROFIT,{data:result,money:money},{ ttl: 1000 });
         return {
             data:result,
@@ -106,6 +98,7 @@ export class PassBookService{
         if(!passbook){console.log("Passbook not found"); return null};
         if(passbook.status){console.log("Passbook is Active");return null};
         const {data,money}=await this.getTotalCycles(passbookid,user);
+        passbook.cyclesupdate={data,money};
         passbook.update({status:true});
         passbook.save();
         await this.userservice.updateMoney(Action.WITHDRAWAL,money,user);
