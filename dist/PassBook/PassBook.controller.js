@@ -18,7 +18,6 @@ const passport_1 = require("@nestjs/passport");
 const getuser_decorators_1 = require("../decorators/getuser.decorators");
 const User_Schema_1 = require("../User/Schema/User.Schema");
 const IReponse_1 = require("../Utils/IReponse");
-const cache_key_dto_1 = require("./DTO/cache.key.dto");
 const PassBook_dto_1 = require("./DTO/PassBook.dto");
 const PassBook_service_1 = require("./PassBook.service");
 let PassBookController = class PassBookController {
@@ -62,9 +61,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PassBookController.prototype, "getTotalCycles", null);
 __decorate([
-    (0, common_1.UseInterceptors)(common_1.CacheInterceptor),
-    (0, common_1.CacheKey)(cache_key_dto_1.CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PASSBOOK),
-    (0, common_1.CacheTTL)(1220),
     (0, common_1.Get)('/getpassbook'),
     __param(0, (0, getuser_decorators_1.GetUser)()),
     __metadata("design:type", Function),

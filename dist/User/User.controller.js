@@ -97,7 +97,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "checkVerificationCode", null);
 __decorate([
-    (0, common_1.Post)('/change-password'),
+    (0, common_1.Put)('/change-password'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     __param(0, (0, getuser_decorators_1.GetUser)()),
     __param(1, (0, common_1.Body)()),

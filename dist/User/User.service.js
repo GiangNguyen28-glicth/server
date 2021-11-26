@@ -46,7 +46,7 @@ let UserService = class UserService {
     async register(userdto) {
         const role = user_dto_1.UserRole.USER;
         let phoneNumber = "+84" + userdto.phoneNumber.slice(1, userdto.phoneNumber.length);
-        const { firstName, lastName, password, email, CMND } = userdto;
+        const { firstName, lastName, password, email, CMND, city } = userdto;
         userdto.role = role;
         const userExisting = await this.usermodel.findOne({ phoneNumber: phoneNumber });
         if (userExisting) {
@@ -55,13 +55,13 @@ let UserService = class UserService {
         try {
             const salt = await bcrypt.genSalt();
             const hashedpassword = await bcrypt.hash(password, salt);
-            const user = this.usermodel.create({ firstName, lastName, password: hashedpassword, email, phoneNumber, CMND, role });
+            const user = this.usermodel.create({ firstName, lastName, password: hashedpassword, email, phoneNumber, CMND, city, role });
             this.mailservice.sendEmail(email);
             (await user).save();
             return {
                 code: 200, success: true, message: "Success",
                 objectreponse: {
-                    _id: (await user)._id, phoneNumber, email, CMND, firstName, lastName, role
+                    _id: (await user)._id, phoneNumber, email, CMND, firstName, lastName, city, role
                 }
             };
         }
@@ -155,16 +155,11 @@ let UserService = class UserService {
     async changPassword(userId, changepassword) {
         const { newPassword, ConfirmPassword } = changepassword;
         const resetPasswordRecord = await this.otpmodel.findOne({ userId: userId });
-        console.log(resetPasswordRecord.isPhoneNumberConfirmed);
         if (!resetPasswordRecord && resetPasswordRecord.isPhoneNumberConfirmed) {
             return { code: 400, success: false, message: 'Invalid or expired password reset OTP' };
         }
         if (!resetPasswordRecord.isPhoneNumberConfirmed) {
-            return {
-                code: 400,
-                success: false,
-                message: 'OTP ?',
-            };
+            return { code: 400, success: false, message: 'OTP ?' };
         }
         const user = await this.usermodel.findOne({ _id: userId });
         if (!user) {
@@ -178,8 +173,7 @@ let UserService = class UserService {
         const hashedpassword = await bcrypt.hash(newPassword, salt);
         await this.usermodel.findOneAndUpdate({ _id: userId }, { password: hashedpassword });
         await resetPasswordRecord.deleteOne();
-        return { code: 200, success: true, message: 'User password reset successfully',
-        };
+        return { code: 200, success: true, message: 'User password reset successfully', };
     }
     async updateSvd(input, user) {
         const result = await this.usermodel.findByIdAndUpdate({ _id: user._id });

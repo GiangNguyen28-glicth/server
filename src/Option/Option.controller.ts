@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Put, Query } from "@nestjs/common";
 import { newOptionDTO } from "./DTO/newOption.dto";
 import { OptionDTO } from "./DTO/Option.dto";
 import { OptionService } from "./Option.service";
@@ -33,8 +33,9 @@ export class OptionController{
         return await this.optionService.GetValueOption(date,option.option);
     }
 
-    @Get('/getcurrentoptionvalue')
-    async GetCurrentOptionValue(Year:number){
-        return this.optionService.GetValueByYear(Year);
+    @Get('/getoptionvaluebyYear')
+    async GetCurrentOptionValue(@Query('year') Year:number){
+        const temp=Number(Year);
+        return this.optionService.GetValueByYear(temp);
     }
 }

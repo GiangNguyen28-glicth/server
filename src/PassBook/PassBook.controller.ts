@@ -17,26 +17,16 @@ export class PassBookController{
         passbookdto.userId=user._id;
         return this.passbookservice.saveSavingsdeposit(passbookdto,user)
     }
-   
-    // @UseInterceptors(CacheInterceptor)
-    // @CacheKey(CachKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PROFIT)
-    // @CacheTTL(1220)
     @Get('/check/:passbookid')
     async getTotalCycles(@Param('passbookid') passbookid,@GetUser() user:User):Promise<any>{
         return this.passbookservice.getTotalCycles(passbookid,user);
     }
 
-    @UseInterceptors(CacheInterceptor)
-    @CacheKey(CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PASSBOOK)
-    @CacheTTL(1220)
     @Get('/getpassbook')
     async getPassbook(@GetUser() user:User):Promise<any>{
         return this.passbookservice.GetAllPassbookByUserId(user);
     }
 
-    // @UseInterceptors(CacheInterceptor)
-    // @CacheKey(CachKeyPassbook.GET_PASSBOOK_CACHE_KEY_IS_ACTIVE)
-    // @CacheTTL(1220)
     @Get('/getpassbookisactive')
     async getPassbookIsActive(@GetUser() user:User):Promise<any>{
         return this.passbookservice.GetPassbookIsActive(user);

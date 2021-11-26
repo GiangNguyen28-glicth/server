@@ -44,7 +44,7 @@ export class UserController{
         return this.userservice.confirmPhoneNumber(user._id,user.phoneNumber,confirmPhonedto.code);
     }
 
-    @Post('/change-password')
+    @Put('/change-password')
     @UseGuards(AuthGuard())
     async changePassword(@GetUser() user:User,@Body() changepassword:changePassword):Promise<IReponse<User>>{
         return this.userservice.changPassword(user._id,changepassword);

@@ -8,7 +8,6 @@ import { OptionService } from "src/Option/Option.service";
 import { Action } from "src/User/DTO/HistoryAction.obj";
 import { User } from "src/User/Schema/User.Schema";
 import { UserService } from "src/User/User.service";
-import { ClearCache } from "src/Utils/clear.cache";
 import { IReponse } from "src/Utils/IReponse";
 import { CacheKeyPassbook } from "./DTO/cache.key.dto";
 import { PassBookDTO } from "./DTO/PassBook.dto";
@@ -53,10 +52,7 @@ export class PassBookService{
     async getTotalCycles(passbookid,user:User):Promise<any>{
         CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PROFIT=passbookid.toString()+"PROFIT";
         const checkCache=await this.cacheManager.get(CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PROFIT);
-        if(checkCache==undefined){
-            CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PROFIT=passbookid.toString()+"PROFIT";
-        }
-        else{
+        if(checkCache!=undefined){
             return checkCache;
         }
         var endDate=new Date();
@@ -92,16 +88,11 @@ export class PassBookService{
 
     async GetAllPassbookByUserId(user:User):Promise<any>{
         const passbook=await this.passbookmodel.find({userId:user._id});
-        if(CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PASSBOOK==""){
-            CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PASSBOOK=user._id.toString()+"GETALLPASSBOOK";
-        }
+        CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PASSBOOK=user._id.toString()+"GET_PASSBOOK_CACHE_KEY_TOTAL_PASSBOOK";
         return passbook;
     }
 
     async GetPassbookIsActive(user:User):Promise<PassBook[]>{
-        if(CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_IS_ACTIVE==""){
-            CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_IS_ACTIVE=user._id.toString()+"GET_PASSBOOK_CACHE_KEY_IS_ACTIVE";
-        }
         const passbook=await this.passbookmodel.find({userId:user._id,status:false});
         return passbook;
     }

@@ -11,16 +11,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OptionService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const OptionObj_dto_1 = require("./DTO/OptionObj.dto");
+const cache_manager_1 = require("cache-manager");
 const Option_chema_1 = require("./Schema/Option.chema");
 let OptionService = class OptionService {
-    constructor(optionmodel) {
+    constructor(optionmodel, cacheManager) {
         this.optionmodel = optionmodel;
+        this.cacheManager = cacheManager;
     }
     async saveoption(option) {
         const result = await this.optionmodel.create(option);
@@ -61,6 +64,10 @@ let OptionService = class OptionService {
     async GetValueByYear(Year) {
         const date = new Date();
         let arr = [];
+        const checkCache = await this.cacheManager.get(Year.toString());
+        if (checkCache != undefined) {
+            return checkCache;
+        }
         const currentvalue = await this.optionmodel.find();
         for (var i in currentvalue) {
             if (currentvalue[i].createAt.getFullYear() == Year) {
@@ -69,24 +76,28 @@ let OptionService = class OptionService {
             else {
                 for (var j = 0; j < currentvalue[i].history.length; j++) {
                     if (currentvalue[i].history[j].createAt.getFullYear() == Year + 1) {
-                        if (currentvalue[i].history[j - 1] != null) {
+                        if (currentvalue[i].history[j - 1] != null && currentvalue[i].history[j - 1].createAt.getFullYear() == Year) {
                             arr.push(currentvalue[i].history[j - 1].value);
                             break;
                         }
                     }
                     if (j == currentvalue[i].history.length - 1) {
-                        arr.push(currentvalue[i].history[j].value);
+                        if (currentvalue[i].history[j].createAt.getFullYear() == Year) {
+                            arr.push(currentvalue[i].history[j].value);
+                        }
                     }
                 }
             }
         }
+        await this.cacheManager.set(Year.toString, arr, { ttl: 1000 });
         return arr;
     }
 };
 OptionService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(Option_chema_1.Option.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __param(1, (0, common_1.Inject)(common_1.CACHE_MANAGER)),
+    __metadata("design:paramtypes", [mongoose_2.Model, typeof (_a = typeof cache_manager_1.Cache !== "undefined" && cache_manager_1.Cache) === "function" ? _a : Object])
 ], OptionService);
 exports.OptionService = OptionService;
 //# sourceMappingURL=Option.service.js.map

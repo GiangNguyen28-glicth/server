@@ -39,6 +39,9 @@ export class User{
     @Prop({unique:true})
     CMND:string;
 
+    @Prop()
+    city:string;
+
     @Prop({type:Date, default: Date.now,expires:60*60*5})
 	isExprise?: Date
 

@@ -53,6 +53,10 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "CMND", void 0);
 __decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], User.prototype, "city", void 0);
+__decorate([
     (0, mongoose_1.Prop)({ type: Date, default: Date.now, expires: 60 * 60 * 5 }),
     __metadata("design:type", Date)
 ], User.prototype, "isExprise", void 0);

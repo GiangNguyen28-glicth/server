@@ -4,6 +4,6 @@ import { Controller, Get } from "@nestjs/common";
 export class AppController{
     @Get()
     checkServer(){
-        return "Deploy Success Version 2";
+        return "Deploy Success Version 3";
     }
 }

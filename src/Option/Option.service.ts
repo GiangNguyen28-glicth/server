@@ -1,14 +1,16 @@
-import { Injectable } from "@nestjs/common";
+import { CACHE_MANAGER, Inject, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { newOptionDTO } from "./DTO/newOption.dto";
 import { OptionDTO } from "./DTO/Option.dto";
 import { OptionObj } from "./DTO/OptionObj.dto";
+import { Cache } from 'cache-manager';
 import { OptionDocument,Option } from "./Schema/Option.chema";
 @Injectable()
 export class OptionService{
     constructor(@InjectModel(Option.name)
-    private optionmodel:Model<OptionDocument>){}
+    private optionmodel:Model<OptionDocument>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache){}
     async saveoption(option:OptionDTO):Promise<Option>{
         const result=await this.optionmodel.create(option);
         result.save();
@@ -52,6 +54,10 @@ export class OptionService{
     async GetValueByYear(Year:number):Promise<any>{
         const date=new Date();
         let arr=[];
+        const checkCache=await this.cacheManager.get(Year.toString());
+        if(checkCache!=undefined){
+            return checkCache;
+        }
         const currentvalue=await this.optionmodel.find();
         for(var i in currentvalue){
             if(currentvalue[i].createAt.getFullYear()==Year){
@@ -60,17 +66,20 @@ export class OptionService{
             else{
                for(var j=0;j<currentvalue[i].history.length;j++){
                     if(currentvalue[i].history[j].createAt.getFullYear()==Year+1){
-                        if(currentvalue[i].history[j-1]!=null){
+                        if(currentvalue[i].history[j-1]!=null&&currentvalue[i].history[j-1].createAt.getFullYear()==Year){
                             arr.push(currentvalue[i].history[j-1].value);
                             break;
-                        }  
+                        }
                     }
                    if(j==currentvalue[i].history.length-1){
-                    arr.push(currentvalue[i].history[j].value);
+                       if( currentvalue[i].history[j].createAt.getFullYear()==Year){
+                        arr.push(currentvalue[i].history[j].value);
+                       }
                    }   
                }
             }
         }
+        await this.cacheManager.set(Year.toString,arr,{ ttl: 1000 });
         return arr;
     }
 }

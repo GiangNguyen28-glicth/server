@@ -24,7 +24,6 @@ const Option_service_1 = require("../Option/Option.service");
 const HistoryAction_obj_1 = require("../User/DTO/HistoryAction.obj");
 const User_Schema_1 = require("../User/Schema/User.Schema");
 const User_service_1 = require("../User/User.service");
-const clear_cache_1 = require("../Utils/clear.cache");
 const IReponse_1 = require("../Utils/IReponse");
 const cache_key_dto_1 = require("./DTO/cache.key.dto");
 const PassBook_Schema_1 = require("./Schema/PassBook.Schema");
@@ -57,10 +56,7 @@ let PassBookService = class PassBookService {
     async getTotalCycles(passbookid, user) {
         cache_key_dto_1.CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PROFIT = passbookid.toString() + "PROFIT";
         const checkCache = await this.cacheManager.get(cache_key_dto_1.CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PROFIT);
-        if (checkCache == undefined) {
-            cache_key_dto_1.CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PROFIT = passbookid.toString() + "PROFIT";
-        }
-        else {
+        if (checkCache != undefined) {
             return checkCache;
         }
         var endDate = new Date();
@@ -97,15 +93,10 @@ let PassBookService = class PassBookService {
     }
     async GetAllPassbookByUserId(user) {
         const passbook = await this.passbookmodel.find({ userId: user._id });
-        if (cache_key_dto_1.CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PASSBOOK == "") {
-            cache_key_dto_1.CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PASSBOOK = user._id.toString() + "GETALLPASSBOOK";
-        }
+        cache_key_dto_1.CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PASSBOOK = user._id.toString() + "GET_PASSBOOK_CACHE_KEY_TOTAL_PASSBOOK";
         return passbook;
     }
     async GetPassbookIsActive(user) {
-        if (cache_key_dto_1.CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_IS_ACTIVE == "") {
-            cache_key_dto_1.CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_IS_ACTIVE = user._id.toString() + "GET_PASSBOOK_CACHE_KEY_IS_ACTIVE";
-        }
         const passbook = await this.passbookmodel.find({ userId: user._id, status: false });
         return passbook;
     }

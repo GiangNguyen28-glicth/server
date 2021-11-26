@@ -13,6 +13,7 @@ export declare class User {
     currentMoney?: number;
     isEmailConfirmed?: boolean;
     CMND: string;
+    city: string;
     isExprise?: Date;
     role: UserRole;
     historyaction?: [HistoryAction];

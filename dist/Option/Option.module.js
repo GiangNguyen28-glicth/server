@@ -16,7 +16,7 @@ let OptionModule = class OptionModule {
 };
 OptionModule = __decorate([
     (0, common_1.Module)({
-        imports: [mongoose_1.MongooseModule.forFeature([{ name: Option_chema_1.Option.name, schema: Option_chema_1.OptionSchema }])],
+        imports: [mongoose_1.MongooseModule.forFeature([{ name: Option_chema_1.Option.name, schema: Option_chema_1.OptionSchema }]), common_1.CacheModule.register()],
         controllers: [Option_controller_1.OptionController],
         providers: [Option_service_1.OptionService],
         exports: [Option_service_1.OptionService]
