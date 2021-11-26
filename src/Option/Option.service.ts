@@ -61,19 +61,19 @@ export class OptionService{
         const currentvalue=await this.optionmodel.find();
         for(var i in currentvalue){
             if(currentvalue[i].createAt.getFullYear()==Year){
-                arr.push(currentvalue[i].value)
+                arr.push({option:currentvalue[i].option,value:currentvalue[i].value})
             }
             else{
                for(var j=0;j<currentvalue[i].history.length;j++){
                     if(currentvalue[i].history[j].createAt.getFullYear()==Year+1){
                         if(currentvalue[i].history[j-1]!=null&&currentvalue[i].history[j-1].createAt.getFullYear()==Year){
-                            arr.push(currentvalue[i].history[j-1].value);
+                            arr.push({option:currentvalue[i].option,value:currentvalue[i].history[j-1].value});
                             break;
                         }
                     }
                    if(j==currentvalue[i].history.length-1){
                        if( currentvalue[i].history[j].createAt.getFullYear()==Year){
-                        arr.push(currentvalue[i].history[j].value);
+                        arr.push({option:currentvalue[i].option,value:currentvalue[i].history[j].value});
                        }
                    }   
                }
