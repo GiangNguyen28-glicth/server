@@ -19,5 +19,4 @@ export declare class PassBookService {
     GetPassbookIsActive(user: User): Promise<PassBook[]>;
     GetPassBookById(passbookid: any, user: User): Promise<PassBook>;
     withdrawMoneyPassbook(passbookid: any, user: User): Promise<PassBook>;
-    convertDatetime(date: Date): Date;
 }

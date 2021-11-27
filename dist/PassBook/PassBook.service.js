@@ -121,13 +121,6 @@ let PassBookService = class PassBookService {
         await this.userservice.updateMoney(HistoryAction_obj_1.Action.WITHDRAWAL, money, user);
         return null;
     }
-    convertDatetime(date) {
-        var newDate = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
-        var offset = date.getTimezoneOffset() / 60;
-        var hours = date.getHours();
-        newDate.setHours(hours - offset);
-        return newDate;
-    }
 };
 PassBookService = __decorate([
     (0, common_1.Injectable)(),
