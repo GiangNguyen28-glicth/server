@@ -12,7 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppController = void 0;
 const common_1 = require("@nestjs/common");
 let AppController = class AppController {
-    checkServer() {
+    async checkServer() {
+        const res = await fetch("http://api.exchangeratesapi.io/v1/latest?access_key=f96f7a35f4213b735aeeeb8d084cff8f");
+        const data = await res.json();
+        console.log(data);
         return "Deploy Success Version ";
     }
 };
@@ -20,7 +23,7 @@ __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], AppController.prototype, "checkServer", null);
 AppController = __decorate([
     (0, common_1.Controller)()

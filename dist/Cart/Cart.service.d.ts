@@ -12,4 +12,5 @@ export declare class CartService {
     constructor(cartmodel: Model<CartDocument>, passbookservice: PassBookService, userservice: UserService);
     addtoCart(cartdto: CartDTO, user: User): Promise<IReponse<Cart>>;
     dividePassbook(quantity: number, user: User): Promise<IReponse<Cart>>;
+    convertDatetime(date: Date): Date;
 }

@@ -1,32 +1,12 @@
 <html>
     <body>
-        <button data-sort="0">Sort by Price:</button><br>
-        <div class="clist">
-            <div data-sid=1> Price 1 <br>  Name:  item 1 <hr></div>
-            <div data-sid=4>Price 4 <br> Name:  item 4 <hr></div>
-            <div data-sid=3>Price 3 <br> Name:  item 3<hr></div>
-            <div data-sid=1>Price 1 <br> Name:  item 1<hr></div>
-            <div data-sid=4>Price 4 <br> Name:  item 4<hr></div>
-            <div data-sid=2>Price 2 <br> Name:  item 2<hr></div>
-            <div data-sid=1>Price 1 <br> Name:  item 3<hr></div>
-        </div>
+        <button type="button" onclick="getmoney()">Button</button>
     </body>
     <script>
-        $(document).ready(function(){
-        $('button').on('click', function(){
-        var s = $(this).data('sort'); console.log(s);
-        if(s === 0){
-            $(this).data('sort', 1);
-            $('.clist div').sort(function(a,b){
-               return a.dataset.sid < b.dataset.sid
-            }).appendTo('.clist')            
-        }else{
-            $(this).data('sort', 0);
-            $('.clist div').sort(function(a,b){
-               return a.dataset.sid > b.dataset.sid
-            }).appendTo('.clist')
-        }
-        });
-    });
+        async function getmoney(){
+            const res=await fetch("http://api.exchangeratesapi.io/v1/latest?access_key=f96f7a35f4213b735aeeeb8d084cff8f");
+        const data= await res.json();
+        console.log(data);
+        };
     </script>
 </html>

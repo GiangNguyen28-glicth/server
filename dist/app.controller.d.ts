@@ -1,3 +1,3 @@
 export declare class AppController {
-    checkServer(): string;
+    checkServer(): Promise<string>;
 }

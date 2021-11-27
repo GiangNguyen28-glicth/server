@@ -16,7 +16,7 @@ export class PassBook{
     @Prop()
     option:number;
 
-    @Prop({type:Date,default:Date.now})
+    @Prop({type:Date})
     createAt:Date;
 
     @Prop({default:false})

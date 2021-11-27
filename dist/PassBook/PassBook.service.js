@@ -38,6 +38,7 @@ let PassBookService = class PassBookService {
         const session = await this.connection.startSession();
         session.startTransaction();
         try {
+            console.log(passbookdto);
             const svdp = await this.passbookmodel.create(passbookdto);
             svdp.save();
             await this.userservice.updateSvd(svdp, user);
@@ -115,10 +116,17 @@ let PassBookService = class PassBookService {
         ;
         const { data, money } = await this.getTotalCycles(passbookid, user);
         passbook.cyclesupdate = { data, money };
-        passbook.update({ status: true });
+        passbook.status = true;
         passbook.save();
         await this.userservice.updateMoney(HistoryAction_obj_1.Action.WITHDRAWAL, money, user);
         return null;
+    }
+    convertDatetime(date) {
+        var newDate = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
+        var offset = date.getTimezoneOffset() / 60;
+        var hours = date.getHours();
+        newDate.setHours(hours - offset);
+        return newDate;
     }
 };
 PassBookService = __decorate([

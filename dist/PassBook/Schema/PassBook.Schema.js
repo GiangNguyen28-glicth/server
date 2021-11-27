@@ -29,7 +29,7 @@ __decorate([
     __metadata("design:type", Number)
 ], PassBook.prototype, "option", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: Date, default: Date.now }),
+    (0, mongoose_1.Prop)({ type: Date }),
     __metadata("design:type", Object)
 ], PassBook.prototype, "createAt", void 0);
 __decorate([
