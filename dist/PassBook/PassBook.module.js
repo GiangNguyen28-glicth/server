@@ -15,6 +15,7 @@ const PassBook_controller_1 = require("./PassBook.controller");
 const PassBook_Schema_1 = require("./Schema/PassBook.Schema");
 const PassBook_service_1 = require("./PassBook.service");
 const clear_cache_1 = require("../Utils/clear.cache");
+const common_service_1 = require("../Utils/common.service");
 let PassBookModule = class PassBookModule {
 };
 PassBookModule = __decorate([
@@ -22,7 +23,7 @@ PassBookModule = __decorate([
         imports: [mongoose_1.MongooseModule.forFeature([{ name: PassBook_Schema_1.PassBook.name, schema: PassBook_Schema_1.PassBookSchema }]),
             (0, common_1.forwardRef)(() => User_module_1.UserModule), Option_module_1.OptionModule, common_1.CacheModule.register()],
         controllers: [PassBook_controller_1.PassBookController],
-        providers: [PassBook_service_1.PassBookService, clear_cache_1.ClearCache],
+        providers: [PassBook_service_1.PassBookService, clear_cache_1.ClearCache, common_service_1.CommonService],
         exports: [PassBook_service_1.PassBookService]
     })
 ], PassBookModule);

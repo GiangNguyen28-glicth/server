@@ -19,13 +19,13 @@ let LocationController = class LocationController {
     constructor(location) {
         this.location = location;
     }
-    findAll() {
+    async findAll() {
         return this.location.findProvince();
     }
-    findDistrict(code) {
+    async findDistrict(code) {
         return this.location.findDistrict(code);
     }
-    findWards(code) {
+    async findWards(code) {
         return this.location.findWards(code);
     }
 };
@@ -33,21 +33,21 @@ __decorate([
     (0, common_1.Get)('/province'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], LocationController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)('/district/:code'),
     __param(0, (0, common_1.Param)('code')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Object)
+    __metadata("design:returntype", Promise)
 ], LocationController.prototype, "findDistrict", null);
 __decorate([
     (0, common_1.Get)('/wards/:code'),
     __param(0, (0, common_1.Param)('code')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Object)
+    __metadata("design:returntype", Promise)
 ], LocationController.prototype, "findWards", null);
 LocationController = __decorate([
     (0, common_1.Controller)('/location'),

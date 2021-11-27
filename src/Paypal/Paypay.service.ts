@@ -3,12 +3,14 @@ import * as paypal from "paypal-rest-sdk"
 import { Action, HistoryAction } from "src/User/DTO/HistoryAction.obj";
 import { User } from "src/User/Schema/User.Schema";
 import { UserService } from "src/User/User.service";
+import { CommonService } from "src/Utils/common.service";
 @Injectable()
 export class PaypalService{
-    constructor(private userservice:UserService){}
+    constructor(private userservice:UserService,
+        private commonservice:CommonService){}
     total=0;
     usercheckout:User;
-    async Payment(response,money:number,user:User){
+    async Payment(response,money:number,user:User){       
         this.usercheckout=user;
         this.total=money;
         const create_payment_json = {
@@ -17,7 +19,7 @@ export class PaypalService{
                 "payment_method": "paypal"
             },
             "redirect_urls": {
-                "return_url": "https://server-one-kappa.vercel.app/paypal/success",
+                "return_url": "http://localhost:3000/paypal/success",
                 "cancel_url": "https://server-one-kappa.vercel.app/paypal/paypal/cancel"
             },
             "transactions": [{
@@ -50,8 +52,9 @@ export class PaypalService{
     async Success(response,request){
         const payerId = request.query.PayerID;
         const paymentId = request.query.paymentId;
-        // console.log(this.total.toString());
         if(this.usercheckout==undefined){
+            console.log(1);
+            console.log(this.usercheckout);
             response.send('Failed');
             return;
         }
@@ -64,7 +67,9 @@ export class PaypalService{
                 }
             }]
         };
-        await this.userservice.updateMoney(Action.NAPTIENPAYPAL,this.total,this.usercheckout);
+        let moneyconvert=this.convertmoney(this.total);
+        console.log(moneyconvert);
+        await this.userservice.updateMoney(Action.NAPTIENPAYPAL,await moneyconvert,this.usercheckout);
         const historyaction=new HistoryAction();
         historyaction.action=Action.NAPTIENPAYPAL;
         historyaction.createAt=new Date();
@@ -77,5 +82,11 @@ export class PaypalService{
                 response.send('Success');
             }
         });
+    }
+
+    async convertmoney(usdinput:number):Promise<number>{
+        const {vnd,usd}=await this.commonservice.convertMoney();
+        const value=usdinput*vnd/usd;
+        return value;
     }
 }

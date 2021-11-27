@@ -7,7 +7,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LocationModule = void 0;
-const axios_1 = require("@nestjs/axios");
 const common_1 = require("@nestjs/common");
 const location_controller_1 = require("./location.controller");
 const location_service_1 = require("./location.service");
@@ -15,10 +14,7 @@ let LocationModule = class LocationModule {
 };
 LocationModule = __decorate([
     (0, common_1.Module)({
-        imports: [axios_1.HttpModule.register({
-                timeout: 5000,
-                maxRedirects: 5,
-            }),],
+        imports: [],
         controllers: [location_controller_1.LocationController],
         providers: [location_service_1.LocationService],
     })

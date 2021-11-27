@@ -6,12 +6,13 @@ import { PassBookController } from "./PassBook.controller";
 import { PassBook, PassBookSchema } from "./Schema/PassBook.Schema";
 import { PassBookService } from "./PassBook.service";
 import { ClearCache } from "src/Utils/clear.cache";
+import { CommonService } from "src/Utils/common.service";
 
 @Module({
     imports:[MongooseModule.forFeature([{name:PassBook.name,schema:PassBookSchema}]),
     forwardRef(()=>UserModule),OptionModule,CacheModule.register()],
     controllers:[PassBookController],
-    providers:[PassBookService,ClearCache],
+    providers:[PassBookService,ClearCache,CommonService],
     exports:[PassBookService]
 })
 export class PassBookModule{

@@ -10,26 +10,26 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LocationService = void 0;
-const axios_1 = require("@nestjs/axios");
+const axios_1 = require("axios");
 const common_1 = require("@nestjs/common");
-const rxjs_1 = require("rxjs");
 let LocationService = class LocationService {
-    constructor(httpService) {
-        this.httpService = httpService;
+    constructor() { }
+    async findProvince() {
+        const resp = await axios_1.default.get('https://provinces.open-api.vn/api/');
+        return resp.data;
     }
-    findProvince() {
-        return this.httpService.get('https://provinces.open-api.vn/api/').pipe((0, rxjs_1.map)(res => res.data));
+    async findDistrict(code) {
+        const resp = await axios_1.default.get('https://provinces.open-api.vn/api/p/' + code + '?depth=2');
+        return resp.data;
     }
-    findDistrict(code) {
-        return this.httpService.get('https://provinces.open-api.vn/api/p/' + code + '?depth=2').pipe((0, rxjs_1.map)(res => res.data));
-    }
-    findWards(code) {
-        return this.httpService.get("https://provinces.open-api.vn/api/d/" + code + "?depth=2").pipe((0, rxjs_1.map)(res => res.data));
+    async findWards(code) {
+        const resp = await axios_1.default.get("https://provinces.open-api.vn/api/d/" + code + "?depth=2");
+        return resp.data;
     }
 };
 LocationService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [axios_1.HttpService])
+    __metadata("design:paramtypes", [])
 ], LocationService);
 exports.LocationService = LocationService;
 //# sourceMappingURL=location.service.js.map

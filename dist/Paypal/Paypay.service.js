@@ -15,9 +15,11 @@ const paypal = require("paypal-rest-sdk");
 const HistoryAction_obj_1 = require("../User/DTO/HistoryAction.obj");
 const User_Schema_1 = require("../User/Schema/User.Schema");
 const User_service_1 = require("../User/User.service");
+const common_service_1 = require("../Utils/common.service");
 let PaypalService = class PaypalService {
-    constructor(userservice) {
+    constructor(userservice, commonservice) {
         this.userservice = userservice;
+        this.commonservice = commonservice;
         this.total = 0;
     }
     async Payment(response, money, user) {
@@ -29,7 +31,7 @@ let PaypalService = class PaypalService {
                 "payment_method": "paypal"
             },
             "redirect_urls": {
-                "return_url": "https://server-one-kappa.vercel.app/paypal/success",
+                "return_url": "http://localhost:3000/paypal/success",
                 "cancel_url": "https://server-one-kappa.vercel.app/paypal/paypal/cancel"
             },
             "transactions": [{
@@ -63,6 +65,8 @@ let PaypalService = class PaypalService {
         const payerId = request.query.PayerID;
         const paymentId = request.query.paymentId;
         if (this.usercheckout == undefined) {
+            console.log(1);
+            console.log(this.usercheckout);
             response.send('Failed');
             return;
         }
@@ -75,7 +79,9 @@ let PaypalService = class PaypalService {
                     }
                 }]
         };
-        await this.userservice.updateMoney(HistoryAction_obj_1.Action.NAPTIENPAYPAL, this.total, this.usercheckout);
+        let moneyconvert = this.convertmoney(this.total);
+        console.log(moneyconvert);
+        await this.userservice.updateMoney(HistoryAction_obj_1.Action.NAPTIENPAYPAL, await moneyconvert, this.usercheckout);
         const historyaction = new HistoryAction_obj_1.HistoryAction();
         historyaction.action = HistoryAction_obj_1.Action.NAPTIENPAYPAL;
         historyaction.createAt = new Date();
@@ -90,10 +96,16 @@ let PaypalService = class PaypalService {
             }
         });
     }
+    async convertmoney(usdinput) {
+        const { vnd, usd } = await this.commonservice.convertMoney();
+        const value = usdinput * vnd / usd;
+        return value;
+    }
 };
 PaypalService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [User_service_1.UserService])
+    __metadata("design:paramtypes", [User_service_1.UserService,
+        common_service_1.CommonService])
 ], PaypalService);
 exports.PaypalService = PaypalService;
 //# sourceMappingURL=Paypay.service.js.map

@@ -41,4 +41,5 @@ export class PassBookController{
     async withdrawMoneyPassbook(@GetUser() user:User,@Param('passbookid') passbookid):Promise<PassBook>{
         return this.passbookservice.withdrawMoneyPassbook(passbookid,user);
     }
+
 }

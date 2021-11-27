@@ -10,24 +10,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommonService = void 0;
-const axios_1 = require("@nestjs/axios");
+const axios_1 = require("axios");
 const common_1 = require("@nestjs/common");
-const rxjs_1 = require("rxjs");
 let CommonService = class CommonService {
-    constructor(httpService) {
-        this.httpService = httpService;
-    }
-    async findAll() {
-        const resp = await this.httpService.get("http://api.exchangeratesapi.io/v1/latest?access_key=" + process.env.access_key)
-            .pipe((0, rxjs_1.map)(axiosResponse => {
-            this.continueApp(axiosResponse.data.rates.USD, axiosResponse.data.rates.VND);
-            return axiosResponse.data.rates;
-        }));
-        return resp;
-    }
-    async continueApp(obj1, obj2) {
-        console.log(obj1);
-        console.log(obj2);
+    constructor() { }
+    async convertMoney() {
+        const resp = await axios_1.default.get("http://api.exchangeratesapi.io/v1/latest?access_key=" + process.env.access_key);
+        const usd = resp.data.rates.USD;
+        const vnd = resp.data.rates.VND;
+        return { vnd, usd };
     }
     convertDatetime(date) {
         var newDate = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
@@ -39,7 +30,7 @@ let CommonService = class CommonService {
 };
 CommonService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [axios_1.HttpService])
+    __metadata("design:paramtypes", [])
 ], CommonService);
 exports.CommonService = CommonService;
 //# sourceMappingURL=common.service.js.map

@@ -25,6 +25,11 @@ export class PaypalController{
        return this.paypalservice.Success(response,request);
     }
     
+    @Get('/test')
+    Test(){
+       return this.paypalservice.convertmoney(2);
+    }
+
     @Get('/cancel')
     Cancel(@Res() response:Response,@Req() request:Request){
        return "Cancel"

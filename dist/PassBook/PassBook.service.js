@@ -26,13 +26,15 @@ const cache_key_dto_1 = require("./DTO/cache.key.dto");
 const PassBook_Schema_1 = require("./Schema/PassBook.Schema");
 const cache_manager_1 = require("cache-manager");
 const CyclesUpdateDTO_1 = require("./DTO/CyclesUpdateDTO");
+const common_service_1 = require("../Utils/common.service");
 let PassBookService = class PassBookService {
-    constructor(passbookmodel, cacheManager, connection, userservice, optionservice) {
+    constructor(passbookmodel, cacheManager, connection, userservice, optionservice, commonservice) {
         this.passbookmodel = passbookmodel;
         this.cacheManager = cacheManager;
         this.connection = connection;
         this.userservice = userservice;
         this.optionservice = optionservice;
+        this.commonservice = commonservice;
     }
     async saveSavingsdeposit(passbookdto, user) {
         const session = await this.connection.startSession();
@@ -129,7 +131,8 @@ PassBookService = __decorate([
     __param(2, (0, mongoose_1.InjectConnection)()),
     __param(3, (0, common_1.Inject)((0, common_1.forwardRef)(() => User_service_1.UserService))),
     __metadata("design:paramtypes", [mongoose.Model, typeof (_a = typeof cache_manager_1.Cache !== "undefined" && cache_manager_1.Cache) === "function" ? _a : Object, mongoose.Connection, User_service_1.UserService,
-        Option_service_1.OptionService])
+        Option_service_1.OptionService,
+        common_service_1.CommonService])
 ], PassBookService);
 exports.PassBookService = PassBookService;
 //# sourceMappingURL=PassBook.service.js.map

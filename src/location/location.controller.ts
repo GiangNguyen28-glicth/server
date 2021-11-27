@@ -5,15 +5,15 @@ import { LocationService } from "./location.service";
 export class LocationController{
     constructor(private location:LocationService){}
     @Get('/province')
-    findAll(){
+    async findAll():Promise<any>{
         return this.location.findProvince();
     }
     @Get('/district/:code')
-    findDistrict(@Param('code') code):any{
+    async findDistrict(@Param('code') code):Promise<any>{
         return this.location.findDistrict(code);
     }
     @Get('/wards/:code')
-    findWards(@Param('code')code):any{
+    async findWards(@Param('code')code):Promise<any>{
         return this.location.findWards(code);
     }
 }

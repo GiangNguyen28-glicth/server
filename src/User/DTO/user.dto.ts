@@ -1,5 +1,5 @@
-import { IsEmail, IsOptional, IsString, Matches } from "class-validator";
 
+import { IsEmail, IsOptional, IsString, Matches } from "class-validator";
 export class UserDTO{
     @IsString()
     firstName:string;

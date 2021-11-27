@@ -11,6 +11,7 @@ import { PassBookDTO } from "./DTO/PassBook.dto";
 import { PassBook, PassBookDocument } from "./Schema/PassBook.Schema";
 import { Cache } from 'cache-manager';
 import { CyclesUpdateDTO } from "./DTO/CyclesUpdateDTO";
+import { CommonService } from "src/Utils/common.service";
 @Injectable()
 export class PassBookService{
 
@@ -21,6 +22,7 @@ export class PassBookService{
     @Inject(forwardRef(()=>UserService))
     private userservice:UserService,
     private optionservice:OptionService,
+    private commonservice:CommonService
     ){}
 
     async saveSavingsdeposit(passbookdto:PassBookDTO,user:User):Promise<IReponse<PassBook>>{
@@ -105,6 +107,4 @@ export class PassBookService{
         await this.userservice.updateMoney(Action.WITHDRAWAL,money,user);
         return null;
     }
-    
-   
 }   
