@@ -6,10 +6,12 @@ import { OptionDTO } from "./DTO/Option.dto";
 import { OptionObj } from "./DTO/OptionObj.dto";
 import { Cache } from 'cache-manager';
 import { OptionDocument,Option } from "./Schema/Option.chema";
+import { CommonService } from "src/Utils/common.service";
 @Injectable()
 export class OptionService{
     constructor(@InjectModel(Option.name)
     private optionmodel:Model<OptionDocument>,
+    private commonservice:CommonService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache){}
     async saveoption(option:OptionDTO):Promise<Option>{
         const result=await this.optionmodel.create(option);
@@ -27,12 +29,12 @@ export class OptionService{
             return;
         }
         let obj:OptionObj=new OptionObj();
-        let date=new Date();
+        let date=await this.commonservice.convertDatetime(new Date());
         obj.createAt=date;
         obj.value=optionOld.value;
         optionOld.history.push(obj);
         optionOld.value=newoptiondto.value;
-        optionOld.createAt=new Date();
+        optionOld.createAt=await this.commonservice.convertDatetime(new Date());
         optionOld.update();
         optionOld.save();
         return optionOld;
@@ -52,7 +54,7 @@ export class OptionService{
     }
 
     async GetValueByYear(Year:number):Promise<any>{
-        const date=new Date();
+        const date=await this.commonservice.convertDatetime(new Date());
         let arr=[];
         const checkCache=await this.cacheManager.get(Year.toString());
         if(checkCache!=undefined){

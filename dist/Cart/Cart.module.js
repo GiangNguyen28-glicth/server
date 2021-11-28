@@ -11,6 +11,7 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const PassBook_module_1 = require("../PassBook/PassBook.module");
 const User_module_1 = require("../User/User.module");
+const common_service_1 = require("../Utils/common.service");
 const Cart_controller_1 = require("./Cart.controller");
 const Cart_service_1 = require("./Cart.service");
 const Cart_schema_1 = require("./Schema/Cart.schema");
@@ -20,7 +21,7 @@ CartModule = __decorate([
     (0, common_1.Module)({
         imports: [mongoose_1.MongooseModule.forFeature([{ name: Cart_schema_1.Cart.name, schema: Cart_schema_1.CartSchema }]), User_module_1.UserModule, PassBook_module_1.PassBookModule],
         controllers: [Cart_controller_1.CartController],
-        providers: [Cart_service_1.CartService],
+        providers: [Cart_service_1.CartService, common_service_1.CommonService],
     })
 ], CartModule);
 exports.CartModule = CartModule;

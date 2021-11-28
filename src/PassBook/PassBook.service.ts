@@ -28,8 +28,7 @@ export class PassBookService{
     async saveSavingsdeposit(passbookdto:PassBookDTO,user:User):Promise<IReponse<PassBook>>{
         const session = await this.connection.startSession();
         session.startTransaction();
-        try{
-            console.log(passbookdto);        
+        try{ 
             const svdp=await this.passbookmodel.create(passbookdto);
             svdp.save();
             await this.userservice.updateSvd(svdp,user);

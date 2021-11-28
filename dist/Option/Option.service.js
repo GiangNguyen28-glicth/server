@@ -20,9 +20,11 @@ const mongoose_2 = require("mongoose");
 const OptionObj_dto_1 = require("./DTO/OptionObj.dto");
 const cache_manager_1 = require("cache-manager");
 const Option_chema_1 = require("./Schema/Option.chema");
+const common_service_1 = require("../Utils/common.service");
 let OptionService = class OptionService {
-    constructor(optionmodel, cacheManager) {
+    constructor(optionmodel, commonservice, cacheManager) {
         this.optionmodel = optionmodel;
+        this.commonservice = commonservice;
         this.cacheManager = cacheManager;
     }
     async saveoption(option) {
@@ -39,12 +41,12 @@ let OptionService = class OptionService {
             return;
         }
         let obj = new OptionObj_dto_1.OptionObj();
-        let date = new Date();
+        let date = await this.commonservice.convertDatetime(new Date());
         obj.createAt = date;
         obj.value = optionOld.value;
         optionOld.history.push(obj);
         optionOld.value = newoptiondto.value;
-        optionOld.createAt = new Date();
+        optionOld.createAt = await this.commonservice.convertDatetime(new Date());
         optionOld.update();
         optionOld.save();
         return optionOld;
@@ -62,7 +64,7 @@ let OptionService = class OptionService {
         }
     }
     async GetValueByYear(Year) {
-        const date = new Date();
+        const date = await this.commonservice.convertDatetime(new Date());
         let arr = [];
         const checkCache = await this.cacheManager.get(Year.toString());
         if (checkCache != undefined) {
@@ -96,8 +98,9 @@ let OptionService = class OptionService {
 OptionService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(Option_chema_1.Option.name)),
-    __param(1, (0, common_1.Inject)(common_1.CACHE_MANAGER)),
-    __metadata("design:paramtypes", [mongoose_2.Model, typeof (_a = typeof cache_manager_1.Cache !== "undefined" && cache_manager_1.Cache) === "function" ? _a : Object])
+    __param(2, (0, common_1.Inject)(common_1.CACHE_MANAGER)),
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        common_service_1.CommonService, typeof (_a = typeof cache_manager_1.Cache !== "undefined" && cache_manager_1.Cache) === "function" ? _a : Object])
 ], OptionService);
 exports.OptionService = OptionService;
 //# sourceMappingURL=Option.service.js.map

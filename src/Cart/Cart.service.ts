@@ -6,6 +6,7 @@ import { PassBookService } from "src/PassBook/PassBook.service";
 import { Action, HistoryAction } from "src/User/DTO/HistoryAction.obj";
 import { User } from "src/User/Schema/User.Schema";
 import { UserService } from "src/User/User.service";
+import { CommonService } from "src/Utils/common.service";
 import { IReponse } from "src/Utils/IReponse";
 import { CartDTO } from "./DTO/Cart.dto";
 import { Cart, CartDocument } from "./Schema/Cart.schema";
@@ -14,11 +15,12 @@ import { Cart, CartDocument } from "./Schema/Cart.schema";
 export class CartService{
     constructor(@InjectModel(Cart.name) private cartmodel:Model<CartDocument>,
     private passbookservice:PassBookService,
-    private userservice:UserService){}
+    private userservice:UserService,
+    private commonservice:CommonService){}
     
     async addtoCart(cartdto:CartDTO,user:User):Promise<IReponse<Cart>>{
-        const startDate=new Date();
-        const endDate=new Date();
+        const startDate=this.commonservice.convertDatetime(new Date());
+        const endDate=this.commonservice.convertDatetime(new Date());
         const cartExisting=await this.cartmodel.findOne({userId:user._id});
         let totalProfit=Number(((cartdto.deposits*(cartdto.option/100))*(cartdto.option/12)))+cartdto.deposits;
         endDate.setMonth(endDate.getMonth()+cartdto.option);
@@ -36,14 +38,10 @@ export class CartService{
             cartExisting.deposits=cartdto.deposits;
             cartExisting.update();
             cartExisting.save();
-            return{
-                code:200,
-                success:true,
-                message:"Update cart Success",
-                objectreponse:cartExisting
+            return{code:200,success:true,message:"Update cart Success",objectreponse:cartExisting
             }
         }
-        const result=await this.cartmodel.create({userId:user._id,option:cartdto.option,
+        const result=await this.cartmodel.create({userId:user._id,option:cartdto.option,startDate:startDate,
             endDate:endDate,deposits:cartdto.deposits,totalProfit:totalProfit});
         result.save();
         return{code:200,success:true,message:"Add to cart Success",objectreponse:result
@@ -73,23 +71,15 @@ export class CartService{
             svd.deposits=money;
             svd.option=cartExisting.option;
             svd.userId=user._id;
-            svd.createAt=this.convertDatetime(new Date());
+            svd.createAt=this.commonservice.convertDatetime(new Date());
             await this.passbookservice.saveSavingsdeposit(svd,user);
             const historyaction=new HistoryAction();
             historyaction.action=Action.OPENPASSBOOK;
-            historyaction.createAt=new Date();
+            historyaction.createAt=await this.commonservice.convertDatetime(new Date());
             historyaction.money=money;
             await this.userservice.updateMoney(historyaction.action,money,user);
             await this.userservice.updateNewAction(historyaction,user);
         }
         cartExisting.delete();
-    }
-
-    convertDatetime(date:Date):Date{
-        var newDate = new Date(date.getTime()+date.getTimezoneOffset()*60*1000);
-        var offset = date.getTimezoneOffset() / 60;
-        var hours = date.getHours();
-        newDate.setHours(hours - offset);
-        return newDate;
     }
 }

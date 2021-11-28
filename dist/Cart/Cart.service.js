@@ -21,17 +21,19 @@ const PassBook_service_1 = require("../PassBook/PassBook.service");
 const HistoryAction_obj_1 = require("../User/DTO/HistoryAction.obj");
 const User_Schema_1 = require("../User/Schema/User.Schema");
 const User_service_1 = require("../User/User.service");
+const common_service_1 = require("../Utils/common.service");
 const IReponse_1 = require("../Utils/IReponse");
 const Cart_schema_1 = require("./Schema/Cart.schema");
 let CartService = class CartService {
-    constructor(cartmodel, passbookservice, userservice) {
+    constructor(cartmodel, passbookservice, userservice, commonservice) {
         this.cartmodel = cartmodel;
         this.passbookservice = passbookservice;
         this.userservice = userservice;
+        this.commonservice = commonservice;
     }
     async addtoCart(cartdto, user) {
-        const startDate = new Date();
-        const endDate = new Date();
+        const startDate = this.commonservice.convertDatetime(new Date());
+        const endDate = this.commonservice.convertDatetime(new Date());
         const cartExisting = await this.cartmodel.findOne({ userId: user._id });
         let totalProfit = Number(((cartdto.deposits * (cartdto.option / 100)) * (cartdto.option / 12))) + cartdto.deposits;
         endDate.setMonth(endDate.getMonth() + cartdto.option);
@@ -49,14 +51,10 @@ let CartService = class CartService {
             cartExisting.deposits = cartdto.deposits;
             cartExisting.update();
             cartExisting.save();
-            return {
-                code: 200,
-                success: true,
-                message: "Update cart Success",
-                objectreponse: cartExisting
+            return { code: 200, success: true, message: "Update cart Success", objectreponse: cartExisting
             };
         }
-        const result = await this.cartmodel.create({ userId: user._id, option: cartdto.option,
+        const result = await this.cartmodel.create({ userId: user._id, option: cartdto.option, startDate: startDate,
             endDate: endDate, deposits: cartdto.deposits, totalProfit: totalProfit });
         result.save();
         return { code: 200, success: true, message: "Add to cart Success", objectreponse: result
@@ -85,23 +83,16 @@ let CartService = class CartService {
             svd.deposits = money;
             svd.option = cartExisting.option;
             svd.userId = user._id;
-            svd.createAt = this.convertDatetime(new Date());
+            svd.createAt = this.commonservice.convertDatetime(new Date());
             await this.passbookservice.saveSavingsdeposit(svd, user);
             const historyaction = new HistoryAction_obj_1.HistoryAction();
             historyaction.action = HistoryAction_obj_1.Action.OPENPASSBOOK;
-            historyaction.createAt = new Date();
+            historyaction.createAt = await this.commonservice.convertDatetime(new Date());
             historyaction.money = money;
             await this.userservice.updateMoney(historyaction.action, money, user);
             await this.userservice.updateNewAction(historyaction, user);
         }
         cartExisting.delete();
-    }
-    convertDatetime(date) {
-        var newDate = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
-        var offset = date.getTimezoneOffset() / 60;
-        var hours = date.getHours();
-        newDate.setHours(hours - offset);
-        return newDate;
     }
 };
 CartService = __decorate([
@@ -109,7 +100,8 @@ CartService = __decorate([
     __param(0, (0, mongoose_1.InjectModel)(Cart_schema_1.Cart.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
         PassBook_service_1.PassBookService,
-        User_service_1.UserService])
+        User_service_1.UserService,
+        common_service_1.CommonService])
 ], CartService);
 exports.CartService = CartService;
 //# sourceMappingURL=Cart.service.js.map

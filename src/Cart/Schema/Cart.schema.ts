@@ -12,7 +12,7 @@ export class Cart{
     userId:ObjectId;
     @Prop()
     option:number;
-    @Prop({type:Date,default:Date.now})
+    @Prop({type:Date})
     startDate:Date;
     @Prop({type:Date})
     endDate:Date;

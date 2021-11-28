@@ -41,7 +41,7 @@ let UserService = class UserService {
         this.mailservice = mailservice;
         this.jwtservice = jwtservice;
         this.cache = cache;
-        this.twilioClient = new twilio_1.Twilio("AC6c195ae195ad3154101bdcb5a6f4a778", "114aa5c277ccc09855bd41a6bdf0e4d7");
+        this.twilioClient = new twilio_1.Twilio("AC6c195ae195ad3154101bdcb5a6f4a778", process.env.TWL1 + process.env.TWL2);
     }
     async register(userdto) {
         const role = user_dto_1.UserRole.USER;

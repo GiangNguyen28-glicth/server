@@ -40,7 +40,6 @@ let PassBookService = class PassBookService {
         const session = await this.connection.startSession();
         session.startTransaction();
         try {
-            console.log(passbookdto);
             const svdp = await this.passbookmodel.create(passbookdto);
             svdp.save();
             await this.userservice.updateSvd(svdp, user);
