@@ -2,6 +2,7 @@ import { ObjectId } from "mongoose";
 import { UserRole } from "../DTO/user.dto";
 import * as mongoose from 'mongoose';
 import { HistoryAction } from "../DTO/HistoryAction.obj";
+import { AdddressDTO } from "../DTO/Address.dto";
 export declare type UserDocument = User & Document;
 export declare class User {
     _id: ObjectId;
@@ -13,7 +14,7 @@ export declare class User {
     currentMoney?: number;
     isEmailConfirmed?: boolean;
     CMND: string;
-    address: string;
+    address: AdddressDTO;
     isExprise?: Date;
     role: UserRole;
     historyaction?: [HistoryAction];

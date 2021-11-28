@@ -4,6 +4,7 @@ import { ObjectId } from "mongoose";;
 import { UserRole } from "../DTO/user.dto";
 import * as mongoose from 'mongoose';
 import { HistoryAction } from "../DTO/HistoryAction.obj";
+import { AdddressDTO } from "../DTO/Address.dto";
 export type UserDocument=User & Document;
 @Schema({
     toJSON: {
@@ -39,8 +40,8 @@ export class User{
     @Prop({unique:true})
     CMND:string;
 
-    @Prop()
-    address:string;
+    @Prop({type:Object})
+    address:AdddressDTO;
 
     @Prop({type:Date, default: Date.now,expires:60*60*5})
 	isExprise?: Date

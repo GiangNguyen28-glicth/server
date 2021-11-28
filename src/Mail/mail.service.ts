@@ -2,32 +2,37 @@ import { BadRequestException, forwardRef, Inject, Injectable } from "@nestjs/com
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "src/User/User.service"
 import * as nodemailer from 'nodemailer';
-var SibApiV3Sdk = require('sib-api-v3-sdk');
+import { google } from "googleapis";
+
 @Injectable()
 export class MailService{
     constructor(@Inject(forwardRef(() => UserService)) private userService: UserService,private jwtservice:JwtService){}
+    oAuth2Client = new google.auth.OAuth2(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLEINT_SECRET,
+      process.env.GOOGLE_CLIENT_REDIRECT_URI
+    );
+  
     async sendEmail(email:string): Promise<void>{
-
-        var defaultClient = SibApiV3Sdk.ApiClient.instance;
+        this.oAuth2Client.setCredentials({refresh_token:process.env.GOOGLE_CLIENT_REFRESH_TOKEN});
+        const accessToken = await this.oAuth2Client.getAccessToken(); 
         const payload={email};
         const token = this.jwtservice.sign(payload, {
         secret: process.env.JWT_VERIFICATION_TOKEN_SECRET,
         expiresIn: `${process.env.JWT_VERIFICATION_TOKEN_EXPIRATION_TIME}s`
         });
-        var apiKey = defaultClient.authentications["api-key"];
-        apiKey.apiKey =process.env.SENGRID_API;
-
         const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
         const transporter = nodemailer.createTransport({
-          host: 'smtp-relay.sendinblue.com',
-          port: 587,
-          secure: false, // true for 465, false for other ports
+          service: 'gmail',
           auth: {
-            user: process.env.FROM_EMAIL, // generated ethereal user
-            pass: process.env.PASS_EMAIL, // generated ethereal password
+            type: 'OAuth2',
+            user: '103tmdt@gmail.com',
+            clientId:process.env.GOOGLE_CLIENT_ID,
+            clientSecret:process.env.GOOGLE_CLEINT_SECRET,
+            refreshToken:process.env.GOOGLE_CLIENT_REFRESH_TOKEN,
+            accessToken:accessToken,
           },
         });
-        // send mail with defined transport object
         const info = await transporter.sendMail({
           from:process.env.FROM_EMAIL, // sender address
           to: email, // list of receivers
@@ -35,37 +40,6 @@ export class MailService{
           text: 'Hello world?', // plain text body
           html: `<b>Hello world?</b> <a href="${url}"> confirm Email</a>`, // html body
         }); 
-       
-        // var apiInstance = new SibApiV3Sdk.ContactsApi();
-        // var createContact = new SibApiV3Sdk.CreateContact();
-        // createContact.email=email;
-        // createContact.Listids=[2];
-        // apiInstance.createContact(createContact).then((data)=>{
-        //    console.log(1)
-        // },function(error){
-        //   console.log(error);
-        // })
-        // var apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-        // var sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail(); // SendSmtpEmail | Values to send a transactional email
-        // sendSmtpEmail = {
-        //   sender: { email: "19110354@student.hcmute.edu.vn" },
-        //   to: [
-        //     {
-        //       email: email,
-        //       name: "Person Name",
-        //     },
-        //   ],
-        //   subject: "Test Email",
-        //   textContent: "Test Email Content",
-        // };
-        // apiInstance.sendTransacEmail(sendSmtpEmail).then(
-        //   function (data) {
-        //     console.log(1);
-        //   },
-        //   function (error) {
-        //     console.log(2);
-        //   }
-        // );
       }
     
       async decodeConfirmationToken(token: string) {

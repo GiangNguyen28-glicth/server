@@ -32,7 +32,7 @@ export class UserService{
     private mailservice: MailService,
     private jwtservice:JwtService,
     private cache:ClearCache){
-      this.twilioClient = new Twilio("AC6c195ae195ad3154101bdcb5a6f4a778","74dfac367ba511dd8919c04a7ac480e8")
+      this.twilioClient = new Twilio("AC6c195ae195ad3154101bdcb5a6f4a778","114aa5c277ccc09855bd41a6bdf0e4d7")
     }
 
 

@@ -14,6 +14,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const class_transformer_1 = require("class-transformer");
 ;
 const user_dto_1 = require("../DTO/user.dto");
+const Address_dto_1 = require("../DTO/Address.dto");
 let User = class User {
 };
 __decorate([
@@ -53,8 +54,8 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "CMND", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", String)
+    (0, mongoose_1.Prop)({ type: Object }),
+    __metadata("design:type", Address_dto_1.AdddressDTO)
 ], User.prototype, "address", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: Date, default: Date.now, expires: 60 * 60 * 5 }),

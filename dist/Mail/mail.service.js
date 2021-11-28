@@ -17,29 +17,31 @@ const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const User_service_1 = require("../User/User.service");
 const nodemailer = require("nodemailer");
-var SibApiV3Sdk = require('sib-api-v3-sdk');
+const googleapis_1 = require("googleapis");
 let MailService = class MailService {
     constructor(userService, jwtservice) {
         this.userService = userService;
         this.jwtservice = jwtservice;
+        this.oAuth2Client = new googleapis_1.google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLEINT_SECRET, process.env.GOOGLE_CLIENT_REDIRECT_URI);
     }
     async sendEmail(email) {
-        var defaultClient = SibApiV3Sdk.ApiClient.instance;
+        this.oAuth2Client.setCredentials({ refresh_token: process.env.GOOGLE_CLIENT_REFRESH_TOKEN });
+        const accessToken = await this.oAuth2Client.getAccessToken();
         const payload = { email };
         const token = this.jwtservice.sign(payload, {
             secret: process.env.JWT_VERIFICATION_TOKEN_SECRET,
             expiresIn: `${process.env.JWT_VERIFICATION_TOKEN_EXPIRATION_TIME}s`
         });
-        var apiKey = defaultClient.authentications["api-key"];
-        apiKey.apiKey = process.env.SENGRID_API;
         const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
         const transporter = nodemailer.createTransport({
-            host: 'smtp-relay.sendinblue.com',
-            port: 587,
-            secure: false,
+            service: 'gmail',
             auth: {
-                user: process.env.FROM_EMAIL,
-                pass: process.env.PASS_EMAIL,
+                type: 'OAuth2',
+                user: '103tmdt@gmail.com',
+                clientId: process.env.GOOGLE_CLIENT_ID,
+                clientSecret: process.env.GOOGLE_CLEINT_SECRET,
+                refreshToken: process.env.GOOGLE_CLIENT_REFRESH_TOKEN,
+                accessToken: accessToken,
             },
         });
         const info = await transporter.sendMail({
