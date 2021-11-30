@@ -12,6 +12,8 @@ export class Cart{
     userId:ObjectId;
     @Prop()
     option:number;
+    @Prop({type:mongoose.Schema.Types.ObjectId,ref:'Option'})
+    optionId:ObjectId;
     @Prop({type:Date})
     startDate:Date;
     @Prop({type:Date})

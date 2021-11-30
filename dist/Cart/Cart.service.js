@@ -16,6 +16,7 @@ exports.CartService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const Option_service_1 = require("../Option/Option.service");
 const PassBook_dto_1 = require("../PassBook/DTO/PassBook.dto");
 const PassBook_service_1 = require("../PassBook/PassBook.service");
 const HistoryAction_obj_1 = require("../User/DTO/HistoryAction.obj");
@@ -25,26 +26,28 @@ const common_service_1 = require("../Utils/common.service");
 const IReponse_1 = require("../Utils/IReponse");
 const Cart_schema_1 = require("./Schema/Cart.schema");
 let CartService = class CartService {
-    constructor(cartmodel, passbookservice, userservice, commonservice) {
+    constructor(cartmodel, passbookservice, userservice, commonservice, optionservice) {
         this.cartmodel = cartmodel;
         this.passbookservice = passbookservice;
         this.userservice = userservice;
         this.commonservice = commonservice;
+        this.optionservice = optionservice;
     }
     async addtoCart(cartdto, user) {
         const startDate = this.commonservice.convertDatetime(new Date());
         const endDate = this.commonservice.convertDatetime(new Date());
         const cartExisting = await this.cartmodel.findOne({ userId: user._id });
+        const passbookexisting = await this.optionservice.findOption(cartdto.option);
+        if (!passbookexisting) {
+            return { code: 500, success: false, message: "Option not exist" };
+        }
         let totalProfit = Number(((cartdto.deposits * (cartdto.option / 100)) * (cartdto.option / 12))) + cartdto.deposits;
         endDate.setMonth(endDate.getMonth() + cartdto.option);
         if (cartdto.deposits > user.currentMoney) {
-            return {
-                code: 500,
-                success: false,
-                message: "Money not enough",
-            };
+            return { code: 500, success: false, message: "Money not enough", };
         }
         if (cartExisting) {
+            cartExisting.optionId = passbookexisting._id;
             cartExisting.totalProfit = totalProfit;
             cartExisting.endDate = endDate;
             cartExisting.option = cartdto.option;
@@ -82,6 +85,7 @@ let CartService = class CartService {
             const svd = new PassBook_dto_1.PassBookDTO();
             svd.deposits = money;
             svd.option = cartExisting.option;
+            svd.optionId = cartExisting.optionId;
             svd.userId = user._id;
             svd.createAt = this.commonservice.convertDatetime(new Date());
             await this.passbookservice.saveSavingsdeposit(svd, user);
@@ -101,7 +105,8 @@ CartService = __decorate([
     __metadata("design:paramtypes", [mongoose_2.Model,
         PassBook_service_1.PassBookService,
         User_service_1.UserService,
-        common_service_1.CommonService])
+        common_service_1.CommonService,
+        Option_service_1.OptionService])
 ], CartService);
 exports.CartService = CartService;
 //# sourceMappingURL=Cart.service.js.map

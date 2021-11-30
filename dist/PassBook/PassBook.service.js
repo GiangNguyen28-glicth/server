@@ -43,8 +43,7 @@ let PassBookService = class PassBookService {
             const svdp = await this.passbookmodel.create(passbookdto);
             svdp.save();
             await this.userservice.updateSvd(svdp, user);
-            return { code: 200, success: true, message: "Succes",
-            };
+            return { code: 200, success: true, message: "Succes", };
         }
         catch (err) {
             session.abortTransaction();

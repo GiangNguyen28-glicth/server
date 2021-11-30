@@ -1,4 +1,5 @@
 import { Model } from "mongoose";
+import { OptionService } from "src/Option/Option.service";
 import { PassBookService } from "src/PassBook/PassBook.service";
 import { User } from "src/User/Schema/User.Schema";
 import { UserService } from "src/User/User.service";
@@ -11,7 +12,8 @@ export declare class CartService {
     private passbookservice;
     private userservice;
     private commonservice;
-    constructor(cartmodel: Model<CartDocument>, passbookservice: PassBookService, userservice: UserService, commonservice: CommonService);
+    private optionservice;
+    constructor(cartmodel: Model<CartDocument>, passbookservice: PassBookService, userservice: UserService, commonservice: CommonService, optionservice: OptionService);
     addtoCart(cartdto: CartDTO, user: User): Promise<IReponse<Cart>>;
     dividePassbook(quantity: number, user: User): Promise<IReponse<Cart>>;
 }

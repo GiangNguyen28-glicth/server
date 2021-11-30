@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
+import { OptionService } from "src/Option/Option.service";
 import { PassBookDTO } from "src/PassBook/DTO/PassBook.dto";
 import { PassBookService } from "src/PassBook/PassBook.service";
 import { Action, HistoryAction } from "src/User/DTO/HistoryAction.obj";
@@ -16,22 +17,24 @@ export class CartService{
     constructor(@InjectModel(Cart.name) private cartmodel:Model<CartDocument>,
     private passbookservice:PassBookService,
     private userservice:UserService,
-    private commonservice:CommonService){}
+    private commonservice:CommonService,
+    private optionservice:OptionService){}
     
     async addtoCart(cartdto:CartDTO,user:User):Promise<IReponse<Cart>>{
         const startDate=this.commonservice.convertDatetime(new Date());
         const endDate=this.commonservice.convertDatetime(new Date());
         const cartExisting=await this.cartmodel.findOne({userId:user._id});
+        const passbookexisting=await this.optionservice.findOption(cartdto.option);
+        if(!passbookexisting){
+            return{code:500,success:false,message:"Option not exist"}
+        }
         let totalProfit=Number(((cartdto.deposits*(cartdto.option/100))*(cartdto.option/12)))+cartdto.deposits;
         endDate.setMonth(endDate.getMonth()+cartdto.option);
         if(cartdto.deposits>user.currentMoney){
-            return{
-                code:500,
-                success:false,
-                message:"Money not enough",
-            }
+            return{code:500,success:false, message:"Money not enough",}
         }
         if(cartExisting){
+            cartExisting.optionId=passbookexisting._id;
             cartExisting.totalProfit=totalProfit;
             cartExisting.endDate=endDate;
             cartExisting.option=cartdto.option;
@@ -70,6 +73,7 @@ export class CartService{
             const svd =new PassBookDTO();
             svd.deposits=money;
             svd.option=cartExisting.option;
+            svd.optionId=cartExisting.optionId;
             svd.userId=user._id;
             svd.createAt=this.commonservice.convertDatetime(new Date());
             await this.passbookservice.saveSavingsdeposit(svd,user);

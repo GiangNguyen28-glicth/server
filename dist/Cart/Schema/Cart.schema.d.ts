@@ -5,6 +5,7 @@ export declare class Cart {
     _id: ObjectId;
     userId: ObjectId;
     option: number;
+    optionId: ObjectId;
     startDate: Date;
     endDate: Date;
     deposits: number;

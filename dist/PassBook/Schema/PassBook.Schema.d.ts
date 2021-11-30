@@ -8,6 +8,7 @@ export declare class PassBook {
     createAt: Date;
     status: boolean;
     userId: ObjectId;
+    optionId: ObjectId;
     cyclesupdate: Object;
 }
 export declare const PassBookSchema: mongoose.Schema<mongoose.Document<PassBook, any, any>, mongoose.Model<mongoose.Document<PassBook, any, any>, any, any, any>, {}>;

@@ -94,6 +94,13 @@ let OptionService = class OptionService {
         await this.cacheManager.set(Year.toString, arr, { ttl: 1000 });
         return arr;
     }
+    async findOption(option) {
+        const result = await this.optionmodel.findOne({ option: option });
+        if (result) {
+            return result;
+        }
+        return result;
+    }
 };
 OptionService = __decorate([
     (0, common_1.Injectable)(),

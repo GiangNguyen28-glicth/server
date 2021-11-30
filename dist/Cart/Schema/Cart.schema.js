@@ -28,6 +28,10 @@ __decorate([
     __metadata("design:type", Number)
 ], Cart.prototype, "option", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({ type: mongoose.Schema.Types.ObjectId, ref: 'Option' }),
+    __metadata("design:type", Object)
+], Cart.prototype, "optionId", void 0);
+__decorate([
     (0, mongoose_1.Prop)({ type: Date }),
     __metadata("design:type", Date)
 ], Cart.prototype, "startDate", void 0);

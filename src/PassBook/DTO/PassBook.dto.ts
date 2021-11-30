@@ -6,5 +6,6 @@ export class PassBookDTO{
     deposits:number;
     option:number;
     userId:ObjectId;
+    optionId:ObjectId;
     createAt:Date;
 }

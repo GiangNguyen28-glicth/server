@@ -42,6 +42,11 @@ __decorate([
     __metadata("design:type", Object)
 ], PassBook.prototype, "userId", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({ type: mongoose.Schema.Types.ObjectId, ref: 'Option', required: true }),
+    (0, class_transformer_1.Type)(() => Option),
+    __metadata("design:type", Object)
+], PassBook.prototype, "optionId", void 0);
+__decorate([
     (0, mongoose_1.Prop)({ type: Object }),
     __metadata("design:type", Object)
 ], PassBook.prototype, "cyclesupdate", void 0);

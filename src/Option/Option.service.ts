@@ -84,4 +84,12 @@ export class OptionService{
         await this.cacheManager.set(Year.toString,arr,{ ttl: 1000 });
         return arr;
     }
+
+    async findOption(option:number):Promise<Option>{
+        const result=await this.optionmodel.findOne({option:option});
+        if(result){
+            return result;
+        }
+        return result;
+    }
 }

@@ -26,6 +26,10 @@ export class PassBook{
     @Type(()=>User)
     userId:ObjectId;
 
+    @Prop({type:mongoose.Schema.Types.ObjectId,ref:'Option',required:true})
+    @Type(()=>Option)
+    optionId:ObjectId;
+
     @Prop({type:Object})
     cyclesupdate:Object;
 }

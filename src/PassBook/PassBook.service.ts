@@ -29,11 +29,11 @@ export class PassBookService{
         const session = await this.connection.startSession();
         session.startTransaction();
         try{ 
+           
             const svdp=await this.passbookmodel.create(passbookdto);
             svdp.save();
             await this.userservice.updateSvd(svdp,user);
-            return{ code:200,success:true,message:"Succes",
-            }
+            return{ code:200,success:true,message:"Succes",}
         }
         catch(err){
             session.abortTransaction();
