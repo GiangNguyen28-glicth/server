@@ -3,6 +3,7 @@ export declare class UserDTO {
     firstName: string;
     lastName: string;
     password: string;
+    passwordConfirm: String;
     phoneNumber: string;
     email: string;
     CMND: string;

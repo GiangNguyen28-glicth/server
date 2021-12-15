@@ -11,6 +11,7 @@ export class UserDTO{
         message: '8 characters including 1 uppercase letter, 1 special character',
     })
     password:string;
+    passwordConfirm:String;
     @IsString()
     @Matches(/^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$/, {
         message: 'Phone Incorrect',

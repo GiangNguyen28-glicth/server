@@ -37,11 +37,14 @@ export class UserService{
 
 
     async register(userdto:UserDTO):Promise<IReponse<User>>{
-      const role=UserRole.USER;
-      let phoneNumber="+84"+userdto.phoneNumber.slice(1,userdto.phoneNumber.length);
-        const { firstName, lastName,password,email,CMND,address } =userdto;
+        const role=UserRole.USER;
+        let phoneNumber="+84"+userdto.phoneNumber.slice(1,userdto.phoneNumber.length);
+        const { firstName, lastName,password,email,CMND,address,passwordConfirm } =userdto;
         userdto.role=role;
-        const userExisting= await this.usermodel.findOne({phoneNumber:phoneNumber});
+        if(passwordConfirm!=password){
+          return{code:500,success:false,message:"Password not match"}
+        }
+        const userExisting= await this.usermodel.findOne({email:email});
         if(userExisting){
             return{code:500,success:false,message:"User Existing"}
         }
