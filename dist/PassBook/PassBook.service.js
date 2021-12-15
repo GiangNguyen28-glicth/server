@@ -57,7 +57,7 @@ let PassBookService = class PassBookService {
         if (checkCache != undefined) {
             return checkCache;
         }
-        var endDate = new Date();
+        var endDate = this.commonservice.convertDatetime(new Date());
         let value;
         const svd = await this.passbookmodel.findOne({ _id: passbookid, userId: user._id });
         if (!svd) {
@@ -82,7 +82,8 @@ let PassBookService = class PassBookService {
         }
         const diffDays = (date, otherDate) => Math.ceil(Math.abs(date - otherDate) / (1000 * 60 * 60 * 24));
         const date = diffDays(endDate, result[result.length - 1].startDate);
-        money = money + money * 0.0001 * (date - 1) / 360;
+        const nooption = await this.optionservice.GetValueOption(endDate, 0);
+        money = money + money * (nooption / 100) * (date - 1) / 360;
         result[result.length - 1].endDate = endDate;
         await this.cacheManager.set(cache_key_dto_1.CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PROFIT, { data: result, money: money }, { ttl: 1000 });
         return {
@@ -119,7 +120,7 @@ let PassBookService = class PassBookService {
         passbook.status = true;
         passbook.save();
         await this.userservice.updateMoney(HistoryAction_obj_1.Action.WITHDRAWAL, money, user);
-        return null;
+        return passbook;
     }
 };
 PassBookService = __decorate([

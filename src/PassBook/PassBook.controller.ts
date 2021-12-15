@@ -17,6 +17,7 @@ export class PassBookController{
         passbookdto.userId=user._id;
         return this.passbookservice.saveSavingsdeposit(passbookdto,user)
     }
+    // lay ra tong so tien cua so tiet kiem
     @Get('/check/:passbookid')
     async getTotalCycles(@Param('passbookid') passbookid,@GetUser() user:User):Promise<any>{
         return this.passbookservice.getTotalCycles(passbookid,user);
@@ -36,7 +37,7 @@ export class PassBookController{
     async GetPassbookById(@GetUser() user:User,@Param('id') id):Promise<PassBook>{
         return this.passbookservice.GetPassBookById(id,user);
     }
-
+    //rut tien
     @Post('/withdrawMoneyPassbook/:passbookid')
     async withdrawMoneyPassbook(@GetUser() user:User,@Param('passbookid') passbookid):Promise<PassBook>{
         return this.passbookservice.withdrawMoneyPassbook(passbookid,user);
