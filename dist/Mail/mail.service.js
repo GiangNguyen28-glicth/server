@@ -22,7 +22,7 @@ let MailService = class MailService {
     constructor(userService, jwtservice) {
         this.userService = userService;
         this.jwtservice = jwtservice;
-        this.oAuth2Client = new googleapis_1.google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLEINT_SECRET, process.env.GOOGLE_CLIENT_REDIRECT_URI);
+        this.oAuth2Client = new googleapis_1.google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, process.env.GOOGLE_CLIENT_REDIRECT_URI);
     }
     async sendEmail(email) {
         this.oAuth2Client.setCredentials({ refresh_token: process.env.GOOGLE_CLIENT_REFRESH_TOKEN });
@@ -39,7 +39,7 @@ let MailService = class MailService {
                 type: 'OAuth2',
                 user: '103tmdt@gmail.com',
                 clientId: process.env.GOOGLE_CLIENT_ID,
-                clientSecret: process.env.GOOGLE_CLEINT_SECRET,
+                clientSecret: process.env.GOOGLE_CLIENT_SECRET,
                 refreshToken: process.env.GOOGLE_CLIENT_REFRESH_TOKEN,
                 accessToken: accessToken,
             },
@@ -47,7 +47,7 @@ let MailService = class MailService {
         const info = await transporter.sendMail({
             from: process.env.FROM_EMAIL,
             to: email,
-            subject: 'Hello ✔',
+            subject: 'Confirm Mail ✔',
             text: 'Hello world?',
             html: `<b>Hello world?</b> <a href="${url}"> confirm Email</a>`,
         });

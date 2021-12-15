@@ -9,7 +9,7 @@ export class MailService{
     constructor(@Inject(forwardRef(() => UserService)) private userService: UserService,private jwtservice:JwtService){}
     oAuth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
-      process.env.GOOGLE_CLEINT_SECRET,
+      process.env.GOOGLE_CLIENT_SECRET,
       process.env.GOOGLE_CLIENT_REDIRECT_URI
     );
   
@@ -28,7 +28,7 @@ export class MailService{
             type: 'OAuth2',
             user: '103tmdt@gmail.com',
             clientId:process.env.GOOGLE_CLIENT_ID,
-            clientSecret:process.env.GOOGLE_CLEINT_SECRET,
+            clientSecret:process.env.GOOGLE_CLIENT_SECRET,
             refreshToken:process.env.GOOGLE_CLIENT_REFRESH_TOKEN,
             accessToken:accessToken,
           },
@@ -36,7 +36,7 @@ export class MailService{
         const info = await transporter.sendMail({
           from:process.env.FROM_EMAIL, // sender address
           to: email, // list of receivers
-          subject: 'Hello ✔', // Subject line
+          subject: 'Confirm Mail ✔', // Subject line
           text: 'Hello world?', // plain text body
           html: `<b>Hello world?</b> <a href="${url}"> confirm Email</a>`, // html body
         }); 

@@ -23,7 +23,7 @@ __decorate([
 ], UserDTO.prototype, "lastName", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.Matches)(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {
+    (0, class_validator_1.Matches)(/^(?=.*[\a-zA-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/, {
         message: '8 characters including 1 uppercase letter, 1 special character',
     }),
     __metadata("design:type", String)
