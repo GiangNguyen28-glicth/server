@@ -16,22 +16,48 @@ export class MailService{
         const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
         const transporter = nodemailer.createTransport({
           service: "gmail",
-          port:587,
-          secure:true,
+          port: 25,
+          secure: false,
+          logger: true,
+          debug: true,
+          ignoreTLS: true,
           auth: {
             user: "shopme293@gmail.com",
             pass: "nxcyezzyxxuqvxor", // naturally, replace both with your real credentials or an application-specific password
           },
         });
-        const info = await transporter.sendMail({
-          from:process.env.FROM_EMAIL, // sender address
-          to: email, // list of receivers
+        await new Promise((resolve, reject) => {
+          // verify connection configuration
+          transporter.verify(function (error, success) {
+              if (error) {
+                  console.log(error);
+                  reject(error);
+              } else {
+                  console.log("Server is ready to take our messages");
+                  resolve(success);
+              }
+          });
+        });
+        const mailData = {
+          from: process.env.FROM_EMAIL,
+          to: email,
           subject: 'Confirm Mail ✔', // Subject line
           html: `<b>Hello world?</b> <a href="${url}"> confirm Email</a>`, // html body
-        }); 
-      }
-    
-      async decodeConfirmationToken(token: string) {
+        };
+        await new Promise((resolve, reject) => {
+          // send mail
+          transporter.sendMail(mailData, (err, info) => {
+              if (err) {
+                  console.error(err);
+                  reject(err);
+              } else {
+                  console.log(info);
+                  resolve(info);
+              }
+          });
+        })
+    }
+    async decodeConfirmationToken(token: string) {
         try {
           const payload = await this.jwtservice.verify(token, {
             secret:process.env.JWT_VERIFICATION_TOKEN_SECRET,

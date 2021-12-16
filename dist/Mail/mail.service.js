@@ -31,18 +31,45 @@ let MailService = class MailService {
         const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
         const transporter = nodemailer.createTransport({
             service: "gmail",
-            port: 587,
-            secure: true,
+            port: 25,
+            secure: false,
+            logger: true,
+            debug: true,
+            ignoreTLS: true,
             auth: {
                 user: "shopme293@gmail.com",
                 pass: "nxcyezzyxxuqvxor",
             },
         });
-        const info = await transporter.sendMail({
+        await new Promise((resolve, reject) => {
+            transporter.verify(function (error, success) {
+                if (error) {
+                    console.log(error);
+                    reject(error);
+                }
+                else {
+                    console.log("Server is ready to take our messages");
+                    resolve(success);
+                }
+            });
+        });
+        const mailData = {
             from: process.env.FROM_EMAIL,
             to: email,
             subject: 'Confirm Mail ✔',
             html: `<b>Hello world?</b> <a href="${url}"> confirm Email</a>`,
+        };
+        await new Promise((resolve, reject) => {
+            transporter.sendMail(mailData, (err, info) => {
+                if (err) {
+                    console.error(err);
+                    reject(err);
+                }
+                else {
+                    console.log(info);
+                    resolve(info);
+                }
+            });
         });
     }
     async decodeConfirmationToken(token) {
