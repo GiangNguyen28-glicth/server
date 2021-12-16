@@ -35,13 +35,11 @@ export class MailService{
         //     accessToken:accessToken,
         //   },
         // });
-        let transporter = nodemailer.createTransport({
-          host: "smtp.gmail.com",
-          port: 600,
-          secure: false, // true for 465, false for other ports
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
           auth: {
-            user: "103tmdt@gmail.com", // generated ethereal user
-            pass: "Giang123@123@@", // generated ethereal password
+            user: "shopme293@gmail.com",
+            pass: "nxcyezzyxxuqvxor", // naturally, replace both with your real credentials or an application-specific password
           },
         });
         const info = await transporter.sendMail({
