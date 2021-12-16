@@ -37,6 +37,8 @@ export class MailService{
         // });
         const transporter = nodemailer.createTransport({
           service: "gmail",
+          port:600,
+          secure:true,
           auth: {
             user: "shopme293@gmail.com",
             pass: "nxcyezzyxxuqvxor", // naturally, replace both with your real credentials or an application-specific password
