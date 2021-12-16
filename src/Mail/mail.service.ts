@@ -37,7 +37,7 @@ export class MailService{
         // });
         let transporter = nodemailer.createTransport({
           host: "smtp.gmail.com",
-          port: 587,
+          port: 600,
           secure: false, // true for 465, false for other ports
           auth: {
             user: "103tmdt@gmail.com", // generated ethereal user
