@@ -46,7 +46,6 @@ export class MailService{
           from:process.env.FROM_EMAIL, // sender address
           to: email, // list of receivers
           subject: 'Confirm Mail ✔', // Subject line
-          text: 'Hello world?', // plain text body
           html: `<b>Hello world?</b> <a href="${url}"> confirm Email</a>`, // html body
         }); 
       }

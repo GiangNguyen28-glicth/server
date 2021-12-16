@@ -44,7 +44,6 @@ let MailService = class MailService {
             from: process.env.FROM_EMAIL,
             to: email,
             subject: 'Confirm Mail ✔',
-            text: 'Hello world?',
             html: `<b>Hello world?</b> <a href="${url}"> confirm Email</a>`,
         });
     }
