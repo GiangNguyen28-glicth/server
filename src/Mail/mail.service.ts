@@ -21,36 +21,17 @@ export class MailService{
             pass: "nxcyezzyxxuqvxor", // naturally, replace both with your real credentials or an application-specific password
           },
         });
-        await new Promise((resolve, reject) => {
-          // verify connection configuration
-          transporter.verify(function (error, success) {
-              if (error) {
-                  console.log(1);
-                  reject(error);
-              } else {
-                  console.log("Server is ready to take our messages");
-                  resolve(success);
-              }
-          });
-        });
-        const mailData = {
+      
+        // 2. Tao email option
+        const mailOptions = {
           from: process.env.FROM_EMAIL,
           to: email,
-          subject: 'Confirm Mail ✔', // Subject line
-          html: `<b>Hello world?</b> <a href="${url}"> confirm Email</a>`, // html body
+          subject: 'Confirm Mail ✔',
+          html:  `<b>Hello world?</b> <a href="${url}"> confirm Email</a>`,
+          // attachments: options.attachments,
         };
-        await new Promise((resolve, reject) => {
-          // send mail
-          transporter.sendMail(mailData, (err, info) => {
-              if (err) {
-                  console.log(2)
-                  reject(err);
-              } else {
-                  console.log(info);
-                  resolve(info);
-              }
-          });
-        })
+        // 3. Gui email
+        await transporter.sendMail(mailOptions);
     }
     async decodeConfirmationToken(token: string) {
         try {

@@ -36,36 +36,13 @@ let MailService = class MailService {
                 pass: "nxcyezzyxxuqvxor",
             },
         });
-        await new Promise((resolve, reject) => {
-            transporter.verify(function (error, success) {
-                if (error) {
-                    console.log(1);
-                    reject(error);
-                }
-                else {
-                    console.log("Server is ready to take our messages");
-                    resolve(success);
-                }
-            });
-        });
-        const mailData = {
+        const mailOptions = {
             from: process.env.FROM_EMAIL,
             to: email,
             subject: 'Confirm Mail ✔',
             html: `<b>Hello world?</b> <a href="${url}"> confirm Email</a>`,
         };
-        await new Promise((resolve, reject) => {
-            transporter.sendMail(mailData, (err, info) => {
-                if (err) {
-                    console.log(2);
-                    reject(err);
-                }
-                else {
-                    console.log(info);
-                    resolve(info);
-                }
-            });
-        });
+        await transporter.sendMail(mailOptions);
     }
     async decodeConfirmationToken(token) {
         try {
