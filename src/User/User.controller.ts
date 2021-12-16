@@ -3,7 +3,6 @@ import { AuthGuard } from "@nestjs/passport";
 import { GetUser } from "src/decorators/getuser.decorators";
 import { Checkout } from "src/Paypal/DTO/checkout.dto";
 import { IReponse } from "src/Utils/IReponse";
-import { CacheKeyUser} from "./DTO/cache.user.key.dto";
 import { changePassword } from "./DTO/ChangePassword.dto";
 import { ConfirmPhoneDTO } from "./DTO/ConfirmPhone.dto";
 import { HistoryAction } from "./DTO/HistoryAction.obj";

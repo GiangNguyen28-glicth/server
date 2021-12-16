@@ -33,15 +33,13 @@ let MailService = class MailService {
             expiresIn: `${process.env.JWT_VERIFICATION_TOKEN_EXPIRATION_TIME}s`
         });
         const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
+        let transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false,
             auth: {
-                type: 'OAuth2',
-                user: '103tmdt@gmail.com',
-                clientId: process.env.GOOGLE_CLIENT_ID,
-                clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-                refreshToken: process.env.GOOGLE_CLIENT_REFRESH_TOKEN,
-                accessToken: accessToken,
+                user: "103tmdt@gmail.com",
+                pass: "Giang123@123@@",
             },
         });
         const info = await transporter.sendMail({
