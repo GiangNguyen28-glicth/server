@@ -34,7 +34,7 @@ export declare class UserService {
         password: any;
     }): Promise<any>;
     forgotpassword(phoneNumber: string): Promise<void>;
-    sendSMS(phoneNumber: string, code: string): Promise<void>;
+    sendSMS(phoneNumber: string): Promise<void>;
     confirmPhoneNumber(verificationCode: string): Promise<{
         accessToken: any;
     }>;
@@ -48,5 +48,4 @@ export declare class UserService {
     updateNewAction(historyaction: HistoryAction, user: User): Promise<void>;
     NaptienATM(checkout: Checkout, user: User): Promise<IReponse<User>>;
     getAllTransaction(user: User): Promise<[HistoryAction]>;
-    randomOTP(): Promise<number>;
 }
