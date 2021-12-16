@@ -15,9 +15,7 @@ export class MailService{
         });
         const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
         const transporter = nodemailer.createTransport({
-          port: 465,
-          host: "smtp.gmail.com",
-          secure: true,
+          service: "gmail",
           auth: {
             user: "shopme293@gmail.com",
             pass: "nxcyezzyxxuqvxor", // naturally, replace both with your real credentials or an application-specific password
