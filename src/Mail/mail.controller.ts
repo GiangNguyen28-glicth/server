@@ -14,7 +14,7 @@ export class MailController{
       return "Confirm success"
     }
     @Get('/resend-confirm-email')
-    async resendConfirmationLink(@GetUser() user:User){
-      return this.mailservice.resendConfirmationLink(user._id);
+    async resendConfirmationLink(@GetUser() user:User):Promise<void>{
+      return await this.mailservice.resendConfirmationLink(user._id);
     }
 }

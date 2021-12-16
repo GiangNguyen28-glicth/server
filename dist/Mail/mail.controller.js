@@ -29,7 +29,7 @@ let MailController = class MailController {
         return "Confirm success";
     }
     async resendConfirmationLink(user) {
-        return this.mailservice.resendConfirmationLink(user._id);
+        return await this.mailservice.resendConfirmationLink(user._id);
     }
 };
 __decorate([
