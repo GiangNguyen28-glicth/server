@@ -30,9 +30,8 @@ const HistoryAction_obj_1 = require("./DTO/HistoryAction.obj");
 const checkout_dto_1 = require("../Paypal/DTO/checkout.dto");
 const PassBook_service_1 = require("../PassBook/PassBook.service");
 const PassBook_Schema_1 = require("../PassBook/Schema/PassBook.Schema");
-const clear_cache_1 = require("../Utils/clear.cache");
 let UserService = class UserService {
-    constructor(usermodel, otpmodel, twilioClient, connection, passbookservice, mailservice, jwtservice, cache) {
+    constructor(usermodel, otpmodel, twilioClient, connection, passbookservice, mailservice, jwtservice) {
         this.usermodel = usermodel;
         this.otpmodel = otpmodel;
         this.twilioClient = twilioClient;
@@ -40,7 +39,6 @@ let UserService = class UserService {
         this.passbookservice = passbookservice;
         this.mailservice = mailservice;
         this.jwtservice = jwtservice;
-        this.cache = cache;
         this.twilioClient = new twilio_1.Twilio("AC6c195ae195ad3154101bdcb5a6f4a778", process.env.TWL1 + process.env.TWL2);
     }
     async register(userdto) {
@@ -121,12 +119,12 @@ let UserService = class UserService {
         if (!user) {
             throw new common_1.UnauthorizedException('Phone Number not existing');
         }
-        await this.otpmodel.findOneAndDelete({ phoneNumber: user.phoneNumber });
-        const otp = await this.otpmodel.create({ userId: user._id, phoneNumber: phoneNumber });
+        await this.otpmodel.findOneAndDelete({ phoneNumber: phonereplace });
+        const otp = await this.otpmodel.create({ userId: user._id, phoneNumber: phonereplace });
         otp.save();
         this.sendSMS(user.phoneNumber);
-        let _id = user._id;
-        const payload = { _id };
+        let id = user._id;
+        const payload = { id };
         const accesstoken = await this.jwtservice.sign(payload);
         return { accesstoken };
     }
@@ -137,7 +135,7 @@ let UserService = class UserService {
             .create({ to: phoneNumber, channel: 'sms' });
     }
     async confirmPhoneNumber(userId, phoneNumber, verificationCode) {
-        const serviceSid = "AC6c195ae195ad3154101bdcb5a6f4a778";
+        const serviceSid = "VA034959ee2470c4c29c135bd6a4e9368d";
         const otp = await this.otpmodel.findOne({ userId: userId });
         if (otp.isPhoneNumberConfirmed) {
             throw new common_1.BadRequestException('Phone number already confirmed');
@@ -248,8 +246,7 @@ UserService = __decorate([
     __metadata("design:paramtypes", [mongoose_2.Model,
         mongoose_2.Model, Object, mongoose.Connection, PassBook_service_1.PassBookService,
         mail_service_1.MailService,
-        jwt_1.JwtService,
-        clear_cache_1.ClearCache])
+        jwt_1.JwtService])
 ], UserService);
 exports.UserService = UserService;
 //# sourceMappingURL=User.service.js.map

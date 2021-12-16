@@ -13,7 +13,6 @@ import { HistoryAction } from "./DTO/HistoryAction.obj";
 import { Checkout } from "src/Paypal/DTO/checkout.dto";
 import { PassBookService } from "src/PassBook/PassBook.service";
 import { PassBook } from "src/PassBook/Schema/PassBook.Schema";
-import { ClearCache } from "src/Utils/clear.cache";
 export declare class UserService {
     private usermodel;
     private otpmodel;
@@ -22,8 +21,7 @@ export declare class UserService {
     private passbookservice;
     private mailservice;
     private jwtservice;
-    private cache;
-    constructor(usermodel: Model<UserDocument>, otpmodel: Model<OTPDocument>, twilioClient: TwilioClient, connection: mongoose.Connection, passbookservice: PassBookService, mailservice: MailService, jwtservice: JwtService, cache: ClearCache);
+    constructor(usermodel: Model<UserDocument>, otpmodel: Model<OTPDocument>, twilioClient: TwilioClient, connection: mongoose.Connection, passbookservice: PassBookService, mailservice: MailService, jwtservice: JwtService);
     register(userdto: UserDTO): Promise<IReponse<User>>;
     deleteUser(id: any): Promise<IReponse<User>>;
     updateProfile(updateprofile: UpdateProfileDTO, id: any): Promise<IReponse<User>>;

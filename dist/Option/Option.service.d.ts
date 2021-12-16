@@ -14,5 +14,5 @@ export declare class OptionService {
     updatenewOption(id: any, newoptiondto: newOptionDTO): Promise<Option>;
     GetValueOption(date: Date, option: number): Promise<number>;
     GetValueByYear(Year: number): Promise<any>;
-    findOption(option: number): Promise<Option>;
+    findOption(option: number): Promise<any>;
 }

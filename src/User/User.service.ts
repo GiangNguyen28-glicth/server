@@ -17,7 +17,6 @@ import { Action, HistoryAction } from "./DTO/HistoryAction.obj";
 import { Checkout } from "src/Paypal/DTO/checkout.dto";
 import { PassBookService } from "src/PassBook/PassBook.service";
 import { PassBook } from "src/PassBook/Schema/PassBook.Schema";
-import { ClearCache } from "src/Utils/clear.cache";
 @Injectable()
 export class UserService{
   
@@ -30,11 +29,9 @@ export class UserService{
     private passbookservice: PassBookService,
     @Inject(forwardRef(() => MailService))
     private mailservice: MailService,
-    private jwtservice:JwtService,
-    private cache:ClearCache){
+    private jwtservice:JwtService){
       this.twilioClient = new Twilio("AC6c195ae195ad3154101bdcb5a6f4a778",process.env.TWL1+process.env.TWL2)
     }
-
 
     async register(userdto:UserDTO):Promise<IReponse<User>>{
         const role=UserRole.USER;
@@ -121,12 +118,12 @@ export class UserService{
       if(!user){
         throw new UnauthorizedException('Phone Number not existing');
       }
-      await this.otpmodel.findOneAndDelete({phoneNumber:user.phoneNumber});
-      const otp=await this.otpmodel.create({userId:user._id,phoneNumber:phoneNumber})
+      await this.otpmodel.findOneAndDelete({phoneNumber:phonereplace});
+      const otp=await this.otpmodel.create({userId:user._id,phoneNumber:phonereplace})
       otp.save();
       this.sendSMS(user.phoneNumber);
-      let _id=user._id;
-      const payload= {_id};
+      let id=user._id;
+      const payload= {id};
       const accesstoken = await this.jwtservice.sign(payload);
       return {accesstoken};
     }
@@ -140,14 +137,14 @@ export class UserService{
 
 
     async confirmPhoneNumber(userId, phoneNumber: string, verificationCode: string) {
-      const serviceSid = "AC6c195ae195ad3154101bdcb5a6f4a778";
+      const serviceSid = "VA034959ee2470c4c29c135bd6a4e9368d";
       const otp=await this.otpmodel.findOne({userId:userId});
       if (otp.isPhoneNumberConfirmed) {
         throw new BadRequestException('Phone number already confirmed');
       }
       const result = await this.twilioClient.verify.services(serviceSid)
         .verificationChecks
-        .create({to:  phoneNumber, code: verificationCode})
+        .create({to:phoneNumber, code: verificationCode})
       if (!result.valid || result.status !== 'approved') {
         throw new BadRequestException('Wrong code provided');
       }

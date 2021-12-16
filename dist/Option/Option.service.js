@@ -96,8 +96,10 @@ let OptionService = class OptionService {
     }
     async findOption(option) {
         const result = await this.optionmodel.findOne({ option: option });
-        if (result) {
-            return result;
+        if (!result) {
+            return {
+                code: "500", message: "Option not found"
+            };
         }
         return result;
     }
