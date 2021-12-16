@@ -19,7 +19,10 @@ export class OTP{
     @Prop({default:false})
     isPhoneNumberConfirmed:boolean;
 
-    @Prop({type:Date,default:Date.now,expires:10})
+    @Prop({type:Date,default:Date.now,expires:60*60*5})
     isVerifyOtp:Date;
+
+    @Prop()
+    code:string;
 }
 export const OTPSchema=SchemaFactory.createForClass(OTP);

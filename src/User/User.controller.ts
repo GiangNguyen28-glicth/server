@@ -31,15 +31,14 @@ export class UserController{
     }
 
     @Post('/forgot-password')
-    async forgotpassword(@Body() phoneNumber:PhoneNumberDTO):Promise<{accesstoken:string}>{
+    async forgotpassword(@Body() phoneNumber:PhoneNumberDTO):Promise<void>{
         return this.userservice.forgotpassword(phoneNumber.phoneNumber);
     }
 
 
     @Post('/check-verification-code')
-    @UseGuards(AuthGuard())
     async checkVerificationCode(@GetUser() user:User,@Body() confirmPhonedto:ConfirmPhoneDTO) {
-        return this.userservice.confirmPhoneNumber(user._id,user.phoneNumber,confirmPhonedto.code);
+        return this.userservice.confirmPhoneNumber(confirmPhonedto.code);
     }
 
     @Put('/change-password')

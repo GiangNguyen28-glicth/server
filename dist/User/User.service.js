@@ -104,10 +104,11 @@ let UserService = class UserService {
     async Login({ email, password }) {
         const user = await this.usermodel.findOne({ email: email });
         if (user && (await bcrypt.compare(password, user.password)) && user.isEmailConfirmed) {
-            let id = user._id;
-            const payload = { id };
-            const accesstoken = await this.jwtservice.sign(payload);
-            return { accesstoken };
+            const OTP = await this.randomOTP();
+            await this.sendSMS(user.phoneNumber, OTP.toString());
+            return {
+                code: 200, success: true, message: "Check otp"
+            };
         }
         else {
             throw new common_1.UnauthorizedException('Please Check Account');
@@ -120,33 +121,29 @@ let UserService = class UserService {
             throw new common_1.UnauthorizedException('Phone Number not existing');
         }
         await this.otpmodel.findOneAndDelete({ phoneNumber: phonereplace });
-        const otp = await this.otpmodel.create({ userId: user._id, phoneNumber: phonereplace });
+        const OTP = await this.randomOTP();
+        const otp = await this.otpmodel.create({ userId: user._id, phoneNumber: phonereplace, code: OTP.toString() });
         otp.save();
-        this.sendSMS(user.phoneNumber);
-        let id = user._id;
-        const payload = { id };
-        const accesstoken = await this.jwtservice.sign(payload);
-        return { accesstoken };
+        await this.sendSMS(user.phoneNumber, OTP.toString());
     }
-    async sendSMS(phoneNumber) {
+    async sendSMS(phoneNumber, code) {
         const serviceSid = "VA034959ee2470c4c29c135bd6a4e9368d";
-        return this.twilioClient.verify.services(serviceSid)
-            .verifications
-            .create({ to: phoneNumber, channel: 'sms' });
+        await this.twilioClient.messages.create({ body: code, to: phoneNumber, from: process.env.TWILIO_PHONE_NUMBER });
     }
-    async confirmPhoneNumber(userId, phoneNumber, verificationCode) {
+    async confirmPhoneNumber(verificationCode) {
         const serviceSid = "VA034959ee2470c4c29c135bd6a4e9368d";
-        const otp = await this.otpmodel.findOne({ userId: userId });
+        const otp = await this.otpmodel.findOne({ code: verificationCode });
+        if (!otp) {
+            throw new common_1.BadRequestException('Wrong code provided');
+        }
         if (otp.isPhoneNumberConfirmed) {
             throw new common_1.BadRequestException('Phone number already confirmed');
         }
-        const result = await this.twilioClient.verify.services(serviceSid)
-            .verificationChecks
-            .create({ to: phoneNumber, code: verificationCode });
-        if (!result.valid || result.status !== 'approved') {
-            throw new common_1.BadRequestException('Wrong code provided');
-        }
-        this.markPhoneNumberAsConfirmed(userId);
+        let id = otp.userId;
+        const payload = { id };
+        const accessToken = await this.jwtservice.sign(payload);
+        this.markPhoneNumberAsConfirmed(otp.userId);
+        return { accessToken };
     }
     async markPhoneNumberAsConfirmed(userId) {
         return this.otpmodel.findOneAndUpdate({ userId: userId }, {
@@ -227,6 +224,17 @@ let UserService = class UserService {
     async getAllTransaction(user) {
         const result = await this.usermodel.findOne({ _id: user._id });
         return result.historyaction;
+    }
+    async randomOTP() {
+        let OTP = 0;
+        while (true) {
+            OTP = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+            const checkOTP = await this.otpmodel.findOne({ code: OTP.toString() });
+            if (!checkOTP) {
+                break;
+            }
+        }
+        return OTP;
     }
 };
 __decorate([

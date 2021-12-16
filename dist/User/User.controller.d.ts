@@ -19,10 +19,10 @@ export declare class UserController {
         accesstoken: string;
     }>;
     updateprofile(updatepfl: UpdateProfileDTO, user: User): Promise<IReponse<User>>;
-    forgotpassword(phoneNumber: PhoneNumberDTO): Promise<{
-        accesstoken: string;
+    forgotpassword(phoneNumber: PhoneNumberDTO): Promise<void>;
+    checkVerificationCode(user: User, confirmPhonedto: ConfirmPhoneDTO): Promise<{
+        accessToken: any;
     }>;
-    checkVerificationCode(user: User, confirmPhonedto: ConfirmPhoneDTO): Promise<void>;
     changePassword(user: User, changepassword: changePassword): Promise<IReponse<User>>;
     updatePassword(changepassword: changePassword, user: User): Promise<IReponse<User>>;
     Addmoney(checkout: Checkout, user: User): Promise<IReponse<User>>;

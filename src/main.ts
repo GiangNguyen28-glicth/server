@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv';
 import { resolve } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 dotenv.config();
-async function bootstrap() {
+export async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const options = {
     origin: "*",

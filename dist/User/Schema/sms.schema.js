@@ -34,9 +34,13 @@ __decorate([
     __metadata("design:type", Boolean)
 ], OTP.prototype, "isPhoneNumberConfirmed", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: Date, default: Date.now, expires: 10 }),
+    (0, mongoose_1.Prop)({ type: Date, default: Date.now, expires: 60 * 60 * 5 }),
     __metadata("design:type", Date)
 ], OTP.prototype, "isVerifyOtp", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], OTP.prototype, "code", void 0);
 OTP = __decorate([
     (0, mongoose_1.Schema)()
 ], OTP);

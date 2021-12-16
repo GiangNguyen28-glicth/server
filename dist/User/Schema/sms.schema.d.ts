@@ -8,5 +8,6 @@ export declare class OTP {
     userId: User;
     isPhoneNumberConfirmed: boolean;
     isVerifyOtp: Date;
+    code: string;
 }
 export declare const OTPSchema: mongoose.Schema<mongoose.Document<OTP, any, any>, mongoose.Model<mongoose.Document<OTP, any, any>, any, any, any>, {}>;

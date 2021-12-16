@@ -31,14 +31,12 @@ export declare class UserService {
     Login({ email, password }: {
         email: any;
         password: any;
-    }): Promise<{
-        accesstoken: string;
+    }): Promise<any>;
+    forgotpassword(phoneNumber: string): Promise<void>;
+    sendSMS(phoneNumber: string, code: string): Promise<void>;
+    confirmPhoneNumber(verificationCode: string): Promise<{
+        accessToken: any;
     }>;
-    forgotpassword(phoneNumber: string): Promise<{
-        accesstoken: string;
-    }>;
-    sendSMS(phoneNumber: string): Promise<import("twilio/lib/rest/verify/v2/service/verification").VerificationInstance>;
-    confirmPhoneNumber(userId: any, phoneNumber: string, verificationCode: string): Promise<void>;
     markPhoneNumberAsConfirmed(userId: any): Promise<mongoose.Document<any, any, OTPDocument> & OTP & Document & {
         _id: mongoose.Schema.Types.ObjectId;
     }>;
@@ -49,4 +47,5 @@ export declare class UserService {
     updateNewAction(historyaction: HistoryAction, user: User): Promise<void>;
     NaptienATM(checkout: Checkout, user: User): Promise<IReponse<User>>;
     getAllTransaction(user: User): Promise<[HistoryAction]>;
+    randomOTP(): Promise<number>;
 }

@@ -42,7 +42,7 @@ let UserController = class UserController {
         return this.userservice.forgotpassword(phoneNumber.phoneNumber);
     }
     async checkVerificationCode(user, confirmPhonedto) {
-        return this.userservice.confirmPhoneNumber(user._id, user.phoneNumber, confirmPhonedto.code);
+        return this.userservice.confirmPhoneNumber(confirmPhonedto.code);
     }
     async changePassword(user, changepassword) {
         return this.userservice.changPassword(user._id, changepassword);
@@ -89,7 +89,6 @@ __decorate([
 ], UserController.prototype, "forgotpassword", null);
 __decorate([
     (0, common_1.Post)('/check-verification-code'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     __param(0, (0, getuser_decorators_1.GetUser)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
