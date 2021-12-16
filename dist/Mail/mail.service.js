@@ -29,7 +29,7 @@ let MailService = class MailService {
             expiresIn: `${process.env.JWT_VERIFICATION_TOKEN_EXPIRATION_TIME}s`
         });
         const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
-        const transporter = nodemailer.createTransport({
+        const transporter = await nodemailer.createTransport({
             service: "gmail",
             auth: {
                 user: "shopme293@gmail.com",
