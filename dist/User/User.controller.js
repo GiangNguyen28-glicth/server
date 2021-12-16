@@ -30,7 +30,7 @@ let UserController = class UserController {
         this.userservice = userservice;
     }
     async register(userdto) {
-        return this.userservice.register(userdto);
+        return await this.userservice.register(userdto);
     }
     async signin({ email, password }) {
         return this.userservice.Login({ email, password });

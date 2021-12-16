@@ -16,7 +16,7 @@ export class UserController{
     constructor(private userservice:UserService){}
     @Post('/signup')
     async register(@Body() userdto:UserDTO):Promise<IReponse<User>>{
-        return this.userservice.register(userdto);
+        return await this.userservice.register(userdto);
     }
 
     @Post('/signin')
