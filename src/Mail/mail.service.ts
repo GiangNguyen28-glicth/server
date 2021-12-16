@@ -15,13 +15,13 @@ export class MailService{
         });
         const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
         const transporter = nodemailer.createTransport({
-          port: 465,
+          port: 587,
           host: "smtp.gmail.com",
           auth: {
             user: "shopme293@gmail.com",
             pass: "nxcyezzyxxuqvxor",
           },
-          secure: true,
+          secure: false,
       });
       
       await new Promise((resolve, reject) => {
