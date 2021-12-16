@@ -32,7 +32,7 @@ export class UserService{
     private jwtservice:JwtService){
       this.twilioClient = new Twilio("AC6c195ae195ad3154101bdcb5a6f4a778",process.env.TWL1+process.env.TWL2)
     }
-
+    phone;
     async register(userdto:UserDTO):Promise<IReponse<User>>{
         const role=UserRole.USER;
         let phoneNumber="+84"+userdto.phoneNumber.slice(1,userdto.phoneNumber.length);
@@ -127,12 +127,13 @@ export class UserService{
 
     async sendSMS(phoneNumber:string,code:string):Promise<void> { 
       const serviceSid = "VA034959ee2470c4c29c135bd6a4e9368d";
+      this.phone=phoneNumber;
       await this.twilioClient.messages.create({body: code,to:phoneNumber,from:process.env.TWILIO_PHONE_NUMBER})
     }
 
     async confirmPhoneNumber(verificationCode: string):Promise<{accessToken}>{
       const serviceSid = "VA034959ee2470c4c29c135bd6a4e9368d";
-      const otp=await this.otpmodel.findOne({code:verificationCode});
+      const otp=await this.otpmodel.findOne({code:verificationCode,phoneNumber:this.phone});
       if(!otp){
         throw new BadRequestException('Wrong code provided');
       }

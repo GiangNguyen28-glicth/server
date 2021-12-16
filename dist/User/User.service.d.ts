@@ -22,6 +22,7 @@ export declare class UserService {
     private mailservice;
     private jwtservice;
     constructor(usermodel: Model<UserDocument>, otpmodel: Model<OTPDocument>, twilioClient: TwilioClient, connection: mongoose.Connection, passbookservice: PassBookService, mailservice: MailService, jwtservice: JwtService);
+    phone: any;
     register(userdto: UserDTO): Promise<IReponse<User>>;
     deleteUser(id: any): Promise<IReponse<User>>;
     updateProfile(updateprofile: UpdateProfileDTO, id: any): Promise<IReponse<User>>;
