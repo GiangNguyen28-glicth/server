@@ -15,12 +15,8 @@ export class MailService{
         });
         const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
         const transporter = nodemailer.createTransport({
-          service: "gmail",
-          port: 25,
-          secure: false,
-          logger: true,
-          debug: true,
-          ignoreTLS: true,
+          port: 465,
+          host: "smtp.gmail.com",
           auth: {
             user: "shopme293@gmail.com",
             pass: "nxcyezzyxxuqvxor", // naturally, replace both with your real credentials or an application-specific password
@@ -30,7 +26,7 @@ export class MailService{
           // verify connection configuration
           transporter.verify(function (error, success) {
               if (error) {
-                  console.log(error);
+                  console.log(1);
                   reject(error);
               } else {
                   console.log("Server is ready to take our messages");
@@ -48,7 +44,7 @@ export class MailService{
           // send mail
           transporter.sendMail(mailData, (err, info) => {
               if (err) {
-                  console.error(err);
+                  console.log(2)
                   reject(err);
               } else {
                   console.log(info);
