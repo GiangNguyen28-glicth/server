@@ -148,7 +148,6 @@ let UserService = class UserService {
         const payload = { id };
         const accessToken = await this.jwtservice.sign(payload);
         otp.delete();
-        this.markPhoneNumberAsConfirmed(otp.userId);
         return { accessToken };
     }
     async markPhoneNumberAsConfirmed(userId) {
