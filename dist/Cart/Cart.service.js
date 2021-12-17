@@ -87,7 +87,7 @@ let CartService = class CartService {
         if (money < 1000000) {
             const tienthieu = 1000000 - money;
             return {
-                code: 500, success: false, message: `Not enough money in the account,at least 1.000.000 in each passsbook,You need ${tienthieu * 4} VND`, money: tienthieu * 4
+                code: 500, success: false, message: `Not enough money in the account,at least 1.000.000 in each passsbook,You need ${tienthieu * quantity} VND`, money: tienthieu * quantity
             };
         }
         for (var i = 0; i < quantity; i++) {

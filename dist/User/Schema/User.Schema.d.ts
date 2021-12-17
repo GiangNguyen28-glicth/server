@@ -15,6 +15,7 @@ export declare class User {
     CMND: string;
     address: AdddressDTO;
     isExprise?: Date;
+    isChangePassword?: Date;
     role: UserRole;
     historyaction?: [HistoryAction];
     fullName?: string;

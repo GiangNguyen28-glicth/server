@@ -17,6 +17,7 @@ import { Action, HistoryAction } from "./DTO/HistoryAction.obj";
 import { Checkout } from "src/Paypal/DTO/checkout.dto";
 import { PassBookService } from "src/PassBook/PassBook.service";
 import { PassBook } from "src/PassBook/Schema/PassBook.Schema";
+import { CommonService } from "src/Utils/common.service";
 @Injectable()
 export class UserService{
   
@@ -29,7 +30,8 @@ export class UserService{
     private passbookservice: PassBookService,
     @Inject(forwardRef(() => MailService))
     private mailservice: MailService,
-    private jwtservice:JwtService){
+    private jwtservice:JwtService,
+    private commonservice:CommonService){
       this.twilioClient = new Twilio("AC6c195ae195ad3154101bdcb5a6f4a778",process.env.TWL1+process.env.TWL2)
     }
     phone;
@@ -46,9 +48,10 @@ export class UserService{
             return{code:500,success:false,message:"User Existing"}
         }
         try{
+            const date= await this.commonservice.convertDatetime(new Date());
             const salt = await bcrypt.genSalt();
             const hashedpassword = await bcrypt.hash(password, salt);
-            const user = this.usermodel.create({firstName,lastName,password:hashedpassword,email,phoneNumber,CMND,address,role});
+            const user = this.usermodel.create({firstName,lastName,password:hashedpassword,email,phoneNumber,CMND,address,role,isChangePassword:date});
             await this.mailservice.sendEmail(email);
             (await user).save();
             return {
@@ -103,17 +106,17 @@ export class UserService{
       const user=await this.usermodel.findOne({email:email});
       if (user && (await bcrypt.compare(password, user.password))&&user.isEmailConfirmed) {
         this.phone=user.phoneNumber;
-        // await this.sendSMS(user.phoneNumber);
-        // await this.otpmodel.findOneAndDelete({phoneNumber:user.phoneNumber});
-        // const otp=await this.otpmodel.create({userId:user._id,phoneNumber:user.phoneNumber})
-        // otp.save();
-        // return{
-        //     code:200,success:true,message:"Check otp"
-        // }
-        let id=user._id;
-        const payload= {id};
-        const accessToken = await this.jwtservice.sign(payload);
-        return {accessToken};
+        await this.sendSMS(user.phoneNumber);
+        await this.otpmodel.findOneAndDelete({phoneNumber:user.phoneNumber});
+        const otp=await this.otpmodel.create({userId:user._id,phoneNumber:user.phoneNumber})
+        otp.save();
+        return{
+            code:200,success:true,message:"Check otp"
+        }
+        // let id=user._id;
+        // const payload= {id};
+        // const accessToken = await this.jwtservice.sign(payload);
+        // return {accessToken};
       } else {
           throw new UnauthorizedException('Please Check Account');
       }
@@ -189,9 +192,10 @@ export class UserService{
       const {oldPassword,newPassword,ConfirmPassword}=changepassword;
       if((await bcrypt.compare(oldPassword,user.password))){
         if(newPassword==ConfirmPassword){
+          const date=await this.commonservice.convertDatetime(new Date());
           const salt = await bcrypt.genSalt();
           const hashedpassword = await bcrypt.hash(newPassword, salt);
-          await this.usermodel.findOneAndUpdate({_id:user._id},{password:hashedpassword});
+          await this.usermodel.findOneAndUpdate({_id:user._id},{password:hashedpassword,isChangePassword:date});
           return{code:200,success:true,message:"Update Password Success"}
         }
         else{
@@ -236,5 +240,18 @@ export class UserService{
     async getAllTransaction(user:User):Promise<[HistoryAction]>{
       const result= await this.usermodel.findOne({_id:user._id});
       return result.historyaction;
+    }
+
+    async getUser(id):Promise<any>{
+      const user= await this.usermodel.findOne({_id:id});
+      if(!user){
+        return {
+          code:500,success:false,message:"User not existing"
+        }
+      }
+      return {
+        data:{firstname:user.firstName,lastname:user.lastName,fullname:user.fullName,money:user.currentMoney,
+        address:user.address,phonenumnber:user.phoneNumber}
+      }
     }
 }

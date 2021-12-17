@@ -45,6 +45,8 @@ export class User{
     @Prop({type:Date, default: Date.now,expires:60*60*5})
 	isExprise?: Date
 
+    @Prop({type:Date})
+    isChangePassword?:Date;
     @Prop()
     role:UserRole;
     @Prop()

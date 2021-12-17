@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Put, UseGuards, UseInterceptors } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { GetUser } from "src/decorators/getuser.decorators";
 import { Checkout } from "src/Paypal/DTO/checkout.dto";
@@ -62,5 +62,11 @@ export class UserController{
     @UseGuards(AuthGuard())
     async GetAllTransaction(@GetUser() user:User):Promise<[HistoryAction]>{
         return this.userservice.getAllTransaction(user);
+    }
+
+    @Get('/getuser/:id')
+    @UseGuards(AuthGuard())
+    async getUser(@Param('id') id):Promise<any>{
+        return await this.userservice.getUser(id);
     }
 }

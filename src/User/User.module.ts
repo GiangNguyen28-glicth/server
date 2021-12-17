@@ -10,6 +10,7 @@ import { UserService } from "./User.service";
 import { OTP, OTPSchema } from "./Schema/sms.schema";
 import { JwtStrategy } from "./JWT/jwt.strategy";
 import { PassBookModule } from "src/PassBook/PassBook.module";
+import { CommonService } from "src/Utils/common.service";
 @Module({
     imports:[forwardRef(() =>MailModule),forwardRef(()=>PassBookModule),
         MongooseModule.forFeature([{name:User.name,schema:UserSchema}]),
@@ -20,9 +21,9 @@ import { PassBookModule } from "src/PassBook/PassBook.module";
           signOptions:{
             expiresIn: 3600,
           }
-        }),CacheModule.register()],
+        }),CacheModule.register(),CommonService],
     controllers:[UserController],
-    providers:[UserService,RolesGuard,JwtStrategy],
+    providers:[UserService,RolesGuard,JwtStrategy,CommonService],
     exports: [UserService,JwtStrategy, PassportModule]
 })
 export class UserModule{

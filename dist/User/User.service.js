@@ -30,8 +30,9 @@ const HistoryAction_obj_1 = require("./DTO/HistoryAction.obj");
 const checkout_dto_1 = require("../Paypal/DTO/checkout.dto");
 const PassBook_service_1 = require("../PassBook/PassBook.service");
 const PassBook_Schema_1 = require("../PassBook/Schema/PassBook.Schema");
+const common_service_1 = require("../Utils/common.service");
 let UserService = class UserService {
-    constructor(usermodel, otpmodel, twilioClient, connection, passbookservice, mailservice, jwtservice) {
+    constructor(usermodel, otpmodel, twilioClient, connection, passbookservice, mailservice, jwtservice, commonservice) {
         this.usermodel = usermodel;
         this.otpmodel = otpmodel;
         this.twilioClient = twilioClient;
@@ -39,6 +40,7 @@ let UserService = class UserService {
         this.passbookservice = passbookservice;
         this.mailservice = mailservice;
         this.jwtservice = jwtservice;
+        this.commonservice = commonservice;
         this.twilioClient = new twilio_1.Twilio("AC6c195ae195ad3154101bdcb5a6f4a778", process.env.TWL1 + process.env.TWL2);
     }
     async register(userdto) {
@@ -54,9 +56,10 @@ let UserService = class UserService {
             return { code: 500, success: false, message: "User Existing" };
         }
         try {
+            const date = await this.commonservice.convertDatetime(new Date());
             const salt = await bcrypt.genSalt();
             const hashedpassword = await bcrypt.hash(password, salt);
-            const user = this.usermodel.create({ firstName, lastName, password: hashedpassword, email, phoneNumber, CMND, address, role });
+            const user = this.usermodel.create({ firstName, lastName, password: hashedpassword, email, phoneNumber, CMND, address, role, isChangePassword: date });
             await this.mailservice.sendEmail(email);
             (await user).save();
             return {
@@ -105,10 +108,13 @@ let UserService = class UserService {
         const user = await this.usermodel.findOne({ email: email });
         if (user && (await bcrypt.compare(password, user.password)) && user.isEmailConfirmed) {
             this.phone = user.phoneNumber;
-            let id = user._id;
-            const payload = { id };
-            const accessToken = await this.jwtservice.sign(payload);
-            return { accessToken };
+            await this.sendSMS(user.phoneNumber);
+            await this.otpmodel.findOneAndDelete({ phoneNumber: user.phoneNumber });
+            const otp = await this.otpmodel.create({ userId: user._id, phoneNumber: user.phoneNumber });
+            otp.save();
+            return {
+                code: 200, success: true, message: "Check otp"
+            };
         }
         else {
             throw new common_1.UnauthorizedException('Please Check Account');
@@ -175,9 +181,10 @@ let UserService = class UserService {
         const { oldPassword, newPassword, ConfirmPassword } = changepassword;
         if ((await bcrypt.compare(oldPassword, user.password))) {
             if (newPassword == ConfirmPassword) {
+                const date = await this.commonservice.convertDatetime(new Date());
                 const salt = await bcrypt.genSalt();
                 const hashedpassword = await bcrypt.hash(newPassword, salt);
-                await this.usermodel.findOneAndUpdate({ _id: user._id }, { password: hashedpassword });
+                await this.usermodel.findOneAndUpdate({ _id: user._id }, { password: hashedpassword, isChangePassword: date });
                 return { code: 200, success: true, message: "Update Password Success" };
             }
             else {
@@ -219,6 +226,18 @@ let UserService = class UserService {
         const result = await this.usermodel.findOne({ _id: user._id });
         return result.historyaction;
     }
+    async getUser(id) {
+        const user = await this.usermodel.findOne({ _id: id });
+        if (!user) {
+            return {
+                code: 500, success: false, message: "User not existing"
+            };
+        }
+        return {
+            data: { firstname: user.firstName, lastname: user.lastName, fullname: user.fullName, money: user.currentMoney,
+                address: user.address, phonenumnber: user.phoneNumber }
+        };
+    }
 };
 __decorate([
     __param(0, (0, common_1.Body)()),
@@ -237,7 +256,8 @@ UserService = __decorate([
     __metadata("design:paramtypes", [mongoose_2.Model,
         mongoose_2.Model, Object, mongoose.Connection, PassBook_service_1.PassBookService,
         mail_service_1.MailService,
-        jwt_1.JwtService])
+        jwt_1.JwtService,
+        common_service_1.CommonService])
 ], UserService);
 exports.UserService = UserService;
 //# sourceMappingURL=User.service.js.map

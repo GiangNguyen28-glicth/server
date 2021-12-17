@@ -13,6 +13,7 @@ import { HistoryAction } from "./DTO/HistoryAction.obj";
 import { Checkout } from "src/Paypal/DTO/checkout.dto";
 import { PassBookService } from "src/PassBook/PassBook.service";
 import { PassBook } from "src/PassBook/Schema/PassBook.Schema";
+import { CommonService } from "src/Utils/common.service";
 export declare class UserService {
     private usermodel;
     private otpmodel;
@@ -21,7 +22,8 @@ export declare class UserService {
     private passbookservice;
     private mailservice;
     private jwtservice;
-    constructor(usermodel: Model<UserDocument>, otpmodel: Model<OTPDocument>, twilioClient: TwilioClient, connection: mongoose.Connection, passbookservice: PassBookService, mailservice: MailService, jwtservice: JwtService);
+    private commonservice;
+    constructor(usermodel: Model<UserDocument>, otpmodel: Model<OTPDocument>, twilioClient: TwilioClient, connection: mongoose.Connection, passbookservice: PassBookService, mailservice: MailService, jwtservice: JwtService, commonservice: CommonService);
     phone: any;
     register(userdto: UserDTO): Promise<IReponse<User>>;
     deleteUser(id: any): Promise<IReponse<User>>;
@@ -48,4 +50,5 @@ export declare class UserService {
     updateNewAction(historyaction: HistoryAction, user: User): Promise<void>;
     NaptienATM(checkout: Checkout, user: User): Promise<IReponse<User>>;
     getAllTransaction(user: User): Promise<[HistoryAction]>;
+    getUser(id: any): Promise<any>;
 }

@@ -27,4 +27,5 @@ export declare class UserController {
     updatePassword(changepassword: changePassword, user: User): Promise<IReponse<User>>;
     Addmoney(checkout: Checkout, user: User): Promise<IReponse<User>>;
     GetAllTransaction(user: User): Promise<[HistoryAction]>;
+    getUser(id: any): Promise<any>;
 }
