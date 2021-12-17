@@ -105,13 +105,10 @@ let UserService = class UserService {
         const user = await this.usermodel.findOne({ email: email });
         if (user && (await bcrypt.compare(password, user.password)) && user.isEmailConfirmed) {
             this.phone = user.phoneNumber;
-            await this.sendSMS(user.phoneNumber);
-            await this.otpmodel.findOneAndDelete({ phoneNumber: user.phoneNumber });
-            const otp = await this.otpmodel.create({ userId: user._id, phoneNumber: user.phoneNumber });
-            otp.save();
-            return {
-                code: 200, success: true, message: "Check otp"
-            };
+            let id = user._id;
+            const payload = { id };
+            const accessToken = await this.jwtservice.sign(payload);
+            return { accessToken };
         }
         else {
             throw new common_1.UnauthorizedException('Please Check Account');
@@ -157,13 +154,6 @@ let UserService = class UserService {
     }
     async changPassword(userId, changepassword) {
         const { newPassword, ConfirmPassword } = changepassword;
-        const resetPasswordRecord = await this.otpmodel.findOne({ userId: userId });
-        if (!resetPasswordRecord && resetPasswordRecord.isPhoneNumberConfirmed) {
-            return { code: 400, success: false, message: 'Invalid or expired password reset OTP' };
-        }
-        if (!resetPasswordRecord.isPhoneNumberConfirmed) {
-            return { code: 400, success: false, message: 'OTP ?' };
-        }
         const user = await this.usermodel.findOne({ _id: userId });
         if (!user) {
             return { code: 400, success: false, message: 'User no longer exists', };
@@ -175,7 +165,6 @@ let UserService = class UserService {
         const salt = await bcrypt.genSalt();
         const hashedpassword = await bcrypt.hash(newPassword, salt);
         await this.usermodel.findOneAndUpdate({ _id: userId }, { password: hashedpassword });
-        await resetPasswordRecord.deleteOne();
         return { code: 200, success: true, message: 'User password reset successfully', };
     }
     async updateSvd(input, user) {

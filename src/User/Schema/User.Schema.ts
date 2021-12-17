@@ -2,7 +2,6 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Transform, Type } from "class-transformer";
 import { ObjectId } from "mongoose";;
 import { UserRole } from "../DTO/user.dto";
-import * as mongoose from 'mongoose';
 import { HistoryAction } from "../DTO/HistoryAction.obj";
 import { AdddressDTO } from "../DTO/Address.dto";
 export type UserDocument=User & Document;

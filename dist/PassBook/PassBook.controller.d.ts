@@ -10,6 +10,7 @@ export declare class PassBookController {
     getTotalCycles(passbookid: any, user: User): Promise<any>;
     getPassbook(user: User): Promise<any>;
     getPassbookIsActive(user: User): Promise<any>;
+    getPassbookIsNotActive(user: User): Promise<any>;
     GetPassbookById(user: User, id: any): Promise<PassBook>;
     withdrawMoneyPassbook(user: User, passbookid: any): Promise<PassBook>;
 }

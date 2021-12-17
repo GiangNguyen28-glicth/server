@@ -33,6 +33,11 @@ export class PassBookController{
         return this.passbookservice.GetPassbookIsActive(user);
     }
 
+    @Get('/getpassbookisnotactive')
+    async getPassbookIsNotActive(@GetUser() user:User):Promise<any>{
+        return this.passbookservice.GetPassbookIsNotActive(user);
+    }
+
     @Get('/getpassbookbyid/:id')
     async GetPassbookById(@GetUser() user:User,@Param('id') id):Promise<PassBook>{
         return this.passbookservice.GetPassBookById(id,user);

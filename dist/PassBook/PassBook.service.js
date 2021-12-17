@@ -82,7 +82,9 @@ let PassBookService = class PassBookService {
         }
         const diffDays = (date, otherDate) => Math.ceil(Math.abs(date - otherDate) / (1000 * 60 * 60 * 24));
         const date = diffDays(endDate, result[result.length - 1].startDate);
+        console.log(date);
         const nooption = await this.optionservice.GetValueOption(endDate, 0);
+        console.log(nooption);
         money = money + money * (nooption / 100) * (date - 1) / 360;
         result[result.length - 1].endDate = endDate;
         await this.cacheManager.set(cache_key_dto_1.CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PROFIT, { data: result, money: money }, { ttl: 1000 });
@@ -98,6 +100,10 @@ let PassBookService = class PassBookService {
     }
     async GetPassbookIsActive(user) {
         const passbook = await this.passbookmodel.find({ userId: user._id, status: false });
+        return passbook;
+    }
+    async GetPassbookIsNotActive(user) {
+        const passbook = await this.passbookmodel.find({ userId: user._id, status: true });
         return passbook;
     }
     async GetPassBookById(passbookid, user) {

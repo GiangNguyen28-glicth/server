@@ -1,6 +1,5 @@
 import { ObjectId } from "mongoose";
 import { UserRole } from "../DTO/user.dto";
-import * as mongoose from 'mongoose';
 import { HistoryAction } from "../DTO/HistoryAction.obj";
 import { AdddressDTO } from "../DTO/Address.dto";
 export declare type UserDocument = User & Document;
@@ -20,5 +19,5 @@ export declare class User {
     historyaction?: [HistoryAction];
     fullName?: string;
 }
-declare const UserSchema: mongoose.Schema<mongoose.Document<User, any, any>, mongoose.Model<mongoose.Document<User, any, any>, any, any, any>, {}>;
+declare const UserSchema: import("mongoose").Schema<import("mongoose").Document<User, any, any>, import("mongoose").Model<import("mongoose").Document<User, any, any>, any, any, any>, {}>;
 export { UserSchema };

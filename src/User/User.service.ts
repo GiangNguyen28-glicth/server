@@ -110,6 +110,10 @@ export class UserService{
         return{
             code:200,success:true,message:"Check otp"
         }
+        // let id=user._id;
+        // const payload= {id};
+        // const accessToken = await this.jwtservice.sign(payload);
+        // return {accessToken};
       } else {
           throw new UnauthorizedException('Please Check Account');
       }
@@ -161,13 +165,6 @@ export class UserService{
 
     async changPassword(userId,changepassword:changePassword):Promise<IReponse<User>>{
       const {newPassword,ConfirmPassword}=changepassword;
-      const resetPasswordRecord = await this.otpmodel.findOne({userId:userId});
-      if(!resetPasswordRecord&&resetPasswordRecord.isPhoneNumberConfirmed){
-        return{ code: 400,success: false,message: 'Invalid or expired password reset OTP'}
-      }
-      if(!resetPasswordRecord.isPhoneNumberConfirmed){
-        return{code: 400,success: false,message: 'OTP ?'}
-      }
       const user = await this.usermodel.findOne({_id:userId});
       if (!user) {
 				return {	code: 400,success: false,message: 'User no longer exists',}
@@ -179,7 +176,6 @@ export class UserService{
       const salt = await bcrypt.genSalt();
       const hashedpassword = await bcrypt.hash(newPassword, salt);
       await this.usermodel.findOneAndUpdate({ _id:userId }, { password: hashedpassword })
-      await resetPasswordRecord.deleteOne();
       return {code: 200,success: true,message: 'User password reset successfully',}
     }
     
