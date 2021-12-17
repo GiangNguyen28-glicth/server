@@ -5,5 +5,6 @@ export declare class CartController {
     private cartservice;
     constructor(cartservice: CartService);
     addtoCart(cartdto: CartDTO, user: User): Promise<any>;
-    dividePassbook(user: User, quantity: number): Promise<any>;
+    dividePassbook(user: User): Promise<any>;
+    newSuggest(quantity: any, user: User): Promise<any>;
 }

@@ -53,8 +53,6 @@ export class PaypalService{
         const payerId = request.query.PayerID;
         const paymentId = request.query.paymentId;
         if(this.usercheckout==undefined){
-            console.log(1);
-            console.log(this.usercheckout);
             response.send('Failed');
             return;
         }

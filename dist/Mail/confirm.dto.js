@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.confirmEmail = void 0;
+exports.MailAction = exports.confirmEmail = void 0;
 const class_validator_1 = require("class-validator");
 class confirmEmail {
 }
@@ -19,4 +19,9 @@ __decorate([
     __metadata("design:type", String)
 ], confirmEmail.prototype, "token", void 0);
 exports.confirmEmail = confirmEmail;
+var MailAction;
+(function (MailAction) {
+    MailAction["LG"] = "LG";
+    MailAction["PW"] = "PW";
+})(MailAction = exports.MailAction || (exports.MailAction = {}));
 //# sourceMappingURL=confirm.dto.js.map

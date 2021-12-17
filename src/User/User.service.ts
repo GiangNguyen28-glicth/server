@@ -18,6 +18,7 @@ import { Checkout } from "src/Paypal/DTO/checkout.dto";
 import { PassBookService } from "src/PassBook/PassBook.service";
 import { PassBook } from "src/PassBook/Schema/PassBook.Schema";
 import { CommonService } from "src/Utils/common.service";
+import { MailAction } from "src/Mail/confirm.dto";
 @Injectable()
 export class UserService{
   
@@ -111,7 +112,7 @@ export class UserService{
       if (user && (await bcrypt.compare(password, user.password))&&user.isEmailConfirmed) {
         this.phone=user.phoneNumber;
         const code=await this.randomotp();
-        await this.mailservice.sendEmail(email,"LG",code,user.fullName);
+        await this.mailservice.sendEmail(email,MailAction.LG,code,user.fullName);
         await this.otpmodel.findOneAndDelete({phoneNumber:user.phoneNumber});
         const otp=await this.otpmodel.create({userId:user._id,phoneNumber:user.phoneNumber,code:code})
         otp.save();
@@ -136,7 +137,7 @@ export class UserService{
       await this.otpmodel.findOneAndDelete({phoneNumber:phonereplace});
       const otp=await this.otpmodel.create({userId:user._id,phoneNumber:phonereplace})
       otp.save();
-      await this.mailservice.sendEmail(user.email,"LG",user.fullName)
+      await this.mailservice.sendEmail(user.email,MailAction.PW,user.fullName,"");
       //await this.sendSMS(user.phoneNumber);
     }
 
@@ -294,7 +295,7 @@ export class UserService{
     async getListUser():Promise<User[]>{
       return await this.usermodel.find({role:UserRole.USER,isEmailConfirmed:true});
     }
-    
+
     async randomotp():Promise<string>{
       let code;
       while(true){
@@ -306,5 +307,6 @@ export class UserService{
       }
       return code;
     }
+
     
 }

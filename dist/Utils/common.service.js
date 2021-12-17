@@ -24,6 +24,7 @@ let CommonService = class CommonService {
         var newDate = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
         var offset = date.getTimezoneOffset() / 60;
         var hours = date.getHours();
+        newDate.setDate(newDate.getDate() + 1);
         newDate.setHours(hours - offset);
         return newDate;
     }

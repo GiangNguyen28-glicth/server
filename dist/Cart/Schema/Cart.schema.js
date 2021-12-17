@@ -47,6 +47,22 @@ __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", Number)
 ], Cart.prototype, "totalProfit", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Number)
+], Cart.prototype, "suggest", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Number)
+], Cart.prototype, "profit", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Number)
+], Cart.prototype, "depositinpassbook", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Number)
+], Cart.prototype, "profitinpassbook", void 0);
 Cart = __decorate([
     (0, mongoose_1.Schema)()
 ], Cart);

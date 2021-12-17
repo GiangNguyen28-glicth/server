@@ -10,5 +10,9 @@ export declare class Cart {
     endDate: Date;
     deposits: number;
     totalProfit: number;
+    suggest: number;
+    profit: number;
+    depositinpassbook: number;
+    profitinpassbook: number;
 }
 export declare const CartSchema: mongoose.Schema<mongoose.Document<Cart, any, any>, mongoose.Model<mongoose.Document<Cart, any, any>, any, any, any>, {}>;

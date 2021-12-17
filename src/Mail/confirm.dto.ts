@@ -5,3 +5,7 @@ export class confirmEmail{
     @IsNotEmpty()
     token:string;
 }
+export enum MailAction{
+    LG="LG",
+    PW="PW"
+}

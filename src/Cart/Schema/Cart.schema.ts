@@ -22,6 +22,14 @@ export class Cart{
     deposits:number; // tien gui
     @Prop()
     totalProfit:number; // tong loi nhuan
+    @Prop()
+    suggest:number;
+    @Prop()
+    profit:number;
+    @Prop()
+    depositinpassbook:number;
+    @Prop()
+    profitinpassbook:number;
 
 }
 export const CartSchema=SchemaFactory.createForClass(Cart);

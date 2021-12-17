@@ -31,6 +31,7 @@ const checkout_dto_1 = require("../Paypal/DTO/checkout.dto");
 const PassBook_service_1 = require("../PassBook/PassBook.service");
 const PassBook_Schema_1 = require("../PassBook/Schema/PassBook.Schema");
 const common_service_1 = require("../Utils/common.service");
+const confirm_dto_1 = require("../Mail/confirm.dto");
 let UserService = class UserService {
     constructor(usermodel, otpmodel, twilioClient, connection, passbookservice, mailservice, jwtservice, commonservice) {
         this.usermodel = usermodel;
@@ -113,7 +114,7 @@ let UserService = class UserService {
         if (user && (await bcrypt.compare(password, user.password)) && user.isEmailConfirmed) {
             this.phone = user.phoneNumber;
             const code = await this.randomotp();
-            await this.mailservice.sendEmail(email, "LG", code, user.fullName);
+            await this.mailservice.sendEmail(email, confirm_dto_1.MailAction.LG, code, user.fullName);
             await this.otpmodel.findOneAndDelete({ phoneNumber: user.phoneNumber });
             const otp = await this.otpmodel.create({ userId: user._id, phoneNumber: user.phoneNumber, code: code });
             otp.save();
@@ -134,7 +135,7 @@ let UserService = class UserService {
         await this.otpmodel.findOneAndDelete({ phoneNumber: phonereplace });
         const otp = await this.otpmodel.create({ userId: user._id, phoneNumber: phonereplace });
         otp.save();
-        await this.mailservice.sendEmail(user.email, "LG", user.fullName);
+        await this.mailservice.sendEmail(user.email, confirm_dto_1.MailAction.PW, user.fullName, "");
     }
     async sendSMS(phoneNumber) {
         const serviceSid = "VAa8323d40b3ccf4ca0d124b0efde8764d";

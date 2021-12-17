@@ -43,11 +43,11 @@ export class PassBookService{
     }
 
     async getTotalCycles(passbookid,user:User):Promise<any>{
-        CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PROFIT=passbookid.toString()+"PROFIT";
-        const checkCache=await this.cacheManager.get(CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PROFIT);
-        if(checkCache!=undefined){
-            return checkCache;
-        }
+        // CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PROFIT=passbookid.toString()+"PROFIT";
+        // const checkCache=await this.cacheManager.get(CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PROFIT);
+        // if(checkCache!=undefined){
+        //     return checkCache;
+        // }
         var endDate=this.commonservice.convertDatetime(new Date());
         let value;
         const svd=await this.passbookmodel.findOne({_id:passbookid,userId:user._id});
@@ -76,9 +76,10 @@ export class PassBookService{
         console.log(nooption);
         money=money+money*(nooption/100)*(date-1)/360;
         result[result.length-1].endDate=endDate;
-        await this.cacheManager.set(CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PROFIT,{data:result,money:money},{ ttl: 1000 });
+        // await this.cacheManager.set(CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PROFIT,{data:result,money:money},{ ttl: 1000 });
         return {
-            data:result,
+            passbook:svd,
+            cycles:result,
             money:money
         };
     }

@@ -14,5 +14,6 @@ export declare class CartService {
     private optionservice;
     constructor(cartmodel: Model<CartDocument>, passbookservice: PassBookService, userservice: UserService, commonservice: CommonService, optionservice: OptionService);
     addtoCart(cartdto: CartDTO, user: User): Promise<any>;
-    dividePassbook(quantity: number, user: User): Promise<any>;
+    newSuggest(quantity: number, user: User): Promise<any>;
+    checkoutPassbook(user: User): Promise<any>;
 }

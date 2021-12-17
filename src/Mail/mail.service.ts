@@ -4,15 +4,17 @@ import { UserService } from "src/User/User.service"
 import * as nodemailer from 'nodemailer';
 import * as fs from 'fs';
 import * as path from "path"
+import { MailAction } from "./confirm.dto";
 @Injectable()
 export class MailService{
     constructor(@Inject(forwardRef(() => UserService)) private userService: UserService,private jwtservice:JwtService){}
   
     async sendEmail(email:string,option:string,code?:string,fullname?:string): Promise<void>{
       let html;
-        if(option=="LG"){
+        if(option==MailAction.LG){
           console.log(fullname);
-         html=await this.checkOption(option,code,fullname,"")
+          console.log(code);
+         html=await this.checkOption(MailAction.LG,code,fullname,"")
         }
         else{
           const payload={email};
@@ -21,7 +23,7 @@ export class MailService{
           expiresIn: `${process.env.JWT_VERIFICATION_TOKEN_EXPIRATION_TIME}s`
           });
           const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
-          html=await this.checkOption(option,"",fullname,url)
+          html=await this.checkOption(MailAction.PW,"",fullname,url)
         }
         const transporter =await nodemailer.createTransport({
           service:"gmail",

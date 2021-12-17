@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Param, Patch, Post, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { GetUser } from "src/decorators/getuser.decorators";
 import { User } from "src/User/Schema/User.Schema";
@@ -19,9 +19,15 @@ export class CartController{
     //     return this.cartservice.checkout(user);
     // }
 
-    @Post('/dividepassbook/:quantity')
+    @Post('/checkout')
     @UseGuards(AuthGuard())
-    async dividePassbook(@GetUser() user:User,@Param('quantity') quantity:number):Promise<any>{
-        return this.cartservice.dividePassbook(quantity,user);
+    async dividePassbook(@GetUser() user:User):Promise<any>{
+        return this.cartservice.checkoutPassbook(user);
+    }
+
+    @Patch('/newsuggest/:quantity')
+    @UseGuards(AuthGuard())
+    async newSuggest(@Param('quantity') quantity,@GetUser() user:User):Promise<any>{
+        return await this.cartservice.newSuggest(quantity,user);
     }
 } 

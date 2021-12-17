@@ -19,6 +19,7 @@ const User_service_1 = require("../User/User.service");
 const nodemailer = require("nodemailer");
 const fs = require("fs");
 const path = require("path");
+const confirm_dto_1 = require("./confirm.dto");
 let MailService = class MailService {
     constructor(userService, jwtservice) {
         this.userService = userService;
@@ -26,9 +27,10 @@ let MailService = class MailService {
     }
     async sendEmail(email, option, code, fullname) {
         let html;
-        if (option == "LG") {
+        if (option == confirm_dto_1.MailAction.LG) {
             console.log(fullname);
-            html = await this.checkOption(option, code, fullname, "");
+            console.log(code);
+            html = await this.checkOption(confirm_dto_1.MailAction.LG, code, fullname, "");
         }
         else {
             const payload = { email };
@@ -37,7 +39,7 @@ let MailService = class MailService {
                 expiresIn: `${process.env.JWT_VERIFICATION_TOKEN_EXPIRATION_TIME}s`
             });
             const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
-            html = await this.checkOption(option, "", fullname, url);
+            html = await this.checkOption(confirm_dto_1.MailAction.PW, "", fullname, url);
         }
         const transporter = await nodemailer.createTransport({
             service: "gmail",

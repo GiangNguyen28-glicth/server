@@ -26,8 +26,11 @@ let CartController = class CartController {
     async addtoCart(cartdto, user) {
         return this.cartservice.addtoCart(cartdto, user);
     }
-    async dividePassbook(user, quantity) {
-        return this.cartservice.dividePassbook(quantity, user);
+    async dividePassbook(user) {
+        return this.cartservice.checkoutPassbook(user);
+    }
+    async newSuggest(quantity, user) {
+        return await this.cartservice.newSuggest(quantity, user);
     }
 };
 __decorate([
@@ -40,14 +43,22 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], CartController.prototype, "addtoCart", null);
 __decorate([
-    (0, common_1.Post)('/dividepassbook/:quantity'),
+    (0, common_1.Post)('/checkout'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     __param(0, (0, getuser_decorators_1.GetUser)()),
-    __param(1, (0, common_1.Param)('quantity')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [User_Schema_1.User, Number]),
+    __metadata("design:paramtypes", [User_Schema_1.User]),
     __metadata("design:returntype", Promise)
 ], CartController.prototype, "dividePassbook", null);
+__decorate([
+    (0, common_1.Patch)('/newsuggest/:quantity'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
+    __param(0, (0, common_1.Param)('quantity')),
+    __param(1, (0, getuser_decorators_1.GetUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, User_Schema_1.User]),
+    __metadata("design:returntype", Promise)
+], CartController.prototype, "newSuggest", null);
 CartController = __decorate([
     (0, common_1.Controller)('/cart'),
     __metadata("design:paramtypes", [Cart_service_1.CartService])
