@@ -251,7 +251,7 @@ export class UserService{
       }
       return {
         data:{firstname:user.firstName,lastname:user.lastName,fullname:user.fullName,money:user.currentMoney,
-        address:user.address,phonenumnber:user.phoneNumber}
+        address:user.address,phonenumnber:user.phoneNumber,email:user.email}
       }
     }
 }
