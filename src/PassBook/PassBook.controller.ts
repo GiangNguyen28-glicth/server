@@ -3,7 +3,6 @@ import { AuthGuard } from "@nestjs/passport";
 import { GetUser } from "src/decorators/getuser.decorators";
 import { User } from "src/User/Schema/User.Schema";
 import { IReponse } from "src/Utils/IReponse";
-import { CacheKeyPassbook } from "./DTO/cache.key.dto";
 import { PassBookDTO } from "./DTO/PassBook.dto";
 import { PassBookService } from "./PassBook.service";
 import { PassBook } from "./Schema/PassBook.Schema";

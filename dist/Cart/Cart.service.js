@@ -38,14 +38,21 @@ let CartService = class CartService {
         const endDate = this.commonservice.convertDatetime(new Date());
         const cartExisting = await this.cartmodel.findOne({ userId: user._id });
         const passbookexisting = await this.optionservice.findOption(cartdto.option);
+        const valueofOption = await this.optionservice.GetValueOption(startDate, cartdto.option);
         if (!passbookexisting) {
             return { code: 500, success: false, message: "Option not exist" };
         }
-        let totalProfit = Number(((cartdto.deposits * (cartdto.option / 100)) * (cartdto.option / 12))) + cartdto.deposits;
-        endDate.setMonth(endDate.getMonth() + cartdto.option);
-        if (cartdto.deposits > user.currentMoney) {
-            return { code: 500, success: false, message: "Money not enough", };
+        if (cartdto.deposits < 1000000) {
+            return { code: 500, success: false, message: "At least 1.000.000" };
         }
+        if (cartdto.deposits > user.currentMoney) {
+            const tienthieu = cartdto.deposits - user.currentMoney;
+            return {
+                code: 500, success: false, message: `Not enough money in the account, You need ${tienthieu} VND`, money: tienthieu
+            };
+        }
+        let totalProfit = Number(((cartdto.deposits * (valueofOption / 100)) * (cartdto.option / 12))) + cartdto.deposits;
+        endDate.setMonth(endDate.getMonth() + cartdto.option);
         if (cartExisting) {
             cartExisting.optionId = passbookexisting._id;
             cartExisting.totalProfit = totalProfit;
@@ -71,14 +78,16 @@ let CartService = class CartService {
             };
         }
         if (user.currentMoney < cartExisting.deposits) {
+            const tienthieu = cartExisting.deposits - user.currentMoney;
             return {
-                code: 400, success: false, message: "Not enough money in the account"
+                code: 400, success: false, message: `Not enough money in the account, You need ${tienthieu} VND`, money: tienthieu
             };
         }
         const money = cartExisting.deposits / quantity;
-        if (money < 100) {
+        if (money < 1000000) {
+            const tienthieu = 1000000 - money;
             return {
-                code: 500, success: false, message: "Not enough money in the account"
+                code: 500, success: false, message: `Not enough money in the account,at least 1.000.000 in each passsbook,You need ${tienthieu * 4} VND`, money: tienthieu * 4
             };
         }
         for (var i = 0; i < quantity; i++) {
