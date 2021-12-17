@@ -36,16 +36,18 @@ let MailService = class MailService {
                 encoding: "utf-8",
             });
             const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
+            console.log(2);
             html = html.replace("<%NAME>", "ADMIN");
             html = html.replace("<%CODE>", code);
         }
         else {
             const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
-            html = html.replace("<%NAME>", "ADMIN");
-            html = html.replace("<%LINK>", url);
+            console.log(1);
             html = fs.readFileSync(path.resolve(__dirname, '../emailtemplate/emailVerify.hbs'), {
                 encoding: "utf-8",
             });
+            html = html.replace("<%NAME>", "ADMIN");
+            html = html.replace("<%LINK>", url);
         }
         const transporter = await nodemailer.createTransport({
             service: "gmail",

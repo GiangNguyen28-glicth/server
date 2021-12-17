@@ -19,9 +19,11 @@ const checkout_dto_1 = require("./DTO/checkout.dto");
 const passport_1 = require("@nestjs/passport");
 const getuser_decorators_1 = require("../decorators/getuser.decorators");
 const User_Schema_1 = require("../User/Schema/User.Schema");
+const common_service_1 = require("../Utils/common.service");
 let PaypalController = class PaypalController {
-    constructor(paypalservice) {
+    constructor(paypalservice, commonservice) {
         this.paypalservice = paypalservice;
+        this.commonservice = commonservice;
     }
     PayPal(response, checkout, user) {
         console.log(checkout.money);
@@ -37,6 +39,9 @@ let PaypalController = class PaypalController {
     }
     Cancel(response, request) {
         return "Cancel";
+    }
+    async getMoney(money) {
+        return await this.paypalservice.convertmoney(Number(money));
     }
 };
 __decorate([
@@ -78,9 +83,16 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], PaypalController.prototype, "Cancel", null);
+__decorate([
+    (0, common_1.Get)('/getmoney/:money'),
+    __param(0, (0, common_1.Param)('money')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], PaypalController.prototype, "getMoney", null);
 PaypalController = __decorate([
     (0, common_1.Controller)('/paypal'),
-    __metadata("design:paramtypes", [Paypay_service_1.PaypalService])
+    __metadata("design:paramtypes", [Paypay_service_1.PaypalService, common_service_1.CommonService])
 ], PaypalController);
 exports.PaypalController = PaypalController;
 //# sourceMappingURL=Paypal.controller.js.map
