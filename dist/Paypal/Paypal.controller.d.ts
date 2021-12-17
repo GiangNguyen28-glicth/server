@@ -12,5 +12,5 @@ export declare class PaypalController {
     Success(response: Response, request: Request): Promise<void>;
     Test(): Promise<number>;
     Cancel(response: Response, request: Request): string;
-    getMoney(money: any): Promise<number>;
+    getMoney(): Promise<number>;
 }

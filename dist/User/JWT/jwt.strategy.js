@@ -32,6 +32,7 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
     async validate(payload) {
         let { id, iat } = payload;
         let date = await this.commonservice.convertDatetime(new Date(Number(iat) * 1000));
+        date.setDate(date.getDate() + 1);
         const user = await this.usermodel.findOne({ _id: id });
         if (user.isChangePassword > date) {
             throw new common_1.UnauthorizedException();

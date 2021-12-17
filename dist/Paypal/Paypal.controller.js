@@ -40,8 +40,8 @@ let PaypalController = class PaypalController {
     Cancel(response, request) {
         return "Cancel";
     }
-    async getMoney(money) {
-        return await this.paypalservice.convertmoney(Number(money));
+    async getMoney() {
+        return await this.paypalservice.convertmoney(Number(1));
     }
 };
 __decorate([
@@ -84,10 +84,9 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], PaypalController.prototype, "Cancel", null);
 __decorate([
-    (0, common_1.Get)('/getmoney/:money'),
-    __param(0, (0, common_1.Param)('money')),
+    (0, common_1.Get)('/getmoney'),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], PaypalController.prototype, "getMoney", null);
 PaypalController = __decorate([

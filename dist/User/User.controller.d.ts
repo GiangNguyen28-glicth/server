@@ -33,4 +33,5 @@ export declare class UserController {
         email: any;
         password: any;
     }): Promise<any>;
+    getListUser(): Promise<User[]>;
 }

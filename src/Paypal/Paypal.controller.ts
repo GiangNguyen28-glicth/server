@@ -36,8 +36,8 @@ export class PaypalController{
        return "Cancel"
     }
 
-    @Get('/getmoney/:money')
-    async getMoney(@Param('money') money):Promise<number>{
-       return await this.paypalservice.convertmoney(Number(money));
+    @Get('/getmoney')
+    async getMoney():Promise<number>{
+       return await this.paypalservice.convertmoney(Number(1));
     }
 }

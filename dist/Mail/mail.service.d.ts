@@ -8,5 +8,5 @@ export declare class MailService {
     decodeConfirmationToken(token: string): Promise<any>;
     confirmEmail(email: string): Promise<void>;
     resendConfirmationLink(id: any): Promise<void>;
-    sendMailforlogin(option: string, code?: string, url?: string, fullname?: string): Promise<any>;
+    checkOption(option: string, code?: string, fullname?: string, url?: string): Promise<any>;
 }
