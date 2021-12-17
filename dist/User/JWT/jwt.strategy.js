@@ -18,20 +18,24 @@ const mongoose_1 = require("@nestjs/mongoose");
 const passport_1 = require("@nestjs/passport");
 const mongoose_2 = require("mongoose");
 const passport_jwt_1 = require("passport-jwt");
+const common_service_1 = require("../../Utils/common.service");
 const User_Schema_1 = require("../Schema/User.Schema");
 let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy) {
-    constructor(usermodel) {
+    constructor(usermodel, commonservice) {
         super({
             secretOrKey: 'topSecret51',
             jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
         });
         this.usermodel = usermodel;
+        this.commonservice = commonservice;
     }
-    async validate(payload, ctx) {
-        const { id } = payload;
-        const req = ctx.switchToHttp().getRequest();
-        console.log(req.headers.authorization.split(" ")[1]);
+    async validate(payload) {
+        let { id, iat } = payload;
+        let date = await this.commonservice.convertDatetime(new Date(Number(iat) * 1000));
         const user = await this.usermodel.findOne({ _id: id });
+        if (user.isChangePassword > date) {
+            throw new common_1.UnauthorizedException();
+        }
         if (!user) {
             throw new common_1.UnauthorizedException();
         }
@@ -40,7 +44,7 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
 };
 JwtStrategy = __decorate([
     __param(0, (0, mongoose_1.InjectModel)(User_Schema_1.User.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __metadata("design:paramtypes", [mongoose_2.Model, common_service_1.CommonService])
 ], JwtStrategy);
 exports.JwtStrategy = JwtStrategy;
 //# sourceMappingURL=jwt.strategy.js.map
