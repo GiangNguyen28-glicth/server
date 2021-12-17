@@ -27,8 +27,10 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
         });
         this.usermodel = usermodel;
     }
-    async validate(payload, request) {
+    async validate(payload, ctx) {
         const { id } = payload;
+        const req = ctx.switchToHttp().getRequest();
+        console.log(req.headers.authorization.split(" ")[1]);
         const user = await this.usermodel.findOne({ _id: id });
         if (!user) {
             throw new common_1.UnauthorizedException();

@@ -1,4 +1,4 @@
-import { UnauthorizedException } from "@nestjs/common";
+import { ExecutionContext, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectModel } from "@nestjs/mongoose";
 import { PassportStrategy } from "@nestjs/passport";
@@ -14,10 +14,10 @@ export class JwtStrategy extends PassportStrategy(Strategy){
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
           });
     }
-    async validate(payload: JwtPayload,request:Request): Promise<User> {
+    async validate(payload: JwtPayload,ctx: ExecutionContext): Promise<User> {
         const { id } = payload;
-        // const req = ctx.switchToHttp().getRequest();
-        // console.log(req.headers.authorization.split(" ")[1]);
+        const req = ctx.switchToHttp().getRequest();
+        console.log(req.headers.authorization.split(" ")[1]);
         const user: User = await this.usermodel.findOne({_id:id});
         if (!user) {
           throw new UnauthorizedException();
