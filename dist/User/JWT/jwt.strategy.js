@@ -27,7 +27,7 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
         });
         this.usermodel = usermodel;
     }
-    async validate(payload, request) {
+    async validate(payload, ctx) {
         const { id } = payload;
         const user = await this.usermodel.findOne({ _id: id });
         if (!user) {

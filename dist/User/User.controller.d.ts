@@ -28,4 +28,5 @@ export declare class UserController {
     Addmoney(checkout: Checkout, user: User): Promise<IReponse<User>>;
     GetAllTransaction(user: User): Promise<[HistoryAction]>;
     getUser(id: any): Promise<any>;
+    getUserbyToken(user: User): Promise<User>;
 }

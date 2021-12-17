@@ -1,12 +1,10 @@
-import { UnauthorizedException } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
+import { ExecutionContext, UnauthorizedException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { PassportStrategy } from "@nestjs/passport";
 import { Model } from "mongoose";
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { User, UserDocument } from "../Schema/User.Schema";
 import { JwtPayload } from "./jwt.payload";
-import { Request } from "express";
 export class JwtStrategy extends PassportStrategy(Strategy){
     constructor(@InjectModel(User.name) private usermodel:Model<UserDocument>){
         super({
@@ -14,7 +12,7 @@ export class JwtStrategy extends PassportStrategy(Strategy){
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
           });
     }
-    async validate(payload: JwtPayload,request:Request): Promise<User> {
+    async validate(payload: JwtPayload,ctx: ExecutionContext): Promise<User> {
         const { id } = payload;
         // const req = ctx.switchToHttp().getRequest();
         // console.log(req.headers.authorization.split(" ")[1]);
