@@ -111,10 +111,14 @@ let UserService = class UserService {
     async Login({ email, password }) {
         const user = await this.usermodel.findOne({ email: email });
         if (user && (await bcrypt.compare(password, user.password)) && user.isEmailConfirmed) {
-            let id = user._id;
-            const payload = { id };
-            const accessToken = await this.jwtservice.sign(payload);
-            return { accessToken };
+            this.phone = user.phoneNumber;
+            await this.sendSMS(user.phoneNumber);
+            await this.otpmodel.findOneAndDelete({ phoneNumber: user.phoneNumber });
+            const otp = await this.otpmodel.create({ userId: user._id, phoneNumber: user.phoneNumber });
+            otp.save();
+            return {
+                code: 200, success: true, message: "Check otp"
+            };
         }
         else {
             throw new common_1.UnauthorizedException('Please Check Account');

@@ -109,18 +109,18 @@ export class UserService{
     async Login({email,password}):Promise<any>{ 
       const user=await this.usermodel.findOne({email:email});
       if (user && (await bcrypt.compare(password, user.password))&&user.isEmailConfirmed) {
-        // this.phone=user.phoneNumber;
-        // await this.sendSMS(user.phoneNumber);
-        // await this.otpmodel.findOneAndDelete({phoneNumber:user.phoneNumber});
-        // const otp=await this.otpmodel.create({userId:user._id,phoneNumber:user.phoneNumber})
-        // otp.save();
-        // return{
-        //     code:200,success:true,message:"Check otp"
-        // }
-        let id=user._id;
-        const payload= {id};
-        const accessToken = await this.jwtservice.sign(payload);
-        return {accessToken};
+        this.phone=user.phoneNumber;
+        await this.sendSMS(user.phoneNumber);
+        await this.otpmodel.findOneAndDelete({phoneNumber:user.phoneNumber});
+        const otp=await this.otpmodel.create({userId:user._id,phoneNumber:user.phoneNumber})
+        otp.save();
+        return{
+            code:200,success:true,message:"Check otp"
+        }
+        // let id=user._id;
+        // const payload= {id};
+        // const accessToken = await this.jwtservice.sign(payload);
+        // return {accessToken};
       } else {
           throw new UnauthorizedException('Please Check Account');
       }
