@@ -69,4 +69,10 @@ export class UserController{
     async getUser(@Param('id') id):Promise<any>{
         return await this.userservice.getUser(id);
     }
+
+    @Get('/getuserbytoken')
+    @UseGuards(AuthGuard())
+    async getUserbyToken(@GetUser() user:User):Promise<User>{
+        return user;
+    }
 }

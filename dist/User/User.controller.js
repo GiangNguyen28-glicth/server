@@ -59,6 +59,9 @@ let UserController = class UserController {
     async getUser(id) {
         return await this.userservice.getUser(id);
     }
+    async getUserbyToken(user) {
+        return user;
+    }
 };
 __decorate([
     (0, common_1.Post)('/signup'),
@@ -141,6 +144,14 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUser", null);
+__decorate([
+    (0, common_1.Get)('/getuserbytoken'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
+    __param(0, (0, getuser_decorators_1.GetUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [User_Schema_1.User]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getUserbyToken", null);
 UserController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [User_service_1.UserService])
