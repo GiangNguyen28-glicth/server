@@ -3,7 +3,6 @@ import { Transform, Type } from "class-transformer";
 import { ObjectId } from "mongoose";;
 import { UserRole } from "../DTO/user.dto";
 import { HistoryAction } from "../DTO/HistoryAction.obj";
-import { AdddressDTO } from "../DTO/Address.dto";
 export type UserDocument=User & Document;
 @Schema({
     toJSON: {
@@ -40,7 +39,7 @@ export class User{
     CMND:string;
 
     @Prop({type:Object})
-    address:AdddressDTO;
+    address:string;
 
     @Prop({type:Date, default: Date.now,expires:60*60*5})
 	isExprise?: Date

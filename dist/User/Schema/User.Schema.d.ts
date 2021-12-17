@@ -1,7 +1,6 @@
 import { ObjectId } from "mongoose";
 import { UserRole } from "../DTO/user.dto";
 import { HistoryAction } from "../DTO/HistoryAction.obj";
-import { AdddressDTO } from "../DTO/Address.dto";
 export declare type UserDocument = User & Document;
 export declare class User {
     _id: ObjectId;
@@ -13,7 +12,7 @@ export declare class User {
     currentMoney?: number;
     isEmailConfirmed?: boolean;
     CMND: string;
-    address: AdddressDTO;
+    address: string;
     isExprise?: Date;
     isChangePassword?: Date;
     role: UserRole;

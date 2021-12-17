@@ -29,4 +29,8 @@ export declare class UserController {
     GetAllTransaction(user: User): Promise<[HistoryAction]>;
     getUser(id: any): Promise<any>;
     getUserbyToken(user: User): Promise<User>;
+    LoginAsAdministrator({ email, password }: {
+        email: any;
+        password: any;
+    }): Promise<any>;
 }

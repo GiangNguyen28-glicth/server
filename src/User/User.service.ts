@@ -1,4 +1,4 @@
-import { BadRequestException, Body, forwardRef, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, Body, ForbiddenException, forwardRef, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { InjectConnection, InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { UserDTO, UserRole } from "./DTO/user.dto";
@@ -281,16 +281,8 @@ export class UserService{
       const user=await this.usermodel.findOne({email:email});
       if (user && (await bcrypt.compare(password, user.password))&&user.isEmailConfirmed) {
         if(user.role==UserRole.USER){
-          throw new UnauthorizedException('Please Check Account');
+          throw new ForbiddenException('Ban khong du quyen');
         }
-        // this.phone=user.phoneNumber;
-        // await this.sendSMS(user.phoneNumber);
-        // await this.otpmodel.findOneAndDelete({phoneNumber:user.phoneNumber});
-        // const otp=await this.otpmodel.create({userId:user._id,phoneNumber:user.phoneNumber})
-        // otp.save();
-        // return{
-        //     code:200,success:true,message:"Check otp"
-        // }
         let id=user._id;
         const payload= {id};
         const accessToken = await this.jwtservice.sign(payload);

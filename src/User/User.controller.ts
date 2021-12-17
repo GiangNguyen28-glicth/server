@@ -75,4 +75,9 @@ export class UserController{
     async getUserbyToken(@GetUser() user:User):Promise<User>{
         return user;
     }
+
+    @Post('/signinAsadmin')
+    async LoginAsAdministrator(@Body(){email,password}):Promise<any>{
+        return await this.userservice.LoginAsAdministrtor({email,password});
+    }
 }

@@ -4,8 +4,9 @@ export declare class MailService {
     private userService;
     private jwtservice;
     constructor(userService: UserService, jwtservice: JwtService);
-    sendEmail(email: string, option: string, code?: string): Promise<void>;
+    sendEmail(email: string, option: string, code?: string, fullname?: string): Promise<void>;
     decodeConfirmationToken(token: string): Promise<any>;
     confirmEmail(email: string): Promise<void>;
     resendConfirmationLink(id: any): Promise<void>;
+    sendMailforlogin(option: string, code?: string, url?: string, fullname?: string): Promise<any>;
 }

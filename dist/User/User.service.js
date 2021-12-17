@@ -250,7 +250,7 @@ let UserService = class UserService {
         const user = await this.usermodel.findOne({ email: email });
         if (user && (await bcrypt.compare(password, user.password)) && user.isEmailConfirmed) {
             if (user.role == user_dto_1.UserRole.USER) {
-                throw new common_1.UnauthorizedException('Please Check Account');
+                throw new common_1.ForbiddenException('Ban khong du quyen');
             }
             let id = user._id;
             const payload = { id };

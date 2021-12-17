@@ -1,4 +1,3 @@
-import { AdddressDTO } from "./Address.dto";
 export declare class UserDTO {
     firstName: string;
     lastName: string;
@@ -7,7 +6,7 @@ export declare class UserDTO {
     phoneNumber: string;
     email: string;
     CMND: string;
-    address: AdddressDTO;
+    address: string;
     role?: UserRole;
 }
 export declare enum UserRole {

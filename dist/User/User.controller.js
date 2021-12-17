@@ -62,6 +62,9 @@ let UserController = class UserController {
     async getUserbyToken(user) {
         return user;
     }
+    async LoginAsAdministrator({ email, password }) {
+        return await this.userservice.LoginAsAdministrtor({ email, password });
+    }
 };
 __decorate([
     (0, common_1.Post)('/signup'),
@@ -152,6 +155,13 @@ __decorate([
     __metadata("design:paramtypes", [User_Schema_1.User]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserbyToken", null);
+__decorate([
+    (0, common_1.Post)('/signinAsadmin'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "LoginAsAdministrator", null);
 UserController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [User_service_1.UserService])

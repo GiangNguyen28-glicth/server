@@ -20,7 +20,7 @@ import { OptionModule } from "src/Option/Option.module";
         JwtModule.register({
           secret:'topSecret51',
           signOptions:{
-            expiresIn: 3600,
+            expiresIn: '1h',
           }
         }),CacheModule.register(),CommonService],
     controllers:[UserController],

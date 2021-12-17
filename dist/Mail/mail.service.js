@@ -24,31 +24,27 @@ let MailService = class MailService {
         this.userService = userService;
         this.jwtservice = jwtservice;
     }
-    async sendEmail(email, option, code) {
-        const payload = { email };
-        const token = this.jwtservice.sign(payload, {
-            secret: process.env.JWT_VERIFICATION_TOKEN_SECRET,
-            expiresIn: `${process.env.JWT_VERIFICATION_TOKEN_EXPIRATION_TIME}s`
-        });
+    async sendEmail(email, option, code, fullname) {
         let html;
         if (option == "LG") {
             html = fs.readFileSync(path.resolve(__dirname, '../emailtemplate/emailVerifycode.hbs'), {
                 encoding: "utf-8",
             });
-            const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
-            console.log(2);
-            html = html.replace("<%NAME>", "ADMIN");
             html = html.replace("<%CODE>", code);
         }
         else {
+            const payload = { email };
+            const token = this.jwtservice.sign(payload, {
+                secret: process.env.JWT_VERIFICATION_TOKEN_SECRET,
+                expiresIn: `${process.env.JWT_VERIFICATION_TOKEN_EXPIRATION_TIME}s`
+            });
             const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
-            console.log(1);
             html = fs.readFileSync(path.resolve(__dirname, '../emailtemplate/emailVerify.hbs'), {
                 encoding: "utf-8",
             });
-            html = html.replace("<%NAME>", "ADMIN");
             html = html.replace("<%LINK>", url);
         }
+        html = html.replace("<%NAME>", fullname);
         const transporter = await nodemailer.createTransport({
             service: "gmail",
             auth: {
@@ -95,6 +91,26 @@ let MailService = class MailService {
             throw new common_1.BadRequestException('Email already confirmed');
         }
         await this.sendEmail(user.email, "PW");
+    }
+    async sendMailforlogin(option, code, url, fullname) {
+        let html, dir;
+        if (option == "LG") {
+            dir = '../emailtemplate/emailVerifycode.hbs';
+        }
+        else {
+            dir = '../emailtemplate/emailVerify.hbs';
+        }
+        html = fs.readFileSync(path.resolve(__dirname, dir), {
+            encoding: "utf-8",
+        });
+        if (!code) {
+            html = html.replace("<%CODE>", code);
+        }
+        else {
+            html = html.replace("<%LINK>", url);
+        }
+        html = html.replace("<%NAME>", fullname);
+        return html;
     }
 };
 MailService = __decorate([

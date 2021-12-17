@@ -32,7 +32,7 @@ UserModule = __decorate([
             jwt_1.JwtModule.register({
                 secret: 'topSecret51',
                 signOptions: {
-                    expiresIn: 3600,
+                    expiresIn: '1h',
                 }
             }), common_1.CacheModule.register(), common_service_1.CommonService],
         controllers: [User_controller_1.UserController],

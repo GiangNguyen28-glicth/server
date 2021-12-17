@@ -1,6 +1,5 @@
 
 import { IsEmail, IsOptional, IsString, Matches } from "class-validator";
-import { AdddressDTO } from "./Address.dto";
 export class UserDTO{
     @IsString()
     firstName:string;
@@ -20,7 +19,7 @@ export class UserDTO{
     @IsEmail()
     email:string;
     CMND:string;
-    address:AdddressDTO;
+    address:string;
     @IsOptional()
     role?:UserRole
 }
