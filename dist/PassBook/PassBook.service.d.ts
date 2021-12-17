@@ -22,4 +22,5 @@ export declare class PassBookService {
     GetPassbookIsNotActive(user: User): Promise<PassBook[]>;
     GetPassBookById(passbookid: any, user: User): Promise<any>;
     withdrawMoneyPassbook(passbookid: any, user: User): Promise<PassBook>;
+    getAllPassbook(): Promise<PassBook[]>;
 }

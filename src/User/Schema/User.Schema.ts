@@ -36,7 +36,7 @@ export class User{
     @Prop({default:false})
     isEmailConfirmed?:boolean;
 
-    @Prop({unique:true})
+    @Prop()
     CMND:string;
 
     @Prop({type:Object})

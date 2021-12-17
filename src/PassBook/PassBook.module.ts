@@ -9,7 +9,7 @@ import { CommonService } from "src/Utils/common.service";
 
 @Module({
     imports:[MongooseModule.forFeature([{name:PassBook.name,schema:PassBookSchema}]),
-    forwardRef(()=>UserModule),OptionModule,CacheModule.register()],
+    forwardRef(()=>UserModule),forwardRef(()=>OptionModule),CacheModule.register()],
     controllers:[PassBookController],
     providers:[PassBookService,CommonService],
     exports:[PassBookService]

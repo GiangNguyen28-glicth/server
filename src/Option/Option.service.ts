@@ -1,4 +1,4 @@
-import { CACHE_MANAGER, Inject, Injectable } from "@nestjs/common";
+import { CACHE_MANAGER, forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { newOptionDTO } from "./DTO/newOption.dto";
@@ -41,7 +41,7 @@ export class OptionService{
     }
 
     async GetValueOption(date:Date,option:number):Promise<number>{
-        let temp2;
+        date=await this.commonservice.convertDatetime(date);
         const result=await this.optionmodel.findOne({option:option});
         if(!result.history.length ||result.history[result.history.length-1].createAt<date){
             return result.value;

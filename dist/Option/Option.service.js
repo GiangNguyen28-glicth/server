@@ -52,7 +52,7 @@ let OptionService = class OptionService {
         return optionOld;
     }
     async GetValueOption(date, option) {
-        let temp2;
+        date = await this.commonservice.convertDatetime(date);
         const result = await this.optionmodel.findOne({ option: option });
         if (!result.history.length || result.history[result.history.length - 1].createAt < date) {
             return result.value;

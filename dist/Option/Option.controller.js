@@ -14,6 +14,10 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OptionController = void 0;
 const common_1 = require("@nestjs/common");
+const passport_1 = require("@nestjs/passport");
+const role_decorators_1 = require("../decorators/role.decorators");
+const role_guard_1 = require("../decorators/role.guard");
+const user_dto_1 = require("../User/DTO/user.dto");
 const newOption_dto_1 = require("./DTO/newOption.dto");
 const Option_dto_1 = require("./DTO/Option.dto");
 const Option_service_1 = require("./Option.service");
@@ -32,7 +36,6 @@ let OptionController = class OptionController {
     }
     async GetValueOption(option) {
         let date = new Date();
-        console.log(await this.optionService.GetValueOption(date, option.option));
         return await this.optionService.GetValueOption(date, option.option);
     }
     async GetCurrentOptionValue(Year) {
@@ -41,6 +44,8 @@ let OptionController = class OptionController {
     }
 };
 __decorate([
+    (0, role_decorators_1.hasRoles)(user_dto_1.UserRole.ADMIN),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)(), role_guard_1.RolesGuard),
     (0, common_1.Post)('/saveOption'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -48,12 +53,16 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], OptionController.prototype, "saveOption", null);
 __decorate([
+    (0, role_decorators_1.hasRoles)(user_dto_1.UserRole.ADMIN),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)(), role_guard_1.RolesGuard),
     (0, common_1.Get)('/findall'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], OptionController.prototype, "findAllOption", null);
 __decorate([
+    (0, role_decorators_1.hasRoles)(user_dto_1.UserRole.ADMIN),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)(), role_guard_1.RolesGuard),
     (0, common_1.Put)('/updateOption/:id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),

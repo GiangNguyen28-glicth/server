@@ -36,7 +36,7 @@ export declare class UserService {
         password: any;
     }): Promise<any>;
     forgotpassword(phoneNumber: string): Promise<void>;
-    sendSMS(phoneNumber: string): Promise<void>;
+    sendSMS(phoneNumber: string): Promise<any>;
     confirmPhoneNumber(verificationCode: string): Promise<{
         accessToken: any;
     }>;
@@ -51,4 +51,9 @@ export declare class UserService {
     NaptienATM(checkout: Checkout, user: User): Promise<IReponse<User>>;
     getAllTransaction(user: User): Promise<[HistoryAction]>;
     getUser(id: any): Promise<any>;
+    updateRole(role: string, user: User): Promise<any>;
+    LoginAsAdministrtor({ email, password }: {
+        email: any;
+        password: any;
+    }): Promise<any>;
 }

@@ -20,11 +20,12 @@ const sms_schema_1 = require("./Schema/sms.schema");
 const jwt_strategy_1 = require("./JWT/jwt.strategy");
 const PassBook_module_1 = require("../PassBook/PassBook.module");
 const common_service_1 = require("../Utils/common.service");
+const Option_module_1 = require("../Option/Option.module");
 let UserModule = class UserModule {
 };
 UserModule = __decorate([
     (0, common_1.Module)({
-        imports: [(0, common_1.forwardRef)(() => mail_module_1.MailModule), (0, common_1.forwardRef)(() => PassBook_module_1.PassBookModule),
+        imports: [(0, common_1.forwardRef)(() => mail_module_1.MailModule), (0, common_1.forwardRef)(() => PassBook_module_1.PassBookModule), (0, common_1.forwardRef)(() => Option_module_1.OptionModule),
             mongoose_1.MongooseModule.forFeature([{ name: User_Schema_1.User.name, schema: User_Schema_1.UserSchema }]),
             mongoose_1.MongooseModule.forFeature([{ name: sms_schema_1.OTP.name, schema: sms_schema_1.OTPSchema }]),
             passport_1.PassportModule.register({ defaultStrategy: 'jwt' }),

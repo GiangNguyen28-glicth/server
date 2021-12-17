@@ -51,9 +51,13 @@ let UserService = class UserService {
         if (passwordConfirm != password) {
             return { code: 500, success: false, message: "Password not match" };
         }
-        const userExisting = await this.usermodel.findOne({ email: email });
-        if (userExisting) {
-            return { code: 500, success: false, message: "User Existing" };
+        const userExistingEmail = await this.usermodel.findOne({ email: email });
+        if (userExistingEmail) {
+            return { code: 500, success: false, message: "Email Existing" };
+        }
+        const userExistingPhone = await this.usermodel.findOne({ phoneNumber: phoneNumber });
+        if (userExistingPhone) {
+            return { code: 500, success: false, message: "Phone Number Existing" };
         }
         try {
             const date = await this.commonservice.convertDatetime(new Date());
@@ -107,14 +111,10 @@ let UserService = class UserService {
     async Login({ email, password }) {
         const user = await this.usermodel.findOne({ email: email });
         if (user && (await bcrypt.compare(password, user.password)) && user.isEmailConfirmed) {
-            this.phone = user.phoneNumber;
-            await this.sendSMS(user.phoneNumber);
-            await this.otpmodel.findOneAndDelete({ phoneNumber: user.phoneNumber });
-            const otp = await this.otpmodel.create({ userId: user._id, phoneNumber: user.phoneNumber });
-            otp.save();
-            return {
-                code: 200, success: true, message: "Check otp"
-            };
+            let id = user._id;
+            const payload = { id };
+            const accessToken = await this.jwtservice.sign(payload);
+            return { accessToken };
         }
         else {
             throw new common_1.UnauthorizedException('Please Check Account');
@@ -134,6 +134,11 @@ let UserService = class UserService {
     async sendSMS(phoneNumber) {
         const serviceSid = "VA034959ee2470c4c29c135bd6a4e9368d";
         this.phone = phoneNumber;
+        if (!this.phone) {
+            return {
+                code: 500, success: false, message: "Phone number null"
+            };
+        }
         this.twilioClient.verify.services(serviceSid)
             .verifications
             .create({ to: phoneNumber, channel: 'sms' });
@@ -159,6 +164,7 @@ let UserService = class UserService {
         });
     }
     async changPassword(userId, changepassword) {
+        const date = await this.commonservice.convertDatetime(new Date());
         const { newPassword, ConfirmPassword } = changepassword;
         const user = await this.usermodel.findOne({ _id: userId });
         if (!user) {
@@ -170,7 +176,7 @@ let UserService = class UserService {
         }
         const salt = await bcrypt.genSalt();
         const hashedpassword = await bcrypt.hash(newPassword, salt);
-        await this.usermodel.findOneAndUpdate({ _id: userId }, { password: hashedpassword });
+        await this.usermodel.findOneAndUpdate({ _id: userId }, { password: hashedpassword, isChangePassword: date });
         return { code: 200, success: true, message: 'User password reset successfully', };
     }
     async updateSvd(input, user) {
@@ -237,6 +243,24 @@ let UserService = class UserService {
             data: { firstname: user.firstName, lastname: user.lastName, fullname: user.fullName, money: user.currentMoney,
                 address: user.address, phonenumnber: user.phoneNumber, email: user.email }
         };
+    }
+    async updateRole(role, user) {
+        const updateuser = await this.usermodel.findOneAndUpdate({ _id: user._id }, { role: user_dto_1.UserRole.ADMIN });
+    }
+    async LoginAsAdministrtor({ email, password }) {
+        const user = await this.usermodel.findOne({ email: email });
+        if (user && (await bcrypt.compare(password, user.password)) && user.isEmailConfirmed) {
+            if (user.role == user_dto_1.UserRole.USER) {
+                throw new common_1.UnauthorizedException('Please Check Account');
+            }
+            let id = user._id;
+            const payload = { id };
+            const accessToken = await this.jwtservice.sign(payload);
+            return { accessToken };
+        }
+        else {
+            throw new common_1.UnauthorizedException('Please Check Account');
+        }
     }
 };
 __decorate([

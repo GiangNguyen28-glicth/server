@@ -1,6 +1,9 @@
 import { Body, CacheInterceptor, CacheKey, CacheTTL, Controller, Get, Param, Post, Query, UseGuards, UseInterceptors } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { GetUser } from "src/decorators/getuser.decorators";
+import { hasRoles } from "src/decorators/role.decorators";
+import { RolesGuard } from "src/decorators/role.guard";
+import { UserRole } from "src/User/DTO/user.dto";
 import { User } from "src/User/Schema/User.Schema";
 import { IReponse } from "src/Utils/IReponse";
 import { PassBookDTO } from "./DTO/PassBook.dto";
@@ -45,6 +48,13 @@ export class PassBookController{
     @Post('/withdrawMoneyPassbook/:passbookid')
     async withdrawMoneyPassbook(@GetUser() user:User,@Param('passbookid') passbookid):Promise<PassBook>{
         return this.passbookservice.withdrawMoneyPassbook(passbookid,user);
+    }
+
+    @hasRoles(UserRole.ADMIN)
+    @UseGuards(AuthGuard(),RolesGuard)
+    @Get('/getallpassbook')
+    async getAllPassbook():Promise<PassBook[]>{
+        return await this.passbookservice.getAllPassbook();
     }
 
 }

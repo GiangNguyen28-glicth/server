@@ -118,4 +118,8 @@ export class PassBookService{
         await this.userservice.updateMoney(Action.WITHDRAWAL,money,user);
         return passbook;
     }
+
+    async getAllPassbook():Promise<PassBook[]>{
+        return await this.passbookmodel.find();
+    }
 }   

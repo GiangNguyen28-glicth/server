@@ -132,6 +132,9 @@ let PassBookService = class PassBookService {
         await this.userservice.updateMoney(HistoryAction_obj_1.Action.WITHDRAWAL, money, user);
         return passbook;
     }
+    async getAllPassbook() {
+        return await this.passbookmodel.find();
+    }
 };
 PassBookService = __decorate([
     (0, common_1.Injectable)(),

@@ -36,16 +36,20 @@ export class UserService{
     }
     phone;
     async register(userdto:UserDTO):Promise<IReponse<User>>{
-        const role=UserRole.USER;
+      const role=UserRole.USER;
         let phoneNumber="+84"+userdto.phoneNumber.slice(1,userdto.phoneNumber.length);
         const { firstName, lastName,password,email,CMND,address,passwordConfirm } =userdto;
         userdto.role=role;
         if(passwordConfirm!=password){
           return{code:500,success:false,message:"Password not match"}
         }
-        const userExisting= await this.usermodel.findOne({email:email});
-        if(userExisting){
-            return{code:500,success:false,message:"User Existing"}
+        const userExistingEmail= await this.usermodel.findOne({email:email});
+        if(userExistingEmail){
+            return{code:500,success:false,message:"Email Existing"}
+        }
+        const userExistingPhone= await this.usermodel.findOne({phoneNumber:phoneNumber});
+        if(userExistingPhone){
+          return{code:500,success:false,message:"Phone Number Existing"}
         }
         try{
             const date= await this.commonservice.convertDatetime(new Date());
@@ -105,18 +109,18 @@ export class UserService{
     async Login({email,password}):Promise<any>{ 
       const user=await this.usermodel.findOne({email:email});
       if (user && (await bcrypt.compare(password, user.password))&&user.isEmailConfirmed) {
-        this.phone=user.phoneNumber;
-        await this.sendSMS(user.phoneNumber);
-        await this.otpmodel.findOneAndDelete({phoneNumber:user.phoneNumber});
-        const otp=await this.otpmodel.create({userId:user._id,phoneNumber:user.phoneNumber})
-        otp.save();
-        return{
-            code:200,success:true,message:"Check otp"
-        }
-        // let id=user._id;
-        // const payload= {id};
-        // const accessToken = await this.jwtservice.sign(payload);
-        // return {accessToken};
+        // this.phone=user.phoneNumber;
+        // await this.sendSMS(user.phoneNumber);
+        // await this.otpmodel.findOneAndDelete({phoneNumber:user.phoneNumber});
+        // const otp=await this.otpmodel.create({userId:user._id,phoneNumber:user.phoneNumber})
+        // otp.save();
+        // return{
+        //     code:200,success:true,message:"Check otp"
+        // }
+        let id=user._id;
+        const payload= {id};
+        const accessToken = await this.jwtservice.sign(payload);
+        return {accessToken};
       } else {
           throw new UnauthorizedException('Please Check Account');
       }
@@ -134,9 +138,14 @@ export class UserService{
       await this.sendSMS(user.phoneNumber);
     }
 
-    async sendSMS(phoneNumber:string):Promise<void> { 
+    async sendSMS(phoneNumber:string):Promise<any> {
       const serviceSid = "VA034959ee2470c4c29c135bd6a4e9368d";
       this.phone=phoneNumber;
+      if(!this.phone){
+        return{
+          code:500,success:false,message:"Phone number null"
+        }
+      }
       this.twilioClient.verify.services(serviceSid)
       .verifications
       .create({ to: phoneNumber, channel: 'sms' })
@@ -167,6 +176,7 @@ export class UserService{
 
 
     async changPassword(userId,changepassword:changePassword):Promise<IReponse<User>>{
+      const date=await this.commonservice.convertDatetime(new Date());
       const {newPassword,ConfirmPassword}=changepassword;
       const user = await this.usermodel.findOne({_id:userId});
       if (!user) {
@@ -178,7 +188,7 @@ export class UserService{
       }
       const salt = await bcrypt.genSalt();
       const hashedpassword = await bcrypt.hash(newPassword, salt);
-      await this.usermodel.findOneAndUpdate({ _id:userId }, { password: hashedpassword })
+      await this.usermodel.findOneAndUpdate({ _id:userId }, { password: hashedpassword,isChangePassword:date })
       return {code: 200,success: true,message: 'User password reset successfully',}
     }
     
@@ -252,6 +262,33 @@ export class UserService{
       return {
         data:{firstname:user.firstName,lastname:user.lastName,fullname:user.fullName,money:user.currentMoney,
         address:user.address,phonenumnber:user.phoneNumber,email:user.email}
+      }
+    }
+
+    async updateRole(role:string,user:User):Promise<any>{
+      const updateuser= await this.usermodel.findOneAndUpdate({_id:user._id},{role:UserRole.ADMIN})
+    }
+
+    async LoginAsAdministrtor({email,password}):Promise<any>{
+      const user=await this.usermodel.findOne({email:email});
+      if (user && (await bcrypt.compare(password, user.password))&&user.isEmailConfirmed) {
+        if(user.role==UserRole.USER){
+          throw new UnauthorizedException('Please Check Account');
+        }
+        // this.phone=user.phoneNumber;
+        // await this.sendSMS(user.phoneNumber);
+        // await this.otpmodel.findOneAndDelete({phoneNumber:user.phoneNumber});
+        // const otp=await this.otpmodel.create({userId:user._id,phoneNumber:user.phoneNumber})
+        // otp.save();
+        // return{
+        //     code:200,success:true,message:"Check otp"
+        // }
+        let id=user._id;
+        const payload= {id};
+        const accessToken = await this.jwtservice.sign(payload);
+        return {accessToken};
+      } else {
+          throw new UnauthorizedException('Please Check Account');
       }
     }
 }

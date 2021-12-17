@@ -17,6 +17,8 @@ const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const User_service_1 = require("../User/User.service");
 const nodemailer = require("nodemailer");
+const fs = require("fs");
+const path = require("path");
 let MailService = class MailService {
     constructor(userService, jwtservice) {
         this.userService = userService;
@@ -28,7 +30,12 @@ let MailService = class MailService {
             secret: process.env.JWT_VERIFICATION_TOKEN_SECRET,
             expiresIn: `${process.env.JWT_VERIFICATION_TOKEN_EXPIRATION_TIME}s`
         });
+        let html = fs.readFileSync(path.resolve(__dirname, '../emailtemplate/emailVerify.hbs'), {
+            encoding: "utf-8",
+        });
         const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
+        html = html.replace("<%NAME>", "ADMIN");
+        html = html.replace("<%CODE>", `<a href="${url}"> Confirm Email</a>`);
         const transporter = await nodemailer.createTransport({
             service: "gmail",
             auth: {
@@ -40,7 +47,7 @@ let MailService = class MailService {
             from: process.env.FROM_EMAIL,
             to: email,
             subject: 'Confirm Mail ✔',
-            html: `<b>Hello world?</b> <a href="${url}"> confirm Email</a>`,
+            html: html,
         };
         await transporter.sendMail(mailOptions);
     }

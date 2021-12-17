@@ -9,6 +9,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OptionModule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
+const role_guard_1 = require("../decorators/role.guard");
+const PassBook_module_1 = require("../PassBook/PassBook.module");
+const User_module_1 = require("../User/User.module");
+const User_service_1 = require("../User/User.service");
 const common_service_1 = require("../Utils/common.service");
 const Option_controller_1 = require("./Option.controller");
 const Option_service_1 = require("./Option.service");
@@ -17,7 +21,8 @@ let OptionModule = class OptionModule {
 };
 OptionModule = __decorate([
     (0, common_1.Module)({
-        imports: [mongoose_1.MongooseModule.forFeature([{ name: Option_chema_1.Option.name, schema: Option_chema_1.OptionSchema }]), common_1.CacheModule.register()],
+        imports: [mongoose_1.MongooseModule.forFeature([{ name: Option_chema_1.Option.name, schema: Option_chema_1.OptionSchema }]), common_1.CacheModule.register(),
+            (0, common_1.forwardRef)(() => User_module_1.UserModule), (0, common_1.forwardRef)(() => PassBook_module_1.PassBookModule)],
         controllers: [Option_controller_1.OptionController],
         providers: [Option_service_1.OptionService, common_service_1.CommonService],
         exports: [Option_service_1.OptionService]

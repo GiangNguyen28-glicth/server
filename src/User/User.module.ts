@@ -11,8 +11,9 @@ import { OTP, OTPSchema } from "./Schema/sms.schema";
 import { JwtStrategy } from "./JWT/jwt.strategy";
 import { PassBookModule } from "src/PassBook/PassBook.module";
 import { CommonService } from "src/Utils/common.service";
+import { OptionModule } from "src/Option/Option.module";
 @Module({
-    imports:[forwardRef(() =>MailModule),forwardRef(()=>PassBookModule),
+    imports:[forwardRef(() =>MailModule),forwardRef(()=>PassBookModule),forwardRef(()=>OptionModule),
         MongooseModule.forFeature([{name:User.name,schema:UserSchema}]),
         MongooseModule.forFeature([{name:OTP.name,schema:OTPSchema}]),
         PassportModule.register({ defaultStrategy: 'jwt' }),

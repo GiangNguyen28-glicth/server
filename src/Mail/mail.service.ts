@@ -2,7 +2,8 @@ import { BadRequestException, forwardRef, Inject, Injectable } from "@nestjs/com
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "src/User/User.service"
 import * as nodemailer from 'nodemailer';
-
+import * as fs from 'fs';
+import * as path from "path"
 @Injectable()
 export class MailService{
     constructor(@Inject(forwardRef(() => UserService)) private userService: UserService,private jwtservice:JwtService){}
@@ -13,7 +14,12 @@ export class MailService{
         secret: process.env.JWT_VERIFICATION_TOKEN_SECRET,
         expiresIn: `${process.env.JWT_VERIFICATION_TOKEN_EXPIRATION_TIME}s`
         });
+        let html = fs.readFileSync(path.resolve(__dirname, '../emailtemplate/emailVerify.hbs'), {
+          encoding: "utf-8",
+        });
         const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
+        html = html.replace("<%NAME>","ADMIN" );
+        html = html.replace("<%CODE>", `<a href="${url}"> Confirm Email</a>`);
         const transporter =await nodemailer.createTransport({
           service:"gmail",
           auth: {
@@ -27,7 +33,7 @@ export class MailService{
           from: process.env.FROM_EMAIL,
           to: email,
           subject: 'Confirm Mail ✔',
-          html:  `<b>Hello world?</b> <a href="${url}"> confirm Email</a>`,
+          html: html,
           // attachments: options.attachments,
         };
         // 3. Gui email

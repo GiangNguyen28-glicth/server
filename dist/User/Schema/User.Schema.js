@@ -50,7 +50,7 @@ __decorate([
     __metadata("design:type", Boolean)
 ], User.prototype, "isEmailConfirmed", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ unique: true }),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], User.prototype, "CMND", void 0);
 __decorate([
