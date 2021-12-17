@@ -24,18 +24,29 @@ let MailService = class MailService {
         this.userService = userService;
         this.jwtservice = jwtservice;
     }
-    async sendEmail(email) {
+    async sendEmail(email, option, code) {
         const payload = { email };
         const token = this.jwtservice.sign(payload, {
             secret: process.env.JWT_VERIFICATION_TOKEN_SECRET,
             expiresIn: `${process.env.JWT_VERIFICATION_TOKEN_EXPIRATION_TIME}s`
         });
-        let html = fs.readFileSync(path.resolve(__dirname, '../emailtemplate/emailVerify.hbs'), {
-            encoding: "utf-8",
-        });
-        const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
-        html = html.replace("<%NAME>", "ADMIN");
-        html = html.replace("<%CODE>", `<a href="${url}"> Confirm Email</a>`);
+        let html;
+        if (option == "LG") {
+            html = fs.readFileSync(path.resolve(__dirname, '../emailtemplate/emailVerifycode.hbs'), {
+                encoding: "utf-8",
+            });
+            const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
+            html = html.replace("<%NAME>", "ADMIN");
+            html = html.replace("<%CODE>", code);
+        }
+        else {
+            const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
+            html = html.replace("<%NAME>", "ADMIN");
+            html = html.replace("<%LINK>", url);
+            html = fs.readFileSync(path.resolve(__dirname, '../emailtemplate/emailVerify.hbs'), {
+                encoding: "utf-8",
+            });
+        }
         const transporter = await nodemailer.createTransport({
             service: "gmail",
             auth: {
@@ -81,7 +92,7 @@ let MailService = class MailService {
         if (!user || user.isEmailConfirmed) {
             throw new common_1.BadRequestException('Email already confirmed');
         }
-        await this.sendEmail(user.email);
+        await this.sendEmail(user.email, "PW");
     }
 };
 MailService = __decorate([

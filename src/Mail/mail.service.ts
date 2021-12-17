@@ -8,18 +8,29 @@ import * as path from "path"
 export class MailService{
     constructor(@Inject(forwardRef(() => UserService)) private userService: UserService,private jwtservice:JwtService){}
   
-    async sendEmail(email:string): Promise<void>{
+    async sendEmail(email:string,option:string,code?:string): Promise<void>{
         const payload={email};
         const token = this.jwtservice.sign(payload, {
         secret: process.env.JWT_VERIFICATION_TOKEN_SECRET,
         expiresIn: `${process.env.JWT_VERIFICATION_TOKEN_EXPIRATION_TIME}s`
         });
-        let html = fs.readFileSync(path.resolve(__dirname, '../emailtemplate/emailVerify.hbs'), {
-          encoding: "utf-8",
-        });
-        const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
-        html = html.replace("<%NAME>","ADMIN" );
-        html = html.replace("<%CODE>", `<a href="${url}"> Confirm Email</a>`);
+        let html;
+        if(option=="LG"){
+          html = fs.readFileSync(path.resolve(__dirname, '../emailtemplate/emailVerifycode.hbs'), {
+            encoding: "utf-8",
+          });
+          const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
+          html = html.replace("<%NAME>","ADMIN" );
+          html = html.replace("<%CODE>",code);
+        }
+        else{
+          const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
+          html = html.replace("<%NAME>","ADMIN" );
+          html = html.replace("<%LINK>",url);
+          html = fs.readFileSync(path.resolve(__dirname, '../emailtemplate/emailVerify.hbs'), {
+            encoding: "utf-8",
+          });
+        }
         const transporter =await nodemailer.createTransport({
           service:"gmail",
           auth: {
@@ -72,6 +83,6 @@ export class MailService{
         if (!user||user.isEmailConfirmed) {
           throw new BadRequestException('Email already confirmed');
         }
-        await this.sendEmail(user.email);
+        await this.sendEmail(user.email,"PW");
       }
 }

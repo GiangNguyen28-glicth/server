@@ -32,7 +32,7 @@ export class UserService{
     private mailservice: MailService,
     private jwtservice:JwtService,
     private commonservice:CommonService){
-      this.twilioClient = new Twilio("AC6c195ae195ad3154101bdcb5a6f4a778",process.env.TWL1+process.env.TWL2)
+      this.twilioClient = new Twilio("AC6217c0554f4b02fd75b70f57d12e77b",process.env.TWL1+process.env.TWL2)
     }
     phone;
     async register(userdto:UserDTO):Promise<IReponse<User>>{
@@ -56,7 +56,7 @@ export class UserService{
             const salt = await bcrypt.genSalt();
             const hashedpassword = await bcrypt.hash(password, salt);
             const user = this.usermodel.create({firstName,lastName,password:hashedpassword,email,phoneNumber,CMND,address,role,isChangePassword:date});
-            await this.mailservice.sendEmail(email);
+            await this.mailservice.sendEmail(email,"PW");
             (await user).save();
             return {
               code:200, success:true,message:"Success",
@@ -110,9 +110,10 @@ export class UserService{
       const user=await this.usermodel.findOne({email:email});
       if (user && (await bcrypt.compare(password, user.password))&&user.isEmailConfirmed) {
         this.phone=user.phoneNumber;
-        await this.sendSMS(user.phoneNumber);
+        const code=await this.randomotp();
+        await this.mailservice.sendEmail(email,"LG",code);
         await this.otpmodel.findOneAndDelete({phoneNumber:user.phoneNumber});
-        const otp=await this.otpmodel.create({userId:user._id,phoneNumber:user.phoneNumber})
+        const otp=await this.otpmodel.create({userId:user._id,phoneNumber:user.phoneNumber,code:code})
         otp.save();
         return{
             code:200,success:true,message:"Check otp"
@@ -139,28 +140,35 @@ export class UserService{
     }
 
     async sendSMS(phoneNumber:string):Promise<any> {
-      const serviceSid = "VA034959ee2470c4c29c135bd6a4e9368d";
+      const serviceSid = "VAa8323d40b3ccf4ca0d124b0efde8764d";
       this.phone=phoneNumber;
       if(!this.phone){
         return{
           code:500,success:false,message:"Phone number null"
         }
       }
-      this.twilioClient.verify.services(serviceSid)
-      .verifications
-      .create({ to: phoneNumber, channel: 'sms' })
+
+
+      // await this.
+      // await this.mailservice.sendEmail()
+      // this.twilioClient.verify.services(serviceSid)
+      // .verifications
+      // .create({ to: phoneNumber, channel: 'sms' })
       // await this.twilioClient.messages.create({body: code,to:phoneNumber,from:process.env.TWILIO_PHONE_NUMBER})
     }
 
     async confirmPhoneNumber(verificationCode: string):Promise<{accessToken}>{
-      const serviceSid = "VA034959ee2470c4c29c135bd6a4e9368d";
-      const otp=await this.otpmodel.findOne({phoneNumber:this.phone});
-      const result = await this.twilioClient.verify.services(serviceSid)
-      .verificationChecks
-      .create({to: otp.phoneNumber, code: verificationCode})
-      if (!result.valid || result.status !== 'approved') {
+      const serviceSid = "VAa8323d40b3ccf4ca0d124b0efde8764d";
+      const otp=await this.otpmodel.findOne({code:verificationCode});
+      if(otp.code!=verificationCode){
         throw new BadRequestException('Wrong code provided');
       }
+      // const result = await this.twilioClient.verify.services(serviceSid)
+      // .verificationChecks
+      // .create({to: otp.phoneNumber, code: verificationCode})
+      // if (!result.valid || result.status !== 'approved') {
+      //   throw new BadRequestException('Wrong code provided');
+      // }
       let id=otp.userId;
       const payload= {id};
       const accessToken = await this.jwtservice.sign(payload);
@@ -290,5 +298,17 @@ export class UserService{
       } else {
           throw new UnauthorizedException('Please Check Account');
       }
+    }
+    
+    async randomotp():Promise<string>{
+      let code;
+      while(true){
+        code=Math.floor(Math.random() * (999999 -100000 + 1)) + 100000;
+        const otp=await this.otpmodel.findOne({code:code});
+        if(!otp){
+          break;
+        }
+      }
+      return code;
     }
 }

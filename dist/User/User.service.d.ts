@@ -56,4 +56,5 @@ export declare class UserService {
         email: any;
         password: any;
     }): Promise<any>;
+    randomotp(): Promise<string>;
 }

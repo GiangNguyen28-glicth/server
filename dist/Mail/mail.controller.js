@@ -23,10 +23,10 @@ let MailController = class MailController {
     constructor(mailservice) {
         this.mailservice = mailservice;
     }
-    async confirm(token) {
+    async confirm(token, response) {
         const email = await this.mailservice.decodeConfirmationToken(token.token);
         await this.mailservice.confirmEmail(email);
-        return "Confirm success";
+        response.redirect("https://fe-next-ecommerce.vercel.app");
     }
     async resendConfirmationLink(user) {
         return await this.mailservice.resendConfirmationLink(user._id);
@@ -35,8 +35,9 @@ let MailController = class MailController {
 __decorate([
     (0, common_1.Get)('/confirm-email'),
     __param(0, (0, common_1.Query)()),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [confirm_dto_1.confirmEmail]),
+    __metadata("design:paramtypes", [confirm_dto_1.confirmEmail, Object]),
     __metadata("design:returntype", Promise)
 ], MailController.prototype, "confirm", null);
 __decorate([
