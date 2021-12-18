@@ -243,11 +243,11 @@ export class UserService{
     }
 
     async NaptienATM(@Body() checkout:Checkout,user:User):Promise<IReponse<User>>{
-      await this.updateMoney(Action.NAPTIENATM,checkout.money,user);
+      await this.updateMoney(Action.NAPTIENATM,checkout.vnd,user);
       const historyaction=new HistoryAction();
       historyaction.action=Action.NAPTIENATM;
       historyaction.createAt=new Date();
-      historyaction.money=checkout.money;
+      historyaction.money=checkout.vnd;
       await this.updateNewAction(historyaction,user);
       return{
         code:200,success:true,message:"Nap tien thanh cong"

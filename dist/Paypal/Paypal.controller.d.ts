@@ -8,8 +8,7 @@ export declare class PaypalController {
     private commonservice;
     constructor(paypalservice: PaypalService, commonservice: CommonService);
     PayPal(response: Response, checkout: Checkout, user: User): Promise<void>;
-    Home(): void;
-    Success(response: Response, request: Request): Promise<void>;
+    Success(response: Response, request: Request, checkout: Checkout): Promise<void>;
     Test(): Promise<number>;
     Cancel(response: Response, request: Request): string;
     getMoney(): Promise<number>;

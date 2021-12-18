@@ -221,11 +221,11 @@ let UserService = class UserService {
         userExisting.save();
     }
     async NaptienATM(checkout, user) {
-        await this.updateMoney(HistoryAction_obj_1.Action.NAPTIENATM, checkout.money, user);
+        await this.updateMoney(HistoryAction_obj_1.Action.NAPTIENATM, checkout.vnd, user);
         const historyaction = new HistoryAction_obj_1.HistoryAction();
         historyaction.action = HistoryAction_obj_1.Action.NAPTIENATM;
         historyaction.createAt = new Date();
-        historyaction.money = checkout.money;
+        historyaction.money = checkout.vnd;
         await this.updateNewAction(historyaction, user);
         return {
             code: 200, success: true, message: "Nap tien thanh cong"

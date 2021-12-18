@@ -49,7 +49,7 @@ export class PaypalService{
         });   
     }
 
-    async Success(response,request){
+    async Success(response,request,{usd,vnd}){
         const payerId = request.query.PayerID;
         const paymentId = request.query.paymentId;
         if(this.usercheckout==undefined){
@@ -61,13 +61,11 @@ export class PaypalService{
             "transactions": [{
                 "amount": {
                     "currency": "USD",
-                    "total":`${this.total}`
+                    "total":`${usd}`
                 }
             }]
         };
-        let moneyconvert=this.convertmoney(this.total);
-        console.log(moneyconvert);
-        await this.userservice.updateMoney(Action.NAPTIENPAYPAL,await moneyconvert,this.usercheckout);
+        await this.userservice.updateMoney(Action.NAPTIENPAYPAL,vnd,this.usercheckout);
         const historyaction=new HistoryAction();
         historyaction.action=Action.NAPTIENPAYPAL;
         historyaction.createAt=new Date();

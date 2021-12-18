@@ -8,6 +8,9 @@ export declare class PaypalService {
     total: number;
     usercheckout: User;
     Payment(response: any, money: number, user: User): Promise<void>;
-    Success(response: any, request: any): Promise<void>;
+    Success(response: any, request: any, { usd, vnd }: {
+        usd: any;
+        vnd: any;
+    }): Promise<void>;
     convertmoney(usdinput: number): Promise<number>;
 }

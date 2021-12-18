@@ -1,3 +1,4 @@
 export class Checkout{
-    money:number;
+    usd:number;
+    vnd:number;
 }

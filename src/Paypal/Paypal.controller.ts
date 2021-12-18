@@ -9,21 +9,16 @@ import { CommonService } from "src/Utils/common.service";
 @Controller('/paypal')
 export class PaypalController{
     constructor(private paypalservice:PaypalService,private commonservice:CommonService){}
+    
     @Post('/checkout')
     @UseGuards(AuthGuard())
     PayPal(@Res() response:Response,@Body() checkout:Checkout,@GetUser() user:User){
-        console.log(checkout.money);
-        return this.paypalservice.Payment(response,checkout.money,user);
-    }
-    @Get('/')
-    @Render('index')
-    Home(){
-        
+        return this.paypalservice.Payment(response,checkout.usd,user);
     }
 
     @Get('/success')
-    Success(@Res() response:Response,@Req() request:Request){
-       return this.paypalservice.Success(response,request);
+    Success(@Res() response:Response,@Req() request:Request,checkout:Checkout){
+       return this.paypalservice.Success(response,request,checkout);
     }
     
     @Get('/test')

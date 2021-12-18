@@ -26,13 +26,10 @@ let PaypalController = class PaypalController {
         this.commonservice = commonservice;
     }
     PayPal(response, checkout, user) {
-        console.log(checkout.money);
-        return this.paypalservice.Payment(response, checkout.money, user);
+        return this.paypalservice.Payment(response, checkout.usd, user);
     }
-    Home() {
-    }
-    Success(response, request) {
-        return this.paypalservice.Success(response, request);
+    Success(response, request, checkout) {
+        return this.paypalservice.Success(response, request, checkout);
     }
     Test() {
         return this.paypalservice.convertmoney(2);
@@ -55,18 +52,11 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], PaypalController.prototype, "PayPal", null);
 __decorate([
-    (0, common_1.Get)('/'),
-    (0, common_1.Render)('index'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], PaypalController.prototype, "Home", null);
-__decorate([
     (0, common_1.Get)('/success'),
     __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object, Object, checkout_dto_1.Checkout]),
     __metadata("design:returntype", void 0)
 ], PaypalController.prototype, "Success", null);
 __decorate([
