@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Put, Res, UseGuards} from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { GetUser } from "src/decorators/getuser.decorators";
 import { hasRoles } from "src/decorators/role.decorators";
@@ -12,6 +12,7 @@ import { UpdateProfileDTO } from "./DTO/UpdateProfile.dto";
 import { UserDTO, UserRole } from "./DTO/user.dto";
 import { User } from "./Schema/User.Schema";
 import { UserService } from "./User.service";
+import { Response } from 'express';
 @Controller()
 export class UserController{
     constructor(private userservice:UserService){}
@@ -101,5 +102,12 @@ export class UserController{
     @Get('/getnewuser')
     async getnewuser():Promise<any>{
         return await this.userservice.getnewUser();
+    }
+
+    @UseGuards(AuthGuard())
+    @Post('log-out')
+    async logOut(@Res() response: Response) {
+        response.setHeader('Set-Cookie', this.userservice.getCookieForLogOut());
+        return response.sendStatus(200);
     }
 }

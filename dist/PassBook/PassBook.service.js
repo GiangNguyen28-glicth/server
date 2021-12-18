@@ -144,6 +144,10 @@ let PassBookService = class PassBookService {
         const countPreviousSale = ((_d = prevSale[0]) === null || _d === void 0 ? void 0 : _d.count) || 1;
         return { totalCurrentSale: totalCurrentSale };
     }
+    async getnewPassBook() {
+        const newpassbook = await this.passbookmodel.find({ status: false }).sort({ _id: -1 }).limit(10).lean();
+        return { newpassbook: newpassbook };
+    }
 };
 PassBookService = __decorate([
     (0, common_1.Injectable)(),

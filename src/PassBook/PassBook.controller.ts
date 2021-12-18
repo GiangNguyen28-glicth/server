@@ -48,9 +48,11 @@ export class PassBookController{
         return await this.passbookservice.getAllPassbook();
     }
 
-    @Get('/test')
-    async get():Promise<any>{
-        return this.passbookservice.getPassBookByMonth();
+    @hasRoles(UserRole.ADMIN)
+    @UseGuards(AuthGuard(),RolesGuard)
+    @Get('/getnewpassbook')
+    async getnewpassbook():Promise<any>{
+        return this.passbookservice.getnewPassBook();
     }
 
 }

@@ -134,4 +134,9 @@ export class PassBookService{
         const countPreviousSale = prevSale[0]?.count || 1;
         return {totalCurrentSale:totalCurrentSale};
     }
+
+    async getnewPassBook():Promise<any>{
+        const newpassbook= await this.passbookmodel.find({status:false}).sort({_id:-1}).limit(10).lean();
+        return{newpassbook:newpassbook}
+    }
 }   

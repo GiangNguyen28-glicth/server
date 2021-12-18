@@ -12,5 +12,5 @@ export declare class PassBookController {
     getPassbookIsNotActive(user: User): Promise<any>;
     withdrawMoneyPassbook(user: User, passbookid: any): Promise<PassBook>;
     getAllPassbook(): Promise<PassBook[]>;
-    get(): Promise<any>;
+    getnewpassbook(): Promise<any>;
 }

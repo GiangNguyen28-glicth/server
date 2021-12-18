@@ -186,7 +186,7 @@ export class UserService{
 
 
     async changPassword(userId,changepassword:changePassword):Promise<IReponse<User>>{
-      const date=new Date()
+      const date=await this.commonservice.convertDatetime(new Date())
       const {newPassword,ConfirmPassword}=changepassword;
       const user = await this.usermodel.findOne({_id:userId});
       if (!user) {
@@ -212,7 +212,7 @@ export class UserService{
       const {oldPassword,newPassword,ConfirmPassword}=changepassword;
       if((await bcrypt.compare(oldPassword,user.password))){
         if(newPassword==ConfirmPassword){
-          const date=new Date();
+          const date=await this.commonservice.convertDatetime(new Date());
           const salt = await bcrypt.genSalt();
           const hashedpassword = await bcrypt.hash(newPassword, salt);
           await this.usermodel.findOneAndUpdate({_id:user._id},{password:hashedpassword,isChangePassword:date});
@@ -321,6 +321,10 @@ export class UserService{
       return {
         newuser:newuser
       }
+    }
+
+    public getCookieForLogOut() {
+      return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
     }
     
 }

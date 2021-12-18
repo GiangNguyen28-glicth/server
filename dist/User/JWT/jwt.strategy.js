@@ -31,12 +31,14 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
     }
     async validate(payload) {
         let { id, iat } = payload;
-        let date = new Date(Number(iat) * 1000);
-        console.log(date);
+        const date = new Date(Number(iat) * 1000);
+        date.setHours(date.getHours() + 7);
         const user = await this.usermodel.findOne({ _id: id });
-        console.log(user.isChangePassword);
         if (!user) {
-            console.log(1);
+            throw new common_1.UnauthorizedException();
+        }
+        if (user.isChangePassword > date) {
+            console.log("toang");
             throw new common_1.UnauthorizedException();
         }
         return user;

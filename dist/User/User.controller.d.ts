@@ -7,6 +7,7 @@ import { UpdateProfileDTO } from "./DTO/UpdateProfile.dto";
 import { UserDTO } from "./DTO/user.dto";
 import { User } from "./Schema/User.Schema";
 import { UserService } from "./User.service";
+import { Response } from 'express';
 export declare class UserController {
     private userservice;
     constructor(userservice: UserService);
@@ -37,4 +38,5 @@ export declare class UserController {
     getListUser(): Promise<User[]>;
     getmoneybymonth(): Promise<number>;
     getnewuser(): Promise<any>;
+    logOut(response: Response): Promise<Response<any, Record<string, any>>>;
 }

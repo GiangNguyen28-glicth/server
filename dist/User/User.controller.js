@@ -75,6 +75,10 @@ let UserController = class UserController {
     async getnewuser() {
         return await this.userservice.getnewUser();
     }
+    async logOut(response) {
+        response.setHeader('Set-Cookie', this.userservice.getCookieForLogOut());
+        return response.sendStatus(200);
+    }
 };
 __decorate([
     (0, common_1.Post)('/signup'),
@@ -196,6 +200,14 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getnewuser", null);
+__decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
+    (0, common_1.Post)('log-out'),
+    __param(0, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "logOut", null);
 UserController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [User_service_1.UserService])
