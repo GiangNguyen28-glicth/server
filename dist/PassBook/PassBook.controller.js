@@ -46,6 +46,9 @@ let PassBookController = class PassBookController {
     async getAllPassbook() {
         return await this.passbookservice.getAllPassbook();
     }
+    async get() {
+        return this.passbookservice.getPassBookByMonth();
+    }
 };
 __decorate([
     (0, common_1.Post)('/save'),
@@ -93,9 +96,14 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], PassBookController.prototype, "getAllPassbook", null);
+__decorate([
+    (0, common_1.Get)('/test'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], PassBookController.prototype, "get", null);
 PassBookController = __decorate([
     (0, common_1.Controller)('/passbook'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     __metadata("design:paramtypes", [PassBook_service_1.PassBookService])
 ], PassBookController);
 exports.PassBookController = PassBookController;

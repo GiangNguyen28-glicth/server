@@ -116,6 +116,34 @@ let PassBookService = class PassBookService {
     async getAllPassbook() {
         return await this.passbookmodel.find().sort({ _id: -1 });
     }
+    async getPassBookByMonth() {
+        var _a, _b, _c, _d;
+        const date = new Date();
+        const dayInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+        const firstDayOfCurrMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+        const lastDayOfCurrMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+        const currMonth = date.toLocaleString('default', { month: 'long' });
+        date.setMonth(date.getMonth() - 1);
+        const prevMonth = date.toLocaleString('default', { month: 'long' });
+        const firstDayOfPrevMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+        const lastDayOfPrevMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+        const filterCurrMonth = {
+            createAt: {
+                $gt: firstDayOfCurrMonth,
+                $lte: lastDayOfCurrMonth,
+            },
+        };
+        const filterPrevMonth = {
+            createAt: { $gt: firstDayOfPrevMonth, $lte: lastDayOfPrevMonth }
+        };
+        const passbook = await this.passbookmodel.aggregate([{ $match: filterCurrMonth }]);
+        const prevSale = await this.passbookmodel.aggregate([{ $match: filterPrevMonth, }]);
+        const totalCurrentSale = ((_a = this.passbookmodel[0]) === null || _a === void 0 ? void 0 : _a.total) || 0;
+        const totalPreviousSale = ((_b = prevSale[0]) === null || _b === void 0 ? void 0 : _b.total) || 1;
+        const countCurrentSale = ((_c = this[0]) === null || _c === void 0 ? void 0 : _c.count) || 0;
+        const countPreviousSale = ((_d = prevSale[0]) === null || _d === void 0 ? void 0 : _d.count) || 1;
+        return { totalCurrentSale: totalCurrentSale };
+    }
 };
 PassBookService = __decorate([
     (0, common_1.Injectable)(),

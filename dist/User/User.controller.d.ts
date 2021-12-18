@@ -35,4 +35,6 @@ export declare class UserController {
         password: any;
     }): Promise<any>;
     getListUser(): Promise<User[]>;
+    getmoneybymonth(): Promise<number>;
+    getnewuser(): Promise<any>;
 }

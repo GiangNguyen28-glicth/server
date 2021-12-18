@@ -69,6 +69,12 @@ let UserController = class UserController {
     async getListUser() {
         return this.userservice.getListUser();
     }
+    async getmoneybymonth() {
+        return null;
+    }
+    async getnewuser() {
+        return await this.userservice.getnewUser();
+    }
 };
 __decorate([
     (0, common_1.Post)('/signup'),
@@ -174,6 +180,22 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getListUser", null);
+__decorate([
+    (0, role_decorators_1.hasRoles)(user_dto_1.UserRole.ADMIN),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)(), role_guard_1.RolesGuard),
+    (0, common_1.Get)('/getmoneybymonth'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getmoneybymonth", null);
+__decorate([
+    (0, role_decorators_1.hasRoles)(user_dto_1.UserRole.ADMIN),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)(), role_guard_1.RolesGuard),
+    (0, common_1.Get)('/getnewuser'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getnewuser", null);
 UserController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [User_service_1.UserService])

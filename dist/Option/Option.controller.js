@@ -38,8 +38,9 @@ let OptionController = class OptionController {
         let date = new Date();
         return await this.optionService.GetValueOption(date, option.option);
     }
-    async GetCurrentOptionValue(Year) {
-        const temp = Number(Year);
+    async GetCurrentOptionValue() {
+        const newDate = new Date();
+        let temp = newDate.getFullYear();
         return this.optionService.GetValueByYear(temp);
     }
 };
@@ -79,9 +80,8 @@ __decorate([
 ], OptionController.prototype, "GetValueOption", null);
 __decorate([
     (0, common_1.Get)('/getoptionvaluebyYear'),
-    __param(0, (0, common_1.Query)('year')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
+    __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], OptionController.prototype, "GetCurrentOptionValue", null);
 OptionController = __decorate([

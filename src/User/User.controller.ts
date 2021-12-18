@@ -88,4 +88,18 @@ export class UserController{
     async getListUser():Promise<User[]>{
         return this.userservice.getListUser();
     }
+
+    @hasRoles(UserRole.ADMIN)
+    @UseGuards(AuthGuard(),RolesGuard)
+    @Get('/getmoneybymonth')
+    async getmoneybymonth():Promise<number>{
+        return null;
+    }
+
+    @hasRoles(UserRole.ADMIN)
+    @UseGuards(AuthGuard(),RolesGuard)
+    @Get('/getnewuser')
+    async getnewuser():Promise<any>{
+        return await this.userservice.getnewUser();
+    }
 }

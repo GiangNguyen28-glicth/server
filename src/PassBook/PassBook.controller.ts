@@ -48,4 +48,9 @@ export class PassBookController{
         return await this.passbookservice.getAllPassbook();
     }
 
+    @Get('/test')
+    async get():Promise<any>{
+        return this.passbookservice.getPassBookByMonth();
+    }
+
 }

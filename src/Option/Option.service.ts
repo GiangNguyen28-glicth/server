@@ -56,10 +56,10 @@ export class OptionService{
     async GetValueByYear(Year:number):Promise<any>{
         const date=await this.commonservice.convertDatetime(new Date());
         let arr=[];
-        const checkCache=await this.cacheManager.get(Year.toString());
-        if(checkCache!=undefined){
-            return checkCache;
-        }
+        // const checkCache=await this.cacheManager.get(Year.toString());
+        // if(checkCache!=undefined){
+        //     return checkCache;
+        // }
         const currentvalue=await this.optionmodel.find();
         for(var i in currentvalue){
             if(currentvalue[i].createAt.getFullYear()==Year){
@@ -81,7 +81,7 @@ export class OptionService{
                }
             }
         }
-        await this.cacheManager.set(Year.toString,arr,{ ttl: 1000 });
+        // await this.cacheManager.set(Year.toString,arr,{ ttl: 1000 });
         return arr;
     }
 

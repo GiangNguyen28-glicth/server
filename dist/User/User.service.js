@@ -279,6 +279,17 @@ let UserService = class UserService {
         }
         return code;
     }
+    async getmoneybymonth() {
+        return null;
+    }
+    async getnewUser() {
+        const newuser = await this.usermodel.find({ isEmailConfirmed: true, role: user_dto_1.UserRole.USER }).sort({ _id: -1 })
+            .select('firstName lastName email phoneNumber')
+            .limit(10).lean();
+        return {
+            newuser: newuser
+        };
+    }
 };
 __decorate([
     __param(0, (0, common_1.Body)()),

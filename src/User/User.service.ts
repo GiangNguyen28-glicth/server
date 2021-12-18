@@ -307,5 +307,17 @@ export class UserService{
       return code;
     }
 
+    async getmoneybymonth():Promise<number>{
+      return null;
+    }
+
+    async getnewUser():Promise<any>{
+      const newuser=await this.usermodel.find({isEmailConfirmed:true,role:UserRole.USER}).sort({_id:-1})
+      .select('firstName lastName email phoneNumber')
+      .limit(10).lean();
+      return {
+        newuser:newuser
+      }
+    }
     
 }
