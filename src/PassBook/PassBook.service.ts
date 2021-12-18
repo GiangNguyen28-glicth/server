@@ -116,4 +116,9 @@ export class PassBookService{
         const newpassbook= await this.passbookmodel.find({status:false}).sort({_id:-1}).limit(10).lean();
         return{newpassbook:newpassbook}
     }
+
+    async getpassbookbyUser(userid):Promise<any>{
+        const passbook=await this.passbookmodel.find({userId:userid}).sort({_id:-1});
+        return passbook;
+    }
 }   

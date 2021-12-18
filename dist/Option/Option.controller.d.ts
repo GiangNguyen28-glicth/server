@@ -10,4 +10,5 @@ export declare class OptionController {
     updateOption(id: any, newoptiondto: newOptionDTO): Promise<Option>;
     GetValueOption(option: newOptionDTO): Promise<number>;
     GetCurrentOptionValue(): Promise<Option[]>;
+    getValueByDateTime(datetime: any): Promise<any>;
 }

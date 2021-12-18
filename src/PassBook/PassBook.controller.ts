@@ -57,9 +57,8 @@ export class PassBookController{
 
     @hasRoles(UserRole.ADMIN)
     @UseGuards(AuthGuard(),RolesGuard)
-    @Get('/getpassbookuser')
-    async getpassbookuser():Promise<any>{
-        return null;
+    @Get('/getpassbookbyuser/:userid')
+    async getpassbookuser(@Param('userid') userid):Promise<any>{
+        return this.passbookservice.getpassbookbyUser(userid);
     }
-
 }

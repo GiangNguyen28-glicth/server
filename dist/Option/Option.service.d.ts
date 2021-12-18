@@ -9,7 +9,7 @@ export declare class OptionService {
     findAllOption(): Promise<Option[]>;
     updatenewOption(id: any, newoptiondto: newOptionDTO): Promise<Option>;
     GetValueOption(date: Date, option: number): Promise<number>;
-    GetValueByYear(Year: number): Promise<any>;
+    GetValueByDateTime(time: string): Promise<any>;
     findOption(option: number): Promise<any>;
     getCurrentValueOption(): Promise<Option[]>;
 }

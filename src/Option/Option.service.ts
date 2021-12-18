@@ -4,9 +4,7 @@ import { Model } from "mongoose";
 import { newOptionDTO } from "./DTO/newOption.dto";
 import { OptionDTO } from "./DTO/Option.dto";
 import { OptionObj } from "./DTO/OptionObj.dto";
-import { Cache } from 'cache-manager';
 import { OptionDocument,Option } from "./Schema/Option.chema";
-import { CommonService } from "src/Utils/common.service";
 @Injectable()
 export class OptionService{
     constructor(@InjectModel(Option.name)
@@ -52,35 +50,35 @@ export class OptionService{
         }
     }
 
-    async GetValueByYear(Year:number):Promise<any>{
-        const date=new Date();
+    async GetValueByDateTime(time:string):Promise<any>{
+        const date=new Date(time);      
+        date.setDate(date.getDate()+1);
+        console.log(date);
+        if(!date.getMonth()){
+            return{code:500,success:false,message:"Thời Giang Không Hợp Lệ !!"}
+        }
         let arr=[];
-        // const checkCache=await this.cacheManager.get(Year.toString());
-        // if(checkCache!=undefined){
-        //     return checkCache;
-        // }
         const currentvalue=await this.optionmodel.find();
         for(var i in currentvalue){
-            if(currentvalue[i].createAt.getFullYear()==Year){
-                arr.push({option:currentvalue[i].option,value:currentvalue[i].value})
+            if(currentvalue[i].createAt<=date){
+                arr.push({_id:currentvalue[i]._id,option:currentvalue[i].option,value:currentvalue[i].value})
             }
             else{
                for(var j=0;j<currentvalue[i].history.length;j++){
-                    if(currentvalue[i].history[j].createAt.getFullYear()==Year+1){
-                        if(currentvalue[i].history[j-1]!=null&&currentvalue[i].history[j-1].createAt.getFullYear()==Year){
-                            arr.push({option:currentvalue[i].option,value:currentvalue[i].history[j-1].value});
+                    if(currentvalue[i].history[j].createAt>=date){
+                        if(currentvalue[i].history[j-1]!=null){
+                            arr.push({_id:currentvalue[i]._id,option:currentvalue[i].option,value:currentvalue[i].history[j-1].value});
                             break;
                         }
                     }
                    if(j==currentvalue[i].history.length-1){
-                       if( currentvalue[i].history[j].createAt.getFullYear()==Year){
-                        arr.push({option:currentvalue[i].option,value:currentvalue[i].history[j].value});
+                       if(currentvalue[i].history[j].createAt<=date){
+                        arr.push({_id:currentvalue[i]._id,option:currentvalue[i].option,value:currentvalue[i].history[j].value});
                        }
                    }   
                }
             }
         }
-        // await this.cacheManager.set(Year.toString,arr,{ ttl: 1000 });
         return arr;
     }
 

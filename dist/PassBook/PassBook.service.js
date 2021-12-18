@@ -131,6 +131,10 @@ let PassBookService = class PassBookService {
         const newpassbook = await this.passbookmodel.find({ status: false }).sort({ _id: -1 }).limit(10).lean();
         return { newpassbook: newpassbook };
     }
+    async getpassbookbyUser(userid) {
+        const passbook = await this.passbookmodel.find({ userId: userid }).sort({ _id: -1 });
+        return passbook;
+    }
 };
 PassBookService = __decorate([
     (0, common_1.Injectable)(),

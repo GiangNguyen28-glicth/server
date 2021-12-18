@@ -18,7 +18,6 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const OptionObj_dto_1 = require("./DTO/OptionObj.dto");
 const Option_chema_1 = require("./Schema/Option.chema");
-const common_service_1 = require("../Utils/common.service");
 let OptionService = class OptionService {
     constructor(optionmodel) {
         this.optionmodel = optionmodel;
@@ -59,25 +58,30 @@ let OptionService = class OptionService {
             }
         }
     }
-    async GetValueByYear(Year) {
-        const date = new Date();
+    async GetValueByDateTime(time) {
+        const date = new Date(time);
+        date.setDate(date.getDate() + 1);
+        console.log(date);
+        if (!date.getMonth()) {
+            return { code: 500, success: false, message: "Thời Giang Không Hợp Lệ !!" };
+        }
         let arr = [];
         const currentvalue = await this.optionmodel.find();
         for (var i in currentvalue) {
-            if (currentvalue[i].createAt.getFullYear() == Year) {
-                arr.push({ option: currentvalue[i].option, value: currentvalue[i].value });
+            if (currentvalue[i].createAt <= date) {
+                arr.push({ _id: currentvalue[i]._id, option: currentvalue[i].option, value: currentvalue[i].value });
             }
             else {
                 for (var j = 0; j < currentvalue[i].history.length; j++) {
-                    if (currentvalue[i].history[j].createAt.getFullYear() == Year + 1) {
-                        if (currentvalue[i].history[j - 1] != null && currentvalue[i].history[j - 1].createAt.getFullYear() == Year) {
-                            arr.push({ option: currentvalue[i].option, value: currentvalue[i].history[j - 1].value });
+                    if (currentvalue[i].history[j].createAt >= date) {
+                        if (currentvalue[i].history[j - 1] != null) {
+                            arr.push({ _id: currentvalue[i]._id, option: currentvalue[i].option, value: currentvalue[i].history[j - 1].value });
                             break;
                         }
                     }
                     if (j == currentvalue[i].history.length - 1) {
-                        if (currentvalue[i].history[j].createAt.getFullYear() == Year) {
-                            arr.push({ option: currentvalue[i].option, value: currentvalue[i].history[j].value });
+                        if (currentvalue[i].history[j].createAt <= date) {
+                            arr.push({ _id: currentvalue[i]._id, option: currentvalue[i].option, value: currentvalue[i].history[j].value });
                         }
                     }
                 }
