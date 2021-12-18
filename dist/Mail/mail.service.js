@@ -84,13 +84,6 @@ let MailService = class MailService {
         }
         await this.userService.markEmailAsConfirmed(email);
     }
-    async resendConfirmationLink(id) {
-        const user = await this.userService.getByID(id);
-        if (!user || user.isEmailConfirmed) {
-            throw new common_1.BadRequestException('Email already confirmed');
-        }
-        await this.sendEmail(user.email, "PW");
-    }
 };
 MailService = __decorate([
     (0, common_1.Injectable)(),

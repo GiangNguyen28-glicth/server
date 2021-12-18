@@ -58,12 +58,12 @@ let UserService = class UserService {
                 await this.usermodel.findOneAndDelete({ email: email });
             }
             else {
-                return { code: 500, success: false, message: "Email Existing" };
+                return { code: 500, success: false, message: "Email đã tồn tại" };
             }
         }
         const userExistingPhone = await this.usermodel.findOne({ phoneNumber: phoneNumber });
         if (userExistingPhone) {
-            return { code: 500, success: false, message: "Phone Number Existing" };
+            return { code: 500, success: false, message: "Số điện thoại đã tồn tại" };
         }
         try {
             const date = new Date();
@@ -73,7 +73,7 @@ let UserService = class UserService {
             await this.mailservice.sendEmail(email, confirm_dto_1.MailAction.PW, "", firstName + lastName);
             (await user).save();
             return {
-                code: 200, success: true, message: "Success",
+                code: 200, success: true, message: "Đăng ký tài khoản thành công",
                 objectreponse: {
                     _id: (await user)._id, phoneNumber, email, CMND, firstName, lastName, address, role
                 }
@@ -101,9 +101,9 @@ let UserService = class UserService {
     async updateProfile(updateprofile, id) {
         const userExisting = await this.usermodel.findOneAndUpdate({ _id: id }, updateprofile);
         if (!userExisting) {
-            return { code: 200, success: false, message: "User not existing" };
+            return { code: 200, success: false, message: "User không tồn tại" };
         }
-        return { code: 200, success: true, message: "Update profile success" };
+        return { code: 200, success: true, message: "Cập nhật thông tin User thành công !" };
     }
     async getByEmail(email) {
         return await this.usermodel.findOne({ email: email });

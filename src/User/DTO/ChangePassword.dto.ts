@@ -3,7 +3,7 @@ export class changePassword{
     oldPassword?:string;
     @IsString()
     @Matches(/^(?=.*[a-zA-z\d@$!%*#?&.=])(?=.*\d)(?=.*[@$!%*#?&.=])[A-Za-z\d@$!%*#?&.=]{8,}$/, {
-        message: '8 characters including 1 uppercase letter, 1 special character',
+        message: '8 Ký tự bao gồm 1 chữ hoa, 1 ký tự đặc biệt',
     })
     newPassword:string;
     ConfirmPassword:string;

@@ -76,7 +76,7 @@ export class PassBookService{
         const date=diffDays(endDate, result[result.length-1].startDate);
         if(date-1>0){
             const nooption=await this.optionservice.GetValueOption(endDate,0);
-            money=money+money*(nooption/100)*(date-1)/360;
+            money=Number((money+money*(nooption/100)*(date-1)/360).toFixed(0));
             result[result.length-1].endDate=endDate;
             result[result.length-1].value=nooption;
         }
@@ -128,9 +128,11 @@ export class PassBookService{
             return {success:false,message:"Không tìm thấy sổ tiết kiệm tương ứng"};
         }
         let totalProfit =Number(passbook.deposits *(passbook.option / 100) *(passbook.option / 12))+ passbook.deposits;
+        const value= await this.optionservice.findOption(passbook.option);
         let profit = totalProfit-passbook.deposits;
         return {
             passbook:passbook,
+            value:value.value,
             profit:Number(profit.toFixed(0)),
             totalmoney:Number(totalProfit.toFixed(0))           
         }

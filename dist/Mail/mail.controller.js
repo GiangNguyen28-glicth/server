@@ -28,9 +28,6 @@ let MailController = class MailController {
         await this.mailservice.confirmEmail(email);
         response.redirect("https://fe-next-ecommerce.vercel.app");
     }
-    async resendConfirmationLink(user) {
-        return await this.mailservice.resendConfirmationLink(user._id);
-    }
 };
 __decorate([
     (0, common_1.Get)('/confirm-email'),
@@ -40,13 +37,6 @@ __decorate([
     __metadata("design:paramtypes", [confirm_dto_1.confirmEmail, Object]),
     __metadata("design:returntype", Promise)
 ], MailController.prototype, "confirm", null);
-__decorate([
-    (0, common_1.Get)('/resend-confirm-email'),
-    __param(0, (0, getuser_decorators_1.GetUser)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [User_Schema_1.User]),
-    __metadata("design:returntype", Promise)
-], MailController.prototype, "resendConfirmationLink", null);
 MailController = __decorate([
     (0, common_1.Controller)(''),
     __metadata("design:paramtypes", [mail_service_1.MailService])

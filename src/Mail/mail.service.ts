@@ -67,13 +67,4 @@ export class MailService{
         }
         await this.userService.markEmailAsConfirmed(email);
       }  
-
-
-      async resendConfirmationLink(id) {
-        const user = await this.userService.getByID(id);
-        if (!user||user.isEmailConfirmed) {
-          throw new BadRequestException('Email already confirmed');
-        }
-        await this.sendEmail(user.email,"PW");
-      }
 }

@@ -13,8 +13,4 @@ export class MailController{
       await this.mailservice.confirmEmail(email);
       response.redirect("https://fe-next-ecommerce.vercel.app");
     }
-    @Get('/resend-confirm-email')
-    async resendConfirmationLink(@GetUser() user:User):Promise<void>{
-      return await this.mailservice.resendConfirmationLink(user._id);
-    }
 }
