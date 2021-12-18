@@ -2,6 +2,7 @@ export class HistoryAction{
     createAt:Date;
     action:string;
     money:number;
+    quantity?:number;
 }
 export enum Action {
     OPENPASSBOOK = 'openpassbook',

@@ -33,8 +33,8 @@ let CartService = class CartService {
         this.optionservice = optionservice;
     }
     async addtoCart(cartdto, user) {
-        const startDate = await this.commonservice.convertDatetime(new Date());
-        const endDate = await this.commonservice.convertDatetime(new Date());
+        const startDate = new Date();
+        const endDate = new Date();
         const cartExisting = await this.cartmodel.findOne({ userId: user._id });
         const passbookexisting = await this.optionservice.findOption(cartdto.option);
         const valueofOption = await this.optionservice.GetValueOption(startDate, cartdto.option);
@@ -84,7 +84,8 @@ let CartService = class CartService {
             };
         }
         const result = await this.cartmodel.create({ userId: user._id, option: cartdto.option, startDate: startDate,
-            endDate: endDate, deposits: cartdto.deposits, totalProfit: totalProfit, profit: profit });
+            endDate: endDate, deposits: cartdto.deposits, suggest: cartdto.suggest, totalProfit: totalProfit, profit: profit,
+            depositinpassbook: cartdto.depositinpassbook, profitinpassbook: cartdto.depositinpassbook });
         result.save();
         return { code: 200, success: true, message: "Add to cart Success", objectreponse: result
         };
@@ -148,12 +149,13 @@ let CartService = class CartService {
             svd.userId = user._id;
             svd.createAt = new Date();
             await this.passbookservice.saveSavingsdeposit(svd, user);
-            const historyaction = new HistoryAction_obj_1.HistoryAction();
-            historyaction.action = HistoryAction_obj_1.Action.OPENPASSBOOK;
-            historyaction.createAt = new Date();
-            historyaction.money = cartExisting.depositinpassbook;
-            await this.userservice.updateNewAction(historyaction, user);
         }
+        const historyaction = new HistoryAction_obj_1.HistoryAction();
+        historyaction.action = HistoryAction_obj_1.Action.OPENPASSBOOK;
+        historyaction.createAt = new Date();
+        historyaction.money = cartExisting.depositinpassbook;
+        historyaction.quantity = cartExisting.suggest;
+        await this.userservice.updateNewAction(historyaction, user);
         await this.userservice.updateMoney(HistoryAction_obj_1.Action.OPENPASSBOOK, cartExisting.deposits, user);
         const passpook = await this.passbookservice.GetPassbookIsActive(user);
         cartExisting.delete();

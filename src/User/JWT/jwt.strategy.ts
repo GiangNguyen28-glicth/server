@@ -16,12 +16,11 @@ export class JwtStrategy extends PassportStrategy(Strategy){
     async validate(payload: JwtPayload): Promise<User> {
         let { id,iat } = payload;
         let date =await this.commonservice.convertDatetime(new Date(Number(iat)*1000));
-        date.setDate(date.getDate()+1);
         const user: User = await this.usermodel.findOne({_id:id});
-        if(user.isChangePassword>date){
+        if (!user) {
           throw new UnauthorizedException();
         }
-        if (!user) {
+        if(user.isChangePassword>date){
           throw new UnauthorizedException();
         }
         return user;

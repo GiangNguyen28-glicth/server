@@ -20,8 +20,8 @@ export class CartService{
     private optionservice:OptionService){}
     
     async addtoCart(cartdto:CartDTO,user:User):Promise<any>{
-        const startDate=await this.commonservice.convertDatetime(new Date());
-        const endDate=await this.commonservice.convertDatetime(new Date());
+        const startDate=new Date();
+        const endDate=new Date();
         const cartExisting=await this.cartmodel.findOne({userId:user._id});
         const passbookexisting=await this.optionservice.findOption(cartdto.option);
         const valueofOption=await this.optionservice.GetValueOption(startDate,cartdto.option);
@@ -49,10 +49,10 @@ export class CartService{
         else{
             cartdto.suggest=4;
         }
-        let totalProfit=Number(((cartdto.deposits*(valueofOption/100))*(cartdto.option/12)))+cartdto.deposits;
-        let profit=Number(((cartdto.deposits*(valueofOption/100))*(cartdto.option/12)));
-        cartdto.depositinpassbook=cartdto.deposits/cartdto.suggest;
-        let profitinpassbook=profit/cartdto.suggest;
+        let totalProfit=Number(((cartdto.deposits*(valueofOption/100))*(cartdto.option/12)))+cartdto.deposits; // tong lai suat
+        let profit=Number(((cartdto.deposits*(valueofOption/100))*(cartdto.option/12)));//lai suat nhan duoc
+        cartdto.depositinpassbook=cartdto.deposits/cartdto.suggest;//so tien moi passbook
+        let profitinpassbook=profit/cartdto.suggest;//lai suat nhan duoc trong moi passbook
         endDate.setMonth(endDate.getMonth()+cartdto.option);
         if(cartExisting){
             cartExisting.optionId=passbookexisting._id;
@@ -60,7 +60,7 @@ export class CartService{
             cartExisting.startDate=startDate;
             cartExisting.endDate=endDate;
             cartExisting.option=cartdto.option;
-            cartExisting.deposits=cartdto.deposits;
+            cartExisting.deposits=cartdto.deposits; //so tien ban dau gui
             cartExisting.profit=profit;
             cartExisting.suggest=cartdto.suggest;
             cartExisting.depositinpassbook=cartdto.depositinpassbook;
@@ -71,7 +71,8 @@ export class CartService{
             }
         }
         const result=await this.cartmodel.create({userId:user._id,option:cartdto.option,startDate:startDate,
-            endDate:endDate,deposits:cartdto.deposits,totalProfit:totalProfit,profit:profit});
+            endDate:endDate,deposits:cartdto.deposits,suggest:cartdto.suggest,totalProfit:totalProfit,profit:profit,
+            depositinpassbook:cartdto.depositinpassbook,profitinpassbook:cartdto.depositinpassbook});
         result.save();
         return{code:200,success:true,message:"Add to cart Success",objectreponse:result
         }
@@ -138,13 +139,13 @@ export class CartService{
             svd.userId=user._id;
             svd.createAt=new Date();
             await this.passbookservice.saveSavingsdeposit(svd,user);
-            const historyaction=new HistoryAction();
-            
-            historyaction.action=Action.OPENPASSBOOK;
-            historyaction.createAt=new Date();
-            historyaction.money=cartExisting.depositinpassbook;    
-            await this.userservice.updateNewAction(historyaction,user);
         }
+        const historyaction=new HistoryAction(); 
+        historyaction.action=Action.OPENPASSBOOK;
+        historyaction.createAt=new Date();
+        historyaction.money=cartExisting.depositinpassbook; 
+        historyaction.quantity=cartExisting.suggest;   
+        await this.userservice.updateNewAction(historyaction,user);
         await this.userservice.updateMoney(Action.OPENPASSBOOK,cartExisting.deposits,user);
         const passpook=await this.passbookservice.GetPassbookIsActive(user);
         cartExisting.delete();

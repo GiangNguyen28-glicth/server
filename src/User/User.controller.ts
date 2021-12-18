@@ -8,7 +8,6 @@ import { IReponse } from "src/Utils/IReponse";
 import { changePassword } from "./DTO/ChangePassword.dto";
 import { ConfirmPhoneDTO } from "./DTO/ConfirmPhone.dto";
 import { HistoryAction } from "./DTO/HistoryAction.obj";
-import { PhoneNumberDTO } from "./DTO/phoneNumber.dto";
 import { UpdateProfileDTO } from "./DTO/UpdateProfile.dto";
 import { UserDTO, UserRole } from "./DTO/user.dto";
 import { User } from "./Schema/User.Schema";
@@ -43,7 +42,7 @@ export class UserController{
         return this.userservice.confirmPhoneNumber(confirmPhonedto.code);
     }
 
-    @Put('/change-password')
+    @Put('/reset-password')
     @UseGuards(AuthGuard())
     async changePassword(@GetUser() user:User,@Body() changepassword:changePassword):Promise<IReponse<User>>{
         return this.userservice.changPassword(user._id,changepassword);
