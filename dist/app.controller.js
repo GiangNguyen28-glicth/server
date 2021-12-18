@@ -13,7 +13,7 @@ exports.AppController = void 0;
 const common_1 = require("@nestjs/common");
 let AppController = class AppController {
     async checkServer() {
-        return "Deploy Success Version 8";
+        return "Deploy Success Version ";
     }
 };
 __decorate([
