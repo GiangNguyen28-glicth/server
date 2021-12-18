@@ -1,4 +1,4 @@
-import { BadRequestException, Body, ForbiddenException, forwardRef, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, forwardRef, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { InjectConnection, InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { UserDTO, UserRole } from "./DTO/user.dto";
@@ -87,6 +87,9 @@ export class UserService{
 
     async updateProfile(updateprofile:UpdateProfileDTO,id):Promise<IReponse<User>>{
       const userExisting= await this.usermodel.findOneAndUpdate({_id:id},updateprofile);
+      if(!userExisting){
+        return{code:200,success:false,message:"User not existing"}
+      }
       return{code:200,success:true,message:"Update profile success"}
     }
 
@@ -183,7 +186,7 @@ export class UserService{
 
 
     async changPassword(userId,changepassword:changePassword):Promise<IReponse<User>>{
-      const date=new Date();
+      const date=new Date()
       const {newPassword,ConfirmPassword}=changepassword;
       const user = await this.usermodel.findOne({_id:userId});
       if (!user) {
@@ -242,7 +245,7 @@ export class UserService{
        userExisting.save();
     }
 
-    async NaptienATM(@Body() checkout:Checkout,user:User):Promise<IReponse<User>>{
+    async NaptienATM(checkout:Checkout,user:User):Promise<IReponse<User>>{
       await this.updateMoney(Action.NAPTIENATM,checkout.vnd,user);
       const historyaction=new HistoryAction();
       historyaction.action=Action.NAPTIENATM;

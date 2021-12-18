@@ -30,16 +30,17 @@ let CartController = class CartController {
         return this.cartservice.checkoutPassbook(user);
     }
     async newSuggest(quantity, user) {
-        return await this.cartservice.newSuggest(quantity, user);
+        return await this.cartservice.updateCart(quantity, user);
     }
 };
 __decorate([
-    (0, common_1.Post)('/addtocart'),
+    (0, common_1.Post)('/'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, getuser_decorators_1.GetUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Cart_dto_1.CartDTO, User_Schema_1.User]),
+    __metadata("design:paramtypes", [Cart_dto_1.CartDTO,
+        User_Schema_1.User]),
     __metadata("design:returntype", Promise)
 ], CartController.prototype, "addtoCart", null);
 __decorate([
@@ -51,7 +52,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], CartController.prototype, "dividePassbook", null);
 __decorate([
-    (0, common_1.Patch)('/newsuggest/:quantity'),
+    (0, common_1.Patch)('/:quantity'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     __param(0, (0, common_1.Param)('quantity')),
     __param(1, (0, getuser_decorators_1.GetUser)()),

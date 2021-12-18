@@ -33,21 +33,28 @@ let CartService = class CartService {
         this.optionservice = optionservice;
     }
     async addtoCart(cartdto, user) {
-        const startDate = new Date();
-        const endDate = new Date();
+        const startDate = new Date(Date.now());
+        const endDate = new Date(Date.now());
         const cartExisting = await this.cartmodel.findOne({ userId: user._id });
         const passbookexisting = await this.optionservice.findOption(cartdto.option);
         const valueofOption = await this.optionservice.GetValueOption(startDate, cartdto.option);
         if (!passbookexisting) {
-            return { code: 500, success: false, message: "Option not exist" };
+            return { code: 500, success: false, message: 'Lãi suất không tồn tại' };
         }
         if (cartdto.deposits < 1000000) {
-            return { code: 500, success: false, message: "At least 1.000.000" };
+            return {
+                code: 500,
+                success: false,
+                message: 'Số tiền gửi tiết kiệm phải lớn hơn hoặc bằng 1.000.000 VND',
+            };
         }
         if (cartdto.deposits > user.currentMoney) {
             const tienthieu = cartdto.deposits - user.currentMoney;
             return {
-                code: 500, success: false, message: `Not enough money in the account, You need ${tienthieu} VND`, money: tienthieu
+                code: 500,
+                success: false,
+                message: `Bạn cần thêm ${tienthieu} VND để mở sổ tiết kiệm`,
+                money: tienthieu,
             };
         }
         if (cartdto.deposits >= 1000000 && cartdto.deposits < 2000000) {
@@ -62,8 +69,9 @@ let CartService = class CartService {
         else {
             cartdto.suggest = 4;
         }
-        let totalProfit = Number(((cartdto.deposits * (valueofOption / 100)) * (cartdto.option / 12))) + cartdto.deposits;
-        let profit = Number(((cartdto.deposits * (valueofOption / 100)) * (cartdto.option / 12)));
+        let totalProfit = Number(cartdto.deposits * (valueofOption / 100) * (cartdto.option / 12)) +
+            cartdto.deposits;
+        let profit = Number(cartdto.deposits * (valueofOption / 100) * (cartdto.option / 12));
         cartdto.depositinpassbook = cartdto.deposits / cartdto.suggest;
         let profitinpassbook = profit / cartdto.suggest;
         endDate.setMonth(endDate.getMonth() + cartdto.option);
@@ -80,29 +88,56 @@ let CartService = class CartService {
             cartExisting.profitinpassbook = profitinpassbook;
             cartExisting.update();
             cartExisting.save();
-            return { code: 200, success: true, message: "Update cart Success", objectreponse: cartExisting
+            return {
+                code: 200,
+                success: true,
+                message: 'Cập nhật thành công',
+                objectreponse: cartExisting,
             };
         }
-        const result = await this.cartmodel.create({ userId: user._id, option: cartdto.option, optionId: passbookexisting._id, startDate: startDate,
-            endDate: endDate, deposits: cartdto.deposits, suggest: cartdto.suggest, totalProfit: totalProfit, profit: profit,
-            depositinpassbook: cartdto.depositinpassbook, profitinpassbook: profitinpassbook });
+        const result = await this.cartmodel.create({
+            userId: user._id,
+            option: cartdto.option,
+            optionId: passbookexisting._id,
+            startDate: startDate,
+            endDate: endDate,
+            deposits: cartdto.deposits,
+            suggest: cartdto.suggest,
+            totalProfit: totalProfit,
+            profit: profit,
+            depositinpassbook: cartdto.depositinpassbook,
+            profitinpassbook: profitinpassbook,
+        });
         result.save();
-        return { code: 200, success: true, message: "Add to cart Success", objectreponse: result
+        return {
+            code: 200,
+            success: true,
+            message: 'Thêm thành công',
+            objectreponse: result,
         };
     }
-    async newSuggest(quantity, user) {
+    async updateCart(quantity, user) {
         const cartExisting = await this.cartmodel.findOne({ userId: user._id });
         if (!cartExisting) {
-            return { message: "Cart not existing", success: false };
+            return { message: 'Cart not existing', success: false };
         }
         const deposit = cartExisting.deposits / quantity;
         if (deposit < 1000000) {
-            return { message: "Deposits not ok", success: false };
+            return {
+                message: 'Số tiền gửi tiết kiệm trên một gói phải lớn hơn 1.000.000 VND',
+                success: false,
+            };
         }
-        const startDate = new Date();
-        const endDate = new Date();
-        let totalProfit = Number(((cartExisting.deposits * (cartExisting.option / 100)) * (cartExisting.option / 12))) + cartExisting.deposits;
-        let profit = Number(((cartExisting.deposits * (cartExisting.option / 100)) * (cartExisting.option / 12)));
+        const startDate = new Date(Date.now());
+        const endDate = new Date(Date.now());
+        const valueofOption = await this.optionservice.GetValueOption(startDate, cartExisting.option);
+        let totalProfit = Number(cartExisting.deposits *
+            (valueofOption / 100) *
+            (cartExisting.option / 12)) + cartExisting.deposits;
+        console.log(cartExisting);
+        let profit = Number(cartExisting.deposits *
+            (valueofOption / 100) *
+            (cartExisting.option / 12));
         cartExisting.depositinpassbook = cartExisting.deposits / quantity;
         let profitinpassbook = profit / quantity;
         endDate.setMonth(endDate.getMonth() + cartExisting.option);
@@ -117,29 +152,49 @@ let CartService = class CartService {
             cartExisting.profitinpassbook = profitinpassbook;
             cartExisting.update();
             cartExisting.save();
-            return { code: 200, success: true, message: "Update cart Success", objectreponse: cartExisting
+            return {
+                code: 200,
+                success: true,
+                message: 'Cập nhật thành công',
+                objectreponse: cartExisting,
             };
         }
-        const result = await this.cartmodel.create({ userId: user._id, option: cartExisting.option, startDate: startDate,
-            endDate: endDate, deposits: cartExisting.deposits, totalProfit: totalProfit, profit: profit });
+        const result = await this.cartmodel.create({
+            userId: user._id,
+            option: cartExisting.option,
+            startDate: startDate,
+            endDate: endDate,
+            deposits: cartExisting.deposits,
+            totalProfit: totalProfit,
+            profit: profit,
+        });
         result.save();
-        return { code: 200, success: true, message: "Add to cart Success", objectreponse: result
+        return {
+            code: 200,
+            success: true,
+            message: 'Thêm thành công',
+            objectreponse: result,
         };
     }
     async checkoutPassbook(user) {
         const cartExisting = await this.cartmodel.findOne({ userId: user._id });
         if (!cartExisting) {
             return {
-                code: 400, success: false, message: "Cart not exist"
+                code: 400,
+                success: false,
+                message: 'Cart not exist',
             };
         }
         if (user.currentMoney < cartExisting.deposits) {
             const tienthieu = cartExisting.deposits - user.currentMoney;
             return {
-                code: 400, success: false, message: `Not enough money in the account, You need ${tienthieu} VND`, money: tienthieu
+                code: 400,
+                success: false,
+                message: `Bạn cần thêm ${tienthieu} VND để mở sổ tiết kiệm`,
+                money: tienthieu,
             };
         }
-        const endDate = new Date();
+        const endDate = new Date(Date.now());
         endDate.setMonth(endDate.getMonth() + cartExisting.option);
         for (var i = 0; i < cartExisting.suggest; i++) {
             const svd = new PassBook_dto_1.PassBookDTO();
@@ -147,20 +202,22 @@ let CartService = class CartService {
             svd.option = cartExisting.option;
             svd.optionId = cartExisting.optionId;
             svd.userId = user._id;
-            svd.createAt = new Date();
+            svd.createAt = new Date(Date.now());
+            svd.endAt = endDate;
             await this.passbookservice.saveSavingsdeposit(svd, user);
         }
         const historyaction = new HistoryAction_obj_1.HistoryAction();
         historyaction.action = HistoryAction_obj_1.Action.OPENPASSBOOK;
-        historyaction.createAt = new Date();
+        historyaction.createAt = new Date(Date.now());
         historyaction.money = cartExisting.depositinpassbook;
         historyaction.quantity = cartExisting.suggest;
         await this.userservice.updateNewAction(historyaction, user);
         await this.userservice.updateMoney(HistoryAction_obj_1.Action.OPENPASSBOOK, cartExisting.deposits, user);
-        const passpook = await this.passbookservice.GetPassbookIsNotActive(user);
+        const passbooks = await this.passbookservice.GetPassbookIsNotActive(user);
         cartExisting.delete();
         return {
-            data: user.currentMoney - cartExisting.deposits, passbook: passpook
+            currentMoney: user.currentMoney - cartExisting.deposits,
+            passbooks: passbooks,
         };
     }
 };
