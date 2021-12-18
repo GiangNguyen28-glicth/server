@@ -55,4 +55,11 @@ export class PassBookController{
         return this.passbookservice.getnewPassBook();
     }
 
+    @hasRoles(UserRole.ADMIN)
+    @UseGuards(AuthGuard(),RolesGuard)
+    @Get('/getpassbookuser')
+    async getpassbookuser():Promise<any>{
+        return null;
+    }
+
 }

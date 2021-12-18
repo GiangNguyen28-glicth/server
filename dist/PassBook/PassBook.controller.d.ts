@@ -13,4 +13,5 @@ export declare class PassBookController {
     withdrawMoneyPassbook(user: User, passbookid: any): Promise<PassBook>;
     getAllPassbook(): Promise<PassBook[]>;
     getnewpassbook(): Promise<any>;
+    getpassbookuser(): Promise<any>;
 }

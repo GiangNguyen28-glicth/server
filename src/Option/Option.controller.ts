@@ -41,8 +41,6 @@ export class OptionController{
 
     @Get('/getcurrentoption')
     async GetCurrentOptionValue(){
-        const newDate=new Date();
-        let temp=newDate.getFullYear();
-        return this.optionService.GetValueByYear(temp);
+        return this.optionService.getCurrentValueOption();
     }
 }

@@ -9,5 +9,5 @@ export declare class OptionController {
     findAllOption(): Promise<Option[]>;
     updateOption(id: any, newoptiondto: newOptionDTO): Promise<Option>;
     GetValueOption(option: newOptionDTO): Promise<number>;
-    GetCurrentOptionValue(): Promise<any>;
+    GetCurrentOptionValue(): Promise<Option[]>;
 }

@@ -39,9 +39,7 @@ let OptionController = class OptionController {
         return await this.optionService.GetValueOption(date, option.option);
     }
     async GetCurrentOptionValue() {
-        const newDate = new Date();
-        let temp = newDate.getFullYear();
-        return this.optionService.GetValueByYear(temp);
+        return this.optionService.getCurrentValueOption();
     }
 };
 __decorate([

@@ -49,6 +49,9 @@ let PassBookController = class PassBookController {
     async getnewpassbook() {
         return this.passbookservice.getnewPassBook();
     }
+    async getpassbookuser() {
+        return null;
+    }
 };
 __decorate([
     (0, common_1.Post)('/save'),
@@ -104,6 +107,14 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], PassBookController.prototype, "getnewpassbook", null);
+__decorate([
+    (0, role_decorators_1.hasRoles)(user_dto_1.UserRole.ADMIN),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)(), role_guard_1.RolesGuard),
+    (0, common_1.Get)('/getpassbookuser'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], PassBookController.prototype, "getpassbookuser", null);
 PassBookController = __decorate([
     (0, common_1.Controller)('/passbook'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),

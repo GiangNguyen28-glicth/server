@@ -11,21 +11,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OptionService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const OptionObj_dto_1 = require("./DTO/OptionObj.dto");
-const cache_manager_1 = require("cache-manager");
 const Option_chema_1 = require("./Schema/Option.chema");
 const common_service_1 = require("../Utils/common.service");
 let OptionService = class OptionService {
-    constructor(optionmodel, commonservice, cacheManager) {
+    constructor(optionmodel) {
         this.optionmodel = optionmodel;
-        this.commonservice = commonservice;
-        this.cacheManager = cacheManager;
     }
     async saveoption(option) {
         const result = await this.optionmodel.create(option);
@@ -98,13 +94,15 @@ let OptionService = class OptionService {
         }
         return result;
     }
+    async getCurrentValueOption() {
+        const list = await this.optionmodel.find().select('_id option value');
+        return list;
+    }
 };
 OptionService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(Option_chema_1.Option.name)),
-    __param(2, (0, common_1.Inject)(common_1.CACHE_MANAGER)),
-    __metadata("design:paramtypes", [mongoose_2.Model,
-        common_service_1.CommonService, typeof (_a = typeof cache_manager_1.Cache !== "undefined" && cache_manager_1.Cache) === "function" ? _a : Object])
+    __metadata("design:paramtypes", [mongoose_2.Model])
 ], OptionService);
 exports.OptionService = OptionService;
 //# sourceMappingURL=Option.service.js.map

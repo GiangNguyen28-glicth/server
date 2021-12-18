@@ -10,9 +10,8 @@ import { CommonService } from "src/Utils/common.service";
 @Injectable()
 export class OptionService{
     constructor(@InjectModel(Option.name)
-    private optionmodel:Model<OptionDocument>,
-    private commonservice:CommonService,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache){}
+    private optionmodel:Model<OptionDocument>){}
+    
     async saveoption(option:OptionDTO):Promise<Option>{
         const result=await this.optionmodel.create(option);
         result.save();
@@ -93,5 +92,10 @@ export class OptionService{
             }
         }
         return result;
+    }
+
+    async getCurrentValueOption():Promise<Option[]>{
+        const list=await this.optionmodel.find().select('_id option value');
+        return list;
     }
 }

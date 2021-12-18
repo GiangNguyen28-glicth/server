@@ -109,7 +109,7 @@ export class PassBookService{
     }
 
     async getAllPassbook():Promise<PassBook[]>{
-        return await this.passbookmodel.find().sort({_id:-1});
+        return await this.passbookmodel.find({status:false}).sort({_id:-1});
     }
 
     async getnewPassBook():Promise<any>{

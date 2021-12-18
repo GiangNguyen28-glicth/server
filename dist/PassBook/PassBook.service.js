@@ -125,7 +125,7 @@ let PassBookService = class PassBookService {
         return { passbook: passbook, songayle: data.songayle, money: data.money };
     }
     async getAllPassbook() {
-        return await this.passbookmodel.find().sort({ _id: -1 });
+        return await this.passbookmodel.find({ status: false }).sort({ _id: -1 });
     }
     async getnewPassBook() {
         const newpassbook = await this.passbookmodel.find({ status: false }).sort({ _id: -1 }).limit(10).lean();
