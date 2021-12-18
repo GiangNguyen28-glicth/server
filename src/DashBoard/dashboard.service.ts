@@ -341,4 +341,3 @@ export class DashBoardService {
       newDeposits: deposits,
     };
   };
-}

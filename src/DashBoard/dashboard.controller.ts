@@ -15,4 +15,3 @@ export class DashBoardController {
   async getData(): Promise<any> {
     return await this.dashboardservice.getData();
   }
-}
