@@ -33,8 +33,8 @@ export class UserController{
     }
 
     @Post('/forgot-password')
-    async forgotpassword(@Body() phoneNumber:PhoneNumberDTO):Promise<void>{
-        return this.userservice.forgotpassword(phoneNumber.phoneNumber);
+    async forgotpassword(@Body() {email}):Promise<void>{
+        return this.userservice.forgotpassword(email);
     }
 
 

@@ -65,7 +65,7 @@ let UserService = class UserService {
             const salt = await bcrypt.genSalt();
             const hashedpassword = await bcrypt.hash(password, salt);
             const user = this.usermodel.create({ firstName, lastName, password: hashedpassword, email, phoneNumber, CMND, address, role, isChangePassword: date });
-            await this.mailservice.sendEmail(email, "PW");
+            await this.mailservice.sendEmail(email, confirm_dto_1.MailAction.PW);
             (await user).save();
             return {
                 code: 200, success: true, message: "Success",
@@ -126,16 +126,16 @@ let UserService = class UserService {
             throw new common_1.UnauthorizedException('Please Check Account');
         }
     }
-    async forgotpassword(phoneNumber) {
-        let phonereplace = "+84" + phoneNumber.slice(1, phoneNumber.length);
-        const user = await this.usermodel.findOne({ phoneNumber: phonereplace });
+    async forgotpassword(email) {
+        const user = await this.usermodel.findOne({ email: email });
         if (!user) {
-            throw new common_1.UnauthorizedException('Phone Number not existing');
+            throw new common_1.UnauthorizedException('Email not existing');
         }
-        await this.otpmodel.findOneAndDelete({ phoneNumber: phonereplace });
-        const otp = await this.otpmodel.create({ userId: user._id, phoneNumber: phonereplace });
+        const random = await this.randomotp();
+        await this.otpmodel.findOneAndDelete({ phoneNumber: user.phoneNumber });
+        const otp = await this.otpmodel.create({ userId: user._id, phoneNumber: user.phoneNumber });
         otp.save();
-        await this.mailservice.sendEmail(user.email, confirm_dto_1.MailAction.PW, user.fullName, "");
+        await this.mailservice.sendEmail(user.email, confirm_dto_1.MailAction.LG, random, user.fullName);
     }
     async sendSMS(phoneNumber) {
         const serviceSid = "VAa8323d40b3ccf4ca0d124b0efde8764d";
@@ -149,6 +149,9 @@ let UserService = class UserService {
     async confirmPhoneNumber(verificationCode) {
         const serviceSid = "VAa8323d40b3ccf4ca0d124b0efde8764d";
         const otp = await this.otpmodel.findOne({ code: verificationCode });
+        if (!otp) {
+            throw new common_1.BadRequestException('OTP is Expries or not existing');
+        }
         if (otp.code != verificationCode) {
             throw new common_1.BadRequestException('Wrong code provided');
         }

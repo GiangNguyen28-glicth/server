@@ -28,8 +28,6 @@ let MailService = class MailService {
     async sendEmail(email, option, code, fullname) {
         let html;
         if (option == confirm_dto_1.MailAction.LG) {
-            console.log(fullname);
-            console.log(code);
             html = await this.checkOption(confirm_dto_1.MailAction.LG, code, fullname, "");
         }
         else {

@@ -3,7 +3,6 @@ import { IReponse } from "src/Utils/IReponse";
 import { changePassword } from "./DTO/ChangePassword.dto";
 import { ConfirmPhoneDTO } from "./DTO/ConfirmPhone.dto";
 import { HistoryAction } from "./DTO/HistoryAction.obj";
-import { PhoneNumberDTO } from "./DTO/phoneNumber.dto";
 import { UpdateProfileDTO } from "./DTO/UpdateProfile.dto";
 import { UserDTO } from "./DTO/user.dto";
 import { User } from "./Schema/User.Schema";
@@ -19,7 +18,9 @@ export declare class UserController {
         accesstoken: string;
     }>;
     updateprofile(updatepfl: UpdateProfileDTO, user: User): Promise<IReponse<User>>;
-    forgotpassword(phoneNumber: PhoneNumberDTO): Promise<void>;
+    forgotpassword({ email }: {
+        email: any;
+    }): Promise<void>;
     checkVerificationCode(user: User, confirmPhonedto: ConfirmPhoneDTO): Promise<{
         accessToken: any;
     }>;

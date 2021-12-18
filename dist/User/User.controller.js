@@ -22,7 +22,6 @@ const checkout_dto_1 = require("../Paypal/DTO/checkout.dto");
 const IReponse_1 = require("../Utils/IReponse");
 const ChangePassword_dto_1 = require("./DTO/ChangePassword.dto");
 const ConfirmPhone_dto_1 = require("./DTO/ConfirmPhone.dto");
-const phoneNumber_dto_1 = require("./DTO/phoneNumber.dto");
 const UpdateProfile_dto_1 = require("./DTO/UpdateProfile.dto");
 const user_dto_1 = require("./DTO/user.dto");
 const User_Schema_1 = require("./Schema/User.Schema");
@@ -40,8 +39,8 @@ let UserController = class UserController {
     async updateprofile(updatepfl, user) {
         return this.userservice.updateProfile(updatepfl, user._id);
     }
-    async forgotpassword(phoneNumber) {
-        return this.userservice.forgotpassword(phoneNumber.phoneNumber);
+    async forgotpassword({ email }) {
+        return this.userservice.forgotpassword(email);
     }
     async checkVerificationCode(user, confirmPhonedto) {
         return this.userservice.confirmPhoneNumber(confirmPhonedto.code);
@@ -98,7 +97,7 @@ __decorate([
     (0, common_1.Post)('/forgot-password'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [phoneNumber_dto_1.PhoneNumberDTO]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "forgotpassword", null);
 __decorate([

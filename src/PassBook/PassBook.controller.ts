@@ -40,10 +40,6 @@ export class PassBookController{
         return this.passbookservice.GetPassbookIsNotActive(user);
     }
 
-    @Get('/getpassbookbyid/:id')
-    async GetPassbookById(@GetUser() user:User,@Param('id') id):Promise<PassBook>{
-        return this.passbookservice.GetPassBookById(id,user);
-    }
     //rut tien
     @Post('/withdrawMoneyPassbook/:passbookid')
     async withdrawMoneyPassbook(@GetUser() user:User,@Param('passbookid') passbookid):Promise<PassBook>{

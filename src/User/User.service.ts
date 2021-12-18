@@ -57,7 +57,7 @@ export class UserService{
             const salt = await bcrypt.genSalt();
             const hashedpassword = await bcrypt.hash(password, salt);
             const user = this.usermodel.create({firstName,lastName,password:hashedpassword,email,phoneNumber,CMND,address,role,isChangePassword:date});
-            await this.mailservice.sendEmail(email,"PW");
+            await this.mailservice.sendEmail(email,MailAction.PW);
             (await user).save();
             return {
               code:200, success:true,message:"Success",
@@ -119,25 +119,22 @@ export class UserService{
         return{
             code:200,success:true,message:"Check otp"
         }
-        // let id=user._id;
-        // const payload= {id};
-        // const accessToken = await this.jwtservice.sign(payload);
-        // return {accessToken};
       } else {
           throw new UnauthorizedException('Please Check Account');
       }
     }
 
-    async forgotpassword(phoneNumber:string):Promise<void>{
-      let phonereplace="+84"+phoneNumber.slice(1,phoneNumber.length);
-      const user=await this.usermodel.findOne({phoneNumber:phonereplace});
+    async forgotpassword(email:string):Promise<void>{
+      // let phonereplace="+84"+phoneNumber.slice(1,phoneNumber.length);
+      const user=await this.usermodel.findOne({email:email});
       if(!user){
-        throw new UnauthorizedException('Phone Number not existing');
+        throw new UnauthorizedException('Email not existing');
       }
-      await this.otpmodel.findOneAndDelete({phoneNumber:phonereplace});
-      const otp=await this.otpmodel.create({userId:user._id,phoneNumber:phonereplace})
+      const random=await this.randomotp();
+      await this.otpmodel.findOneAndDelete({phoneNumber:user.phoneNumber});
+      const otp=await this.otpmodel.create({userId:user._id,phoneNumber:user.phoneNumber});
       otp.save();
-      await this.mailservice.sendEmail(user.email,MailAction.PW,user.fullName,"");
+      await this.mailservice.sendEmail(user.email,MailAction.LG,random,user.fullName);
       //await this.sendSMS(user.phoneNumber);
     }
 
@@ -149,7 +146,6 @@ export class UserService{
           code:500,success:false,message:"Phone number null"
         }
       }
-      // await this.
       // await this.mailservice.sendEmail()
       // this.twilioClient.verify.services(serviceSid)
       // .verifications
@@ -160,6 +156,9 @@ export class UserService{
     async confirmPhoneNumber(verificationCode: string):Promise<{accessToken}>{
       const serviceSid = "VAa8323d40b3ccf4ca0d124b0efde8764d";
       const otp=await this.otpmodel.findOne({code:verificationCode});
+      if(!otp){
+        throw new BadRequestException('OTP is Expries or not existing');
+      }
       if(otp.code!=verificationCode){
         throw new BadRequestException('Wrong code provided');
       }

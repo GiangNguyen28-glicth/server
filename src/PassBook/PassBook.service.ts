@@ -100,14 +100,6 @@ export class PassBookService{
         return passbook;
     }
 
-    async GetPassBookById(passbookid,user:User):Promise<any>{
-        const passbook=await this.passbookmodel.findOne({userId:user._id,_id:passbookid});
-        if(!passbook){
-            return {code:500,success:false,message:"Passbook not found"}
-        }
-        return passbook;
-    }
-
     async withdrawMoneyPassbook(passbookid,user:User):Promise<PassBook>{
         const passbook=await this.passbookmodel.findOne({_id:passbookid,userId:user._id}); 
         if(!passbook){console.log("Passbook not found"); return null};
@@ -121,6 +113,6 @@ export class PassBookService{
     }
 
     async getAllPassbook():Promise<PassBook[]>{
-        return await this.passbookmodel.find();
+        return await this.passbookmodel.find().sort('date');
     }
 }   

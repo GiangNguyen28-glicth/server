@@ -43,9 +43,6 @@ let PassBookController = class PassBookController {
     async getPassbookIsNotActive(user) {
         return this.passbookservice.GetPassbookIsNotActive(user);
     }
-    async GetPassbookById(user, id) {
-        return this.passbookservice.GetPassBookById(id, user);
-    }
     async withdrawMoneyPassbook(user, passbookid) {
         return this.passbookservice.withdrawMoneyPassbook(passbookid, user);
     }
@@ -90,14 +87,6 @@ __decorate([
     __metadata("design:paramtypes", [User_Schema_1.User]),
     __metadata("design:returntype", Promise)
 ], PassBookController.prototype, "getPassbookIsNotActive", null);
-__decorate([
-    (0, common_1.Get)('/getpassbookbyid/:id'),
-    __param(0, (0, getuser_decorators_1.GetUser)()),
-    __param(1, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [User_Schema_1.User, Object]),
-    __metadata("design:returntype", Promise)
-], PassBookController.prototype, "GetPassbookById", null);
 __decorate([
     (0, common_1.Post)('/withdrawMoneyPassbook/:passbookid'),
     __param(0, (0, getuser_decorators_1.GetUser)()),

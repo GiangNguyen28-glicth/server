@@ -12,8 +12,6 @@ export class MailService{
     async sendEmail(email:string,option:string,code?:string,fullname?:string): Promise<void>{
       let html;
         if(option==MailAction.LG){
-          console.log(fullname);
-          console.log(code);
          html=await this.checkOption(MailAction.LG,code,fullname,"")
         }
         else{

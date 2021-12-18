@@ -35,7 +35,7 @@ export declare class UserService {
         email: any;
         password: any;
     }): Promise<any>;
-    forgotpassword(phoneNumber: string): Promise<void>;
+    forgotpassword(email: string): Promise<void>;
     sendSMS(phoneNumber: string): Promise<any>;
     confirmPhoneNumber(verificationCode: string): Promise<{
         accessToken: any;
