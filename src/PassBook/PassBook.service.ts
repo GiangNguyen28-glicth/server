@@ -42,12 +42,22 @@ export class PassBookService{
     async getTotalCycles(passbookid,user:User):Promise<any>{
         var endDate=new Date();
         let value;
-        const svd=await this.passbookmodel.findOne({_id:passbookid,userId:user._id});
-        if(!svd){return {code:500,success:false,message:"Cant find Passbook in DB"}}
+        const svd=await this.passbookmodel.findOne({_id:passbookid,userId:user._id} );
+        if(!svd){return {code:500,success:false,message:"Sổ tiết kiệm không hợp lệ"}}
         const startDate=new Date(`${svd.createAt}`);
-        console.log(startDate);
         let result=[];
-        const startcycle=new CyclesUpdateDTO();
+        if(startDate.getFullYear()==endDate.getFullYear()&&startDate.getMonth()==endDate.getMonth()
+            &&startDate.getDate()==endDate.getDate()){
+            const startcycle=new CyclesUpdateDTO();
+            startcycle.startDate=startDate;
+            startcycle.endDate=endDate;
+            const nooption=await this.optionservice.GetValueOption(endDate,0);
+            startcycle.value=nooption;
+            result.push(startcycle);
+            return {passbook:svd,cycles:result,songayle:0, //so ngay le
+                money:svd.deposits
+            };
+        }
         while(startDate<=endDate){
             const startcycle=new CyclesUpdateDTO();
             value=await this.optionservice.GetValueOption(startDate,svd.option);
@@ -64,13 +74,14 @@ export class PassBookService{
         }
         const diffDays = (date, otherDate)  => Math.ceil(Math.abs(date - otherDate) / (1000 * 60 * 60 * 24));
         const date=diffDays(endDate, result[result.length-1].startDate);
-        const nooption=await this.optionservice.GetValueOption(endDate,0);
-        money=money+money*(nooption/100)*(date-1)/360;
-        result[result.length-1].endDate=endDate;
-        return {
-            passbook:svd,
-            cycles:result,
-            songayle:date-1, //so ngay le
+        if(date-1>0){
+            const nooption=await this.optionservice.GetValueOption(endDate,0);
+            money=money+money*(nooption/100)*(date-1)/360;
+            result[result.length-1].endDate=endDate;
+            result[result.length-1].value=nooption;
+        }
+        else{result.pop()}
+        return {passbook:svd,cycles:result,songayle:date-1, //so ngay le
             money:money
         };
     }
@@ -91,10 +102,10 @@ export class PassBookService{
         if(passbook.status){console.log("Passbook is Active");return {success:false,message:"Sổ tiết kiệm đã được rút"}};
         const data=await this.getTotalCycles(passbookid,user);
         passbook.cyclesupdate=data.cycles;
-        // passbook.status=true;
-        // passbook.save();
+        passbook.status=true;
+        passbook.save();
         await this.userservice.updateMoney(Action.WITHDRAWAL,data.money,user);
-        return {passbook:data.passbook,songayle:data.songayle,money:data.money};
+        return {passbook:passbook,songayle:data.songayle,money:data.money};
     }
 
     async getAllPassbook():Promise<PassBook[]>{
