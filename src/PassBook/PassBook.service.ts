@@ -70,7 +70,7 @@ export class PassBookService{
         let money=svd.deposits; //tien gui
         for(let i=0;i<result.length-1;i++){
             money=((money*(result[i].value/100))*svd.option/12)+money;
-            result[i].currentMoney=money;
+            result[i].currentMoney=Number(money.toFixed(0));
         }
         const diffDays = (date, otherDate)  => Math.ceil(Math.abs(date - otherDate) / (1000 * 60 * 60 * 24));
         const date=diffDays(endDate, result[result.length-1].startDate);
@@ -105,7 +105,7 @@ export class PassBookService{
         passbook.status=true;
         passbook.save();
         await this.userservice.updateMoney(Action.WITHDRAWAL,data.money,user);
-        return {passbook:passbook,songayle:data.songayle,money:data.money};
+        return {passbook:passbook,songayle:data.songayle,money:Number(data.money.toFixed(0))};
     }
 
     async getAllPassbook():Promise<PassBook[]>{
@@ -131,8 +131,8 @@ export class PassBookService{
         let profit = totalProfit-passbook.deposits;
         return {
             passbook:passbook,
-            profit:profit,
-            totalmoney:totalProfit           
+            profit:Number(profit.toFixed(0)),
+            totalmoney:Number(totalProfit.toFixed(0))           
         }
     }
 }   

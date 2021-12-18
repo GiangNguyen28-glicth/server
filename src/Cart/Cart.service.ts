@@ -61,25 +61,25 @@ export class CartService {
       cartdto.suggest = 4;
     }
     let totalProfit =
-      Number(cartdto.deposits * (valueofOption / 100) * (cartdto.option / 12)) +
-      cartdto.deposits; // tong lai suat
+      (Number(cartdto.deposits * (valueofOption / 100) * (cartdto.option / 12)) +
+      cartdto.deposits).toFixed(0); // tong lai suat
     let profit = Number(
       cartdto.deposits * (valueofOption / 100) * (cartdto.option / 12),
     ); //lai suat nhan duoc
     cartdto.depositinpassbook = cartdto.deposits / cartdto.suggest; //so tien moi passbook
-    let profitinpassbook = profit / cartdto.suggest; //lai suat nhan duoc trong moi passbook
+    let profitinpassbook = (profit / cartdto.suggest).toFixed(0); //lai suat nhan duoc trong moi passbook
     endDate.setMonth(endDate.getMonth() + cartdto.option);
     if (cartExisting) {
       cartExisting.optionId = passbookexisting._id;
-      cartExisting.totalProfit = totalProfit;
+      cartExisting.totalProfit = Number(totalProfit);
       cartExisting.startDate = startDate;
       cartExisting.endDate = endDate;
       cartExisting.option = cartdto.option;
       cartExisting.deposits = cartdto.deposits; //so tien ban dau gui
-      cartExisting.profit = profit;
+      cartExisting.profit =Number(profit.toFixed(0));
       cartExisting.suggest = cartdto.suggest;
       cartExisting.depositinpassbook = cartdto.depositinpassbook;
-      cartExisting.profitinpassbook = profitinpassbook;
+      cartExisting.profitinpassbook = Number(profitinpassbook);
       cartExisting.update();
       cartExisting.save();
       return {
@@ -138,24 +138,23 @@ export class CartService {
           (valueofOption / 100) *
           (cartExisting.option / 12),
       ) + cartExisting.deposits;
-    console.log(cartExisting);
     let profit = Number(
       cartExisting.deposits *
         (valueofOption / 100) *
         (cartExisting.option / 12),
-    );
+    ).toFixed(0);
     cartExisting.depositinpassbook = cartExisting.deposits / quantity;
-    let profitinpassbook = profit / quantity;
+    let profitinpassbook = (+profit/ quantity).toFixed(0);
     endDate.setMonth(endDate.getMonth() + cartExisting.option);
     if (cartExisting) {
       cartExisting.totalProfit = totalProfit;
       cartExisting.endDate = endDate;
       cartExisting.option = cartExisting.option;
       cartExisting.deposits = cartExisting.deposits;
-      cartExisting.profit = profit;
+      cartExisting.profit =Number(profit);
       cartExisting.suggest = quantity;
       cartExisting.depositinpassbook = cartExisting.depositinpassbook;
-      cartExisting.profitinpassbook = profitinpassbook;
+      cartExisting.profitinpassbook =Number(profitinpassbook);
       cartExisting.update();
       cartExisting.save();
       return {
@@ -227,7 +226,7 @@ export class CartService {
     const passbooks = await this.passbookservice.GetPassbookIsNotActive(user);
     cartExisting.delete();
     return {
-      currentMoney: user.currentMoney - cartExisting.deposits,
+      currentMoney: (user.currentMoney - cartExisting.deposits).toFixed(0),
       passbooks: passbooks,
     };
   }
