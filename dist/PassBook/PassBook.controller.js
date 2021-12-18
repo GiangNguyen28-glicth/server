@@ -32,7 +32,7 @@ let PassBookController = class PassBookController {
         return this.passbookservice.saveSavingsdeposit(passbookdto, user);
     }
     async getTotalCycles(passbookid, user) {
-        return this.passbookservice.getInformationPassbook(passbookid, user._id);
+        return this.passbookservice.getTotalCycles(passbookid, user);
     }
     async getPassbook(user) {
         return this.passbookservice.GetAllPassbookByUserId(user);
@@ -51,6 +51,9 @@ let PassBookController = class PassBookController {
     }
     async getpassbookuser(userid) {
         return this.passbookservice.getpassbookbyUser(userid);
+    }
+    async checkInformationPassbook(passbookid, user) {
+        return this.passbookservice.getInformationPassbook(passbookid, user._id);
     }
 };
 __decorate([
@@ -116,6 +119,14 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], PassBookController.prototype, "getpassbookuser", null);
+__decorate([
+    (0, common_1.Get)('/checkInformationpassbook/:passbookid'),
+    __param(0, (0, common_1.Param)('passbookid')),
+    __param(1, (0, getuser_decorators_1.GetUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, User_Schema_1.User]),
+    __metadata("design:returntype", Promise)
+], PassBookController.prototype, "checkInformationPassbook", null);
 PassBookController = __decorate([
     (0, common_1.Controller)('/passbook'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),

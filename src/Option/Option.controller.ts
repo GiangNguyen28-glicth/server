@@ -29,7 +29,6 @@ export class OptionController{
     @UseGuards(AuthGuard(),RolesGuard)
     @Put('/updateOption/:id')
     async updateOption(@Param('id') id,@Body() newoptiondto:newOptionDTO):Promise<Option>{
-
         return this.optionService.updatenewOption(id,newoptiondto);
     }
 
