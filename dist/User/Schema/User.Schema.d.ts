@@ -15,6 +15,7 @@ export declare class User {
     address: string;
     isExprise?: Date;
     isChangePassword?: Date;
+    createAt?: Date;
     role: UserRole;
     historyaction?: [HistoryAction];
     fullName?: string;

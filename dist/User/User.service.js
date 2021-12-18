@@ -65,7 +65,7 @@ let UserService = class UserService {
             const salt = await bcrypt.genSalt();
             const hashedpassword = await bcrypt.hash(password, salt);
             const user = this.usermodel.create({ firstName, lastName, password: hashedpassword, email, phoneNumber, CMND, address, role, isChangePassword: date });
-            await this.mailservice.sendEmail(email, confirm_dto_1.MailAction.PW);
+            await this.mailservice.sendEmail(email, confirm_dto_1.MailAction.PW, "", firstName + lastName);
             (await user).save();
             return {
                 code: 200, success: true, message: "Success",

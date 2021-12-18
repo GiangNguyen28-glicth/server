@@ -24,6 +24,7 @@ export class MailService{
           });
           MailTemplateVerifyLink.link= `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
           MailTemplateVerifyLink.fullname=fullname;
+          console.log(fullname);
           html=MailTemplateVerifyLink.HTMLLink();
         }
         const transporter =await nodemailer.createTransport({

@@ -65,6 +65,10 @@ __decorate([
     __metadata("design:type", Date)
 ], User.prototype, "isChangePassword", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({ type: Date, default: Date.now }),
+    __metadata("design:type", Date)
+], User.prototype, "createAt", void 0);
+__decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);

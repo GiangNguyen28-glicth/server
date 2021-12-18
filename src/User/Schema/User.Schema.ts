@@ -46,6 +46,10 @@ export class User{
 
     @Prop({type:Date})
     isChangePassword?:Date;
+
+    @Prop({type:Date,default:Date.now})
+    createAt?:Date;
+
     @Prop()
     role:UserRole;
     @Prop()
