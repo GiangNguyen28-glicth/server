@@ -3,7 +3,6 @@ import { Transform, Type } from 'class-transformer';
 import { Date, ObjectId } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { User } from 'src/User/Schema/User.Schema';
-import { CyclesUpdateDTO } from '../DTO/CyclesUpdateDTO';
 export type PassBookDocument = PassBook & Document;
 @Schema()
 export class PassBook {

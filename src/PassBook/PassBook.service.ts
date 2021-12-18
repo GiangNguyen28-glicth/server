@@ -40,16 +40,12 @@ export class PassBookService{
     }
 
     async getTotalCycles(passbookid,user:User):Promise<any>{
-        // CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PROFIT=passbookid.toString()+"PROFIT";
-        // const checkCache=await this.cacheManager.get(CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PROFIT);
-        // if(checkCache!=undefined){
-        //     return checkCache;
-        // }
         var endDate=new Date();
         let value;
         const svd=await this.passbookmodel.findOne({_id:passbookid,userId:user._id});
         if(!svd){return {code:500,success:false,message:"Cant find Passbook in DB"}}
         const startDate=new Date(`${svd.createAt}`);
+        console.log(startDate);
         let result=[];
         const startcycle=new CyclesUpdateDTO();
         while(startDate<=endDate){
@@ -68,22 +64,19 @@ export class PassBookService{
         }
         const diffDays = (date, otherDate)  => Math.ceil(Math.abs(date - otherDate) / (1000 * 60 * 60 * 24));
         const date=diffDays(endDate, result[result.length-1].startDate);
-        console.log(date);
         const nooption=await this.optionservice.GetValueOption(endDate,0);
-        console.log(nooption);
         money=money+money*(nooption/100)*(date-1)/360;
         result[result.length-1].endDate=endDate;
-        // await this.cacheManager.set(CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PROFIT,{data:result,money:money},{ ttl: 1000 });
         return {
             passbook:svd,
             cycles:result,
+            songayle:date-1, //so ngay le
             money:money
         };
     }
 
     async GetAllPassbookByUserId(user:User):Promise<any>{
         const passbook=await this.passbookmodel.find({userId:user._id});
-        CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PASSBOOK=user._id.toString()+"GET_PASSBOOK_CACHE_KEY_TOTAL_PASSBOOK";
         return passbook;
     }
 
@@ -92,16 +85,16 @@ export class PassBookService{
         return passbook;
     }
 
-    async withdrawMoneyPassbook(passbookid,user:User):Promise<PassBook>{
+    async withdrawMoneyPassbook(passbookid,user:User):Promise<any>{
         const passbook=await this.passbookmodel.findOne({_id:passbookid,userId:user._id}); 
-        if(!passbook){console.log("Passbook not found"); return null};
-        if(passbook.status){console.log("Passbook is Active");return null};
-        const {data,money}=await this.getTotalCycles(passbookid,user);
-        passbook.cyclesupdate={data,money};
-        passbook.status=true;
-        passbook.save();
-        await this.userservice.updateMoney(Action.WITHDRAWAL,money,user);
-        return passbook;
+        if(!passbook){console.log("Passbook not found"); return {success:false,message:"Không Tìm Thấy Sổ Tiết Kiệm"}};
+        if(passbook.status){console.log("Passbook is Active");return {success:false,message:"Sổ tiết kiệm đã được rút"}};
+        const data=await this.getTotalCycles(passbookid,user);
+        passbook.cyclesupdate=data.cycles;
+        // passbook.status=true;
+        // passbook.save();
+        await this.userservice.updateMoney(Action.WITHDRAWAL,data.money,user);
+        return {passbook:data.passbook,songayle:data.songayle,money:data.money};
     }
 
     async getAllPassbook():Promise<PassBook[]>{

@@ -22,7 +22,6 @@ const HistoryAction_obj_1 = require("../User/DTO/HistoryAction.obj");
 const User_Schema_1 = require("../User/Schema/User.Schema");
 const User_service_1 = require("../User/User.service");
 const IReponse_1 = require("../Utils/IReponse");
-const cache_key_dto_1 = require("./DTO/cache.key.dto");
 const PassBook_Schema_1 = require("./Schema/PassBook.Schema");
 const cache_manager_1 = require("cache-manager");
 const CyclesUpdateDTO_1 = require("./DTO/CyclesUpdateDTO");
@@ -56,6 +55,7 @@ let PassBookService = class PassBookService {
             return { code: 500, success: false, message: "Cant find Passbook in DB" };
         }
         const startDate = new Date(`${svd.createAt}`);
+        console.log(startDate);
         let result = [];
         const startcycle = new CyclesUpdateDTO_1.CyclesUpdateDTO();
         while (startDate <= endDate) {
@@ -74,20 +74,18 @@ let PassBookService = class PassBookService {
         }
         const diffDays = (date, otherDate) => Math.ceil(Math.abs(date - otherDate) / (1000 * 60 * 60 * 24));
         const date = diffDays(endDate, result[result.length - 1].startDate);
-        console.log(date);
         const nooption = await this.optionservice.GetValueOption(endDate, 0);
-        console.log(nooption);
         money = money + money * (nooption / 100) * (date - 1) / 360;
         result[result.length - 1].endDate = endDate;
         return {
             passbook: svd,
             cycles: result,
+            songayle: date - 1,
             money: money
         };
     }
     async GetAllPassbookByUserId(user) {
         const passbook = await this.passbookmodel.find({ userId: user._id });
-        cache_key_dto_1.CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PASSBOOK = user._id.toString() + "GET_PASSBOOK_CACHE_KEY_TOTAL_PASSBOOK";
         return passbook;
     }
     async GetPassbookIsNotActive(user) {
@@ -98,20 +96,18 @@ let PassBookService = class PassBookService {
         const passbook = await this.passbookmodel.findOne({ _id: passbookid, userId: user._id });
         if (!passbook) {
             console.log("Passbook not found");
-            return null;
+            return { success: false, message: "Không Tìm Thấy Sổ Tiết Kiệm" };
         }
         ;
         if (passbook.status) {
             console.log("Passbook is Active");
-            return null;
+            return { success: false, message: "Sổ tiết kiệm đã được rút" };
         }
         ;
-        const { data, money } = await this.getTotalCycles(passbookid, user);
-        passbook.cyclesupdate = { data, money };
-        passbook.status = true;
-        passbook.save();
-        await this.userservice.updateMoney(HistoryAction_obj_1.Action.WITHDRAWAL, money, user);
-        return passbook;
+        const data = await this.getTotalCycles(passbookid, user);
+        passbook.cyclesupdate = data.cycles;
+        await this.userservice.updateMoney(HistoryAction_obj_1.Action.WITHDRAWAL, data.money, user);
+        return { passbook: data.passbook, songayle: data.songayle, money: data.money };
     }
     async getAllPassbook() {
         return await this.passbookmodel.find().sort({ _id: -1 });

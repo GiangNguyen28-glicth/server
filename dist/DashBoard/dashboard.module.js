@@ -7,6 +7,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DashBoardModule = void 0;
+const dashboard_service_1 = require("./dashboard.service");
+const User_module_1 = require("../User/User.module");
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const PassBook_Schema_1 = require("../PassBook/Schema/PassBook.Schema");
@@ -16,10 +18,15 @@ let DashBoardModule = class DashBoardModule {
 };
 DashBoardModule = __decorate([
     (0, common_1.Module)({
-        imports: [mongoose_1.MongooseModule.forFeature([{ name: PassBook_Schema_1.PassBook.name, schema: PassBook_Schema_1.PassBookSchema }]),
-            mongoose_1.MongooseModule.forFeature([{ name: User_Schema_1.User.name, schema: User_Schema_1.UserSchema }])],
+        imports: [
+            mongoose_1.MongooseModule.forFeature([
+                { name: PassBook_Schema_1.PassBook.name, schema: PassBook_Schema_1.PassBookSchema },
+            ]),
+            mongoose_1.MongooseModule.forFeature([{ name: User_Schema_1.User.name, schema: User_Schema_1.UserSchema }]),
+            User_module_1.UserModule,
+        ],
         controllers: [dashboard_controller_1.DashBoardController],
-        providers: []
+        providers: [dashboard_service_1.DashBoardService],
     })
 ], DashBoardModule);
 exports.DashBoardModule = DashBoardModule;

@@ -46,7 +46,12 @@ export class UserService{
         }
         const userExistingEmail= await this.usermodel.findOne({email:email});
         if(userExistingEmail){
-            return{code:500,success:false,message:"Email Existing"}
+            if(!userExistingEmail.isEmailConfirmed){
+              await this.usermodel.findOneAndDelete({email:email});
+            }
+            else{
+              return{code:500,success:false,message:"Email Existing"}
+            }
         }
         const userExistingPhone= await this.usermodel.findOne({phoneNumber:phoneNumber});
         if(userExistingPhone){
