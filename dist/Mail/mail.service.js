@@ -32,7 +32,7 @@ let MailService = class MailService {
         }
         else {
             const payload = { email };
-            const token = this.jwtservice.sign(payload, {
+            const token = await this.jwtservice.sign(payload, {
                 secret: process.env.JWT_VERIFICATION_TOKEN_SECRET,
                 expiresIn: `${process.env.JWT_VERIFICATION_TOKEN_EXPIRATION_TIME}s`
             });
