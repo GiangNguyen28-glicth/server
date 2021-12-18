@@ -29,7 +29,6 @@ let MailService = class MailService {
     async sendEmail(email, option, code, fullname) {
         let html;
         if (option == confirm_dto_1.MailAction.LG) {
-            html = await this.checkOption(confirm_dto_1.MailAction.LG, code, fullname, "");
         }
         else {
             const payload = { email };
@@ -38,7 +37,6 @@ let MailService = class MailService {
                 expiresIn: `${process.env.JWT_VERIFICATION_TOKEN_EXPIRATION_TIME}s`
             });
             const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
-            html = await this.checkOption(confirm_dto_1.MailAction.PW, "", fullname, url);
         }
         const transporter = await nodemailer.createTransport({
             service: "gmail",

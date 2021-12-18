@@ -13,7 +13,7 @@ export class MailService{
     async sendEmail(email:string,option:string,code?:string,fullname?:string): Promise<void>{
       let html;
         if(option==MailAction.LG){
-         html=await this.checkOption(MailAction.LG,code,fullname,"")
+        //  html=await this.checkOption(MailAction.LG,code,fullname,"")
         }
         else{
           const payload={email};
@@ -22,7 +22,7 @@ export class MailService{
           expiresIn: `${process.env.JWT_VERIFICATION_TOKEN_EXPIRATION_TIME}s`
           });
           const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
-          html=await this.checkOption(MailAction.PW,"",fullname,url)
+          // html=await this.checkOption(MailAction.PW,"",fullname,url)
         }
         const transporter =await nodemailer.createTransport({
           service:"gmail",
