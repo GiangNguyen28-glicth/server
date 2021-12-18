@@ -17,8 +17,6 @@ const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const User_service_1 = require("../User/User.service");
 const nodemailer = require("nodemailer");
-const fs = require("fs");
-const path = require("path");
 const confirm_dto_1 = require("./confirm.dto");
 const mail_1 = require("./mail");
 let MailService = class MailService {
@@ -84,26 +82,6 @@ let MailService = class MailService {
             throw new common_1.BadRequestException('Email already confirmed');
         }
         await this.sendEmail(user.email, "PW");
-    }
-    async checkOption(option, code, fullname, url) {
-        let html, dir;
-        if (option == "LG") {
-            dir = '../emailtemplate/emailVerifycode.hbs';
-        }
-        else {
-            dir = '../emailtemplate/emailVerify.hbs';
-        }
-        html = fs.readFileSync(path.resolve(__dirname, dir), {
-            encoding: "utf-8",
-        });
-        if (code != "") {
-            html = html.replace("<%CODE>", code);
-        }
-        else {
-            html = html.replace("<%LINK>", url);
-        }
-        html = html.replace("<%NAME>", fullname);
-        return html;
     }
 };
 MailService = __decorate([

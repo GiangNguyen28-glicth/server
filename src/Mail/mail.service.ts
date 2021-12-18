@@ -74,24 +74,24 @@ export class MailService{
         await this.sendEmail(user.email,"PW");
       }
 
-      async checkOption(option:string,code?:string,fullname?:string,url?:string):Promise<any>{
-        let html,dir;
-        if(option=="LG"){
-          dir='../emailtemplate/emailVerifycode.hbs';
-        }
-        else{
-          dir='../emailtemplate/emailVerify.hbs';
-        }
-        html = fs.readFileSync(path.resolve(__dirname, dir), {
-          encoding: "utf-8",
-        });
-        if(code!=""){
-          html = html.replace("<%CODE>",code);
-        }
-        else{
-          html = html.replace("<%LINK>",url);
-        }
-        html = html.replace("<%NAME>",fullname );
-        return html;
-      }
+      // async checkOption(option:string,code?:string,fullname?:string,url?:string):Promise<any>{
+      //   let html,dir;
+      //   if(option=="LG"){
+      //     dir='../emailtemplate/emailVerifycode.hbs';
+      //   }
+      //   else{
+      //     dir='../emailtemplate/emailVerify.hbs';
+      //   }
+      //   html = fs.readFileSync(path.resolve(__dirname, dir), {
+      //     encoding: "utf-8",
+      //   });
+      //   if(code!=""){
+      //     html = html.replace("<%CODE>",code);
+      //   }
+      //   else{
+      //     html = html.replace("<%LINK>",url);
+      //   }
+      //   html = html.replace("<%NAME>",fullname );
+      //   return html;
+      // }
 }
