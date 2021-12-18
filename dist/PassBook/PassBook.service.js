@@ -49,7 +49,7 @@ let PassBookService = class PassBookService {
         }
     }
     async getTotalCycles(passbookid, user) {
-        var endDate = this.commonservice.convertDatetime(new Date());
+        var endDate = new Date();
         let value;
         const svd = await this.passbookmodel.findOne({ _id: passbookid, userId: user._id });
         if (!svd) {

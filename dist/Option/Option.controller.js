@@ -79,7 +79,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], OptionController.prototype, "GetValueOption", null);
 __decorate([
-    (0, common_1.Get)('/getoptionvaluebyYear'),
+    (0, common_1.Get)('/getcurrentoption'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)

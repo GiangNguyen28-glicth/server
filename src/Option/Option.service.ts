@@ -29,19 +29,19 @@ export class OptionService{
             return;
         }
         let obj:OptionObj=new OptionObj();
-        let date=await this.commonservice.convertDatetime(new Date());
+        let date=new Date();
         obj.createAt=date;
         obj.value=optionOld.value;
         optionOld.history.push(obj);
         optionOld.value=newoptiondto.value;
-        optionOld.createAt=await this.commonservice.convertDatetime(new Date());
+        optionOld.createAt=new Date();
         optionOld.update();
         optionOld.save();
         return optionOld;
     }
 
     async GetValueOption(date:Date,option:number):Promise<number>{
-        date=await this.commonservice.convertDatetime(date);
+        date=new Date();
         const result=await this.optionmodel.findOne({option:option});
         if(!result.history.length ||result.history[result.history.length-1].createAt<date){
             return result.value;
@@ -54,7 +54,7 @@ export class OptionService{
     }
 
     async GetValueByYear(Year:number):Promise<any>{
-        const date=await this.commonservice.convertDatetime(new Date());
+        const date=new Date();
         let arr=[];
         // const checkCache=await this.cacheManager.get(Year.toString());
         // if(checkCache!=undefined){

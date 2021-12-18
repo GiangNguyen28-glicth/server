@@ -20,13 +20,6 @@ let CommonService = class CommonService {
         const vnd = resp.data.rates.VND;
         return { vnd, usd };
     }
-    convertDatetime(date) {
-        var newDate = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
-        var offset = date.getTimezoneOffset() / 60;
-        var hours = date.getHours();
-        newDate.setHours(hours - offset);
-        return newDate;
-    }
 };
 CommonService = __decorate([
     (0, common_1.Injectable)(),

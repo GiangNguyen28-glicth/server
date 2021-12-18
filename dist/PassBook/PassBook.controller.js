@@ -104,6 +104,7 @@ __decorate([
 ], PassBookController.prototype, "get", null);
 PassBookController = __decorate([
     (0, common_1.Controller)('/passbook'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     __metadata("design:paramtypes", [PassBook_service_1.PassBookService])
 ], PassBookController);
 exports.PassBookController = PassBookController;

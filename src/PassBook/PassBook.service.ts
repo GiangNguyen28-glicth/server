@@ -45,7 +45,7 @@ export class PassBookService{
         // if(checkCache!=undefined){
         //     return checkCache;
         // }
-        var endDate=this.commonservice.convertDatetime(new Date());
+        var endDate=new Date();
         let value;
         const svd=await this.passbookmodel.findOne({_id:passbookid,userId:user._id});
         if(!svd){return {code:500,success:false,message:"Cant find Passbook in DB"}}

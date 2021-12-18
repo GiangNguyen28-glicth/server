@@ -41,18 +41,18 @@ let OptionService = class OptionService {
             return;
         }
         let obj = new OptionObj_dto_1.OptionObj();
-        let date = await this.commonservice.convertDatetime(new Date());
+        let date = new Date();
         obj.createAt = date;
         obj.value = optionOld.value;
         optionOld.history.push(obj);
         optionOld.value = newoptiondto.value;
-        optionOld.createAt = await this.commonservice.convertDatetime(new Date());
+        optionOld.createAt = new Date();
         optionOld.update();
         optionOld.save();
         return optionOld;
     }
     async GetValueOption(date, option) {
-        date = await this.commonservice.convertDatetime(date);
+        date = new Date();
         const result = await this.optionmodel.findOne({ option: option });
         if (!result.history.length || result.history[result.history.length - 1].createAt < date) {
             return result.value;
@@ -64,7 +64,7 @@ let OptionService = class OptionService {
         }
     }
     async GetValueByYear(Year) {
-        const date = await this.commonservice.convertDatetime(new Date());
+        const date = new Date();
         let arr = [];
         const currentvalue = await this.optionmodel.find();
         for (var i in currentvalue) {
