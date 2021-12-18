@@ -310,11 +310,6 @@ export class UserService{
       return code;
     }
 
-    // async getmoneybymonth():Promise<number>{
-    //   // const user=await this.usermodel.find({$and})
-    //   // return null;
-    // }
-
     async getnewUser():Promise<any>{
       const newuser=await this.usermodel.find({isEmailConfirmed:true,role:UserRole.USER}).sort({_id:-1})
       .select('firstName lastName email phoneNumber')

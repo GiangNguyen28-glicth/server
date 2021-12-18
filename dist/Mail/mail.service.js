@@ -18,7 +18,8 @@ const jwt_1 = require("@nestjs/jwt");
 const User_service_1 = require("../User/User.service");
 const nodemailer = require("nodemailer");
 const confirm_dto_1 = require("./confirm.dto");
-const mail_1 = require("./mail");
+const emailVerifyLink_1 = require("../emailtemplate/emailVerifyLink");
+const emailVerifycode_1 = require("../emailtemplate/emailVerifycode");
 let MailService = class MailService {
     constructor(userService, jwtservice) {
         this.userService = userService;
@@ -27,6 +28,10 @@ let MailService = class MailService {
     async sendEmail(email, option, code, fullname) {
         let html;
         if (option == confirm_dto_1.MailAction.LG) {
+            emailVerifycode_1.MailTemplateVerifyCode.code = code;
+            emailVerifycode_1.MailTemplateVerifyCode.fullname = fullname;
+            html = emailVerifycode_1.MailTemplateVerifyCode.HTMLCode();
+            ;
         }
         else {
             const payload = { email };
@@ -34,7 +39,9 @@ let MailService = class MailService {
                 secret: process.env.JWT_VERIFICATION_TOKEN_SECRET,
                 expiresIn: `${process.env.JWT_VERIFICATION_TOKEN_EXPIRATION_TIME}s`
             });
-            const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
+            emailVerifyLink_1.MailTemplateVerifyLink.link = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
+            emailVerifyLink_1.MailTemplateVerifyLink.fullname = fullname;
+            html = emailVerifyLink_1.MailTemplateVerifyLink.HTMLLink();
         }
         const transporter = await nodemailer.createTransport({
             service: "gmail",
@@ -47,7 +54,7 @@ let MailService = class MailService {
             from: process.env.FROM_EMAIL,
             to: email,
             subject: 'Confirm Mail ✔',
-            html: mail_1.MailTemplate.html2,
+            html: html,
         };
         await transporter.sendMail(mailOptions);
     }

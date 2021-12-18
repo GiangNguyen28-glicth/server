@@ -2,10 +2,9 @@ import { BadRequestException, forwardRef, Inject, Injectable } from "@nestjs/com
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "src/User/User.service"
 import * as nodemailer from 'nodemailer';
-import * as fs from 'fs';
-import * as path from "path"
 import { MailAction } from "./confirm.dto";
-import { MailTemplate } from "./mail";
+import { MailTemplateVerifyLink } from "../emailtemplate/emailVerifyLink";
+import { MailTemplateVerifyCode } from "src/emailtemplate/emailVerifycode";
 @Injectable()
 export class MailService{
     constructor(@Inject(forwardRef(() => UserService)) private userService: UserService,private jwtservice:JwtService){}
@@ -13,7 +12,9 @@ export class MailService{
     async sendEmail(email:string,option:string,code?:string,fullname?:string): Promise<void>{
       let html;
         if(option==MailAction.LG){
-        //  html=await this.checkOption(MailAction.LG,code,fullname,"")
+          MailTemplateVerifyCode.code=code
+          MailTemplateVerifyCode.fullname=fullname;
+          html=MailTemplateVerifyCode.HTMLCode();;
         }
         else{
           const payload={email};
@@ -21,8 +22,9 @@ export class MailService{
           secret: process.env.JWT_VERIFICATION_TOKEN_SECRET,
           expiresIn: `${process.env.JWT_VERIFICATION_TOKEN_EXPIRATION_TIME}s`
           });
-          const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
-          // html=await this.checkOption(MailAction.PW,"",fullname,url)
+          MailTemplateVerifyLink.link= `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
+          MailTemplateVerifyLink.fullname=fullname;
+          html=MailTemplateVerifyLink.HTMLLink();
         }
         const transporter =await nodemailer.createTransport({
           service:"gmail",
@@ -35,7 +37,7 @@ export class MailService{
           from: process.env.FROM_EMAIL,
           to: email,
           subject: 'Confirm Mail ✔',
-          html: MailTemplate.html2,
+          html: html,
         };
         await transporter.sendMail(mailOptions);
     }
@@ -73,25 +75,4 @@ export class MailService{
         }
         await this.sendEmail(user.email,"PW");
       }
-
-      // async checkOption(option:string,code?:string,fullname?:string,url?:string):Promise<any>{
-      //   let html,dir;
-      //   if(option=="LG"){
-      //     dir='../emailtemplate/emailVerifycode.hbs';
-      //   }
-      //   else{
-      //     dir='../emailtemplate/emailVerify.hbs';
-      //   }
-      //   html = fs.readFileSync(path.resolve(__dirname, dir), {
-      //     encoding: "utf-8",
-      //   });
-      //   if(code!=""){
-      //     html = html.replace("<%CODE>",code);
-      //   }
-      //   else{
-      //     html = html.replace("<%LINK>",url);
-      //   }
-      //   html = html.replace("<%NAME>",fullname );
-      //   return html;
-      // }
 }

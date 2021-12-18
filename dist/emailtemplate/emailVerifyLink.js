@@ -1,5 +1,9 @@
-export class MailTemplate{
-  static html2=`"<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MailTemplateVerifyLink = void 0;
+class MailTemplateVerifyLink {
+    static HTMLLink() {
+        const html2 = `"<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
   <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -45,7 +49,7 @@ export class MailTemplate{
           >
             Welcome,
           </h3>
-          <p style="font-size: 40px; color: #000; margin: 0">@<b><%NAME></b></p>
+          <p style="font-size: 40px; color: #000; margin: 0">@<b>${this.fullname}</b></p>
           <div class="image" style="width: 260px; margin: 50px auto">
             <img
               src="https://f002.backblazeb2.com/file/summonshop/welcome.png"
@@ -57,7 +61,7 @@ export class MailTemplate{
             Nhấn vào đường dẫn dưới đây để xác nhận mail
           </p>
           <div class="code" style="margin: 20px 0">
-              <a href="<%LINK>" style="display: inline-block;
+              <a href="${this.link}" style="display: inline-block;
         font-size: 20px;
         background-color: #9BDBF6;
         padding: 4px 28px;
@@ -85,5 +89,11 @@ export class MailTemplate{
         </div>
       </div>
     </body>
-  </html>"`
+  </html>`;
+        return html2;
+    }
 }
+exports.MailTemplateVerifyLink = MailTemplateVerifyLink;
+MailTemplateVerifyLink.link = "";
+MailTemplateVerifyLink.fullname = "";
+//# sourceMappingURL=emailVerifyLink.js.map
