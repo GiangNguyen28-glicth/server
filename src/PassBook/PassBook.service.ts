@@ -121,4 +121,18 @@ export class PassBookService{
         const passbook=await this.passbookmodel.find({userId:userid}).sort({_id:-1});
         return passbook;
     }
+
+    async getInformationPassbook(passbookid,userid):Promise<any>{
+        const passbook=await this.passbookmodel.findOne({_id:passbookid,userId:userid,status:false});
+        if(!passbook){
+            return {success:false,message:"Không tìm thấy sổ tiết kiệm tương ứng"};
+        }
+        let totalProfit =Number(passbook.deposits *(passbook.option / 100) *(passbook.option / 12))+ passbook.deposits;
+        let profit = totalProfit-passbook.deposits;
+        return {
+            passbook:passbook,
+            profit:profit,
+            totalmoney:totalProfit           
+        }
+    }
 }   

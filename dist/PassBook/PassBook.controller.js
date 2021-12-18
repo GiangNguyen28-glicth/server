@@ -32,7 +32,7 @@ let PassBookController = class PassBookController {
         return this.passbookservice.saveSavingsdeposit(passbookdto, user);
     }
     async getTotalCycles(passbookid, user) {
-        return this.passbookservice.getTotalCycles(passbookid, user);
+        return this.passbookservice.getInformationPassbook(passbookid, user._id);
     }
     async getPassbook(user) {
         return this.passbookservice.GetAllPassbookByUserId(user);
