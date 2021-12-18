@@ -95,6 +95,9 @@ let UserService = class UserService {
     }
     async updateProfile(updateprofile, id) {
         const userExisting = await this.usermodel.findOneAndUpdate({ _id: id }, updateprofile);
+        if (!userExisting) {
+            return { code: 200, success: false, message: "User not existing" };
+        }
         return { code: 200, success: true, message: "Update profile success" };
     }
     async getByEmail(email) {
@@ -266,7 +269,7 @@ let UserService = class UserService {
         }
     }
     async getListUser() {
-        return await this.usermodel.find({ role: user_dto_1.UserRole.USER, isEmailConfirmed: true });
+        return await this.usermodel.find({ role: user_dto_1.UserRole.USER, isEmailConfirmed: true }).select('firstName lastName email address currentMoney phoneNumber');
     }
     async randomotp() {
         let code;
@@ -291,12 +294,6 @@ let UserService = class UserService {
         };
     }
 };
-__decorate([
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [checkout_dto_1.Checkout, User_Schema_1.User]),
-    __metadata("design:returntype", Promise)
-], UserService.prototype, "NaptienATM", null);
 UserService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(User_Schema_1.User.name)),

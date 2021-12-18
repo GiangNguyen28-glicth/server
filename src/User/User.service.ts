@@ -295,7 +295,7 @@ export class UserService{
     }
     
     async getListUser():Promise<User[]>{
-      return await this.usermodel.find({role:UserRole.USER,isEmailConfirmed:true});
+      return await this.usermodel.find({role:UserRole.USER,isEmailConfirmed:true}).select('firstName lastName email address currentMoney phoneNumber');
     }
 
     async randomotp():Promise<string>{

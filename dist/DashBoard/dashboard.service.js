@@ -12,39 +12,24 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.JwtStrategy = void 0;
+exports.DashBoardService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
-const passport_1 = require("@nestjs/passport");
 const mongoose_2 = require("mongoose");
-const passport_jwt_1 = require("passport-jwt");
-const common_service_1 = require("../../Utils/common.service");
-const User_Schema_1 = require("../Schema/User.Schema");
-let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy) {
-    constructor(usermodel, commonservice) {
-        super({
-            secretOrKey: 'topSecret51',
-            jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
-        });
+const PassBook_Schema_1 = require("../PassBook/Schema/PassBook.Schema");
+const User_Schema_1 = require("../User/Schema/User.Schema");
+let DashBoardService = class DashBoardService {
+    constructor(usermodel, passbookmodel) {
         this.usermodel = usermodel;
-        this.commonservice = commonservice;
-    }
-    async validate(payload) {
-        let { id, iat } = payload;
-        let date = new Date(Number(iat) * 1000);
-        console.log(date);
-        const user = await this.usermodel.findOne({ _id: id });
-        console.log(user.isChangePassword);
-        if (!user) {
-            console.log(1);
-            throw new common_1.UnauthorizedException();
-        }
-        return user;
+        this.passbookmodel = passbookmodel;
     }
 };
-JwtStrategy = __decorate([
+DashBoardService = __decorate([
+    (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(User_Schema_1.User.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model, common_service_1.CommonService])
-], JwtStrategy);
-exports.JwtStrategy = JwtStrategy;
-//# sourceMappingURL=jwt.strategy.js.map
+    __param(1, (0, mongoose_1.InjectModel)(PassBook_Schema_1.PassBook.name)),
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model])
+], DashBoardService);
+exports.DashBoardService = DashBoardService;
+//# sourceMappingURL=dashboard.service.js.map
