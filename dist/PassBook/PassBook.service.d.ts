@@ -1,12 +1,12 @@
 import * as mongoose from 'mongoose';
-import { OptionService } from "src/Option/Option.service";
-import { User } from "src/User/Schema/User.Schema";
-import { UserService } from "src/User/User.service";
-import { IReponse } from "src/Utils/IReponse";
-import { PassBookDTO } from "./DTO/PassBook.dto";
-import { PassBook, PassBookDocument } from "./Schema/PassBook.Schema";
+import { OptionService } from 'src/Option/Option.service';
+import { User } from 'src/User/Schema/User.Schema';
+import { UserService } from 'src/User/User.service';
+import { IReponse } from 'src/Utils/IReponse';
+import { PassBookDTO } from './DTO/PassBook.dto';
+import { PassBook, PassBookDocument } from './Schema/PassBook.Schema';
 import { Cache } from 'cache-manager';
-import { CommonService } from "src/Utils/common.service";
+import { CommonService } from 'src/Utils/common.service';
 export declare class PassBookService {
     private passbookmodel;
     private cacheManager;

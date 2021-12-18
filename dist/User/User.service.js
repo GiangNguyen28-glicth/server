@@ -42,40 +42,65 @@ let UserService = class UserService {
         this.mailservice = mailservice;
         this.jwtservice = jwtservice;
         this.commonservice = commonservice;
-        this.twilioClient = new twilio_1.Twilio("AC6217c0554f4b02fd75b70f57d12e77b", process.env.TWL1 + process.env.TWL2);
+        this.twilioClient = new twilio_1.Twilio('AC6217c0554f4b02fd75b70f57d12e77b', process.env.TWL1 + process.env.TWL2);
     }
     async register(userdto) {
         const role = user_dto_1.UserRole.USER;
-        let phoneNumber = "+84" + userdto.phoneNumber.slice(1, userdto.phoneNumber.length);
-        const { firstName, lastName, password, email, CMND, address, passwordConfirm } = userdto;
+        let phoneNumber = '+84' + userdto.phoneNumber.slice(1, userdto.phoneNumber.length);
+        const { firstName, lastName, password, email, CMND, address, passwordConfirm, } = userdto;
         userdto.role = role;
         if (passwordConfirm != password) {
-            return { code: 500, success: false, message: "Password not match" };
+            return { code: 500, success: false, message: 'Password not match' };
         }
         const userExistingEmail = await this.usermodel.findOne({ email: email });
         if (userExistingEmail) {
-            return { code: 500, success: false, message: "Email Existing" };
+            return { code: 500, success: false, message: 'Email Existing' };
         }
-        const userExistingPhone = await this.usermodel.findOne({ phoneNumber: phoneNumber });
+        const userExistingPhone = await this.usermodel.findOne({
+            phoneNumber: phoneNumber,
+        });
         if (userExistingPhone) {
-            return { code: 500, success: false, message: "Phone Number Existing" };
+            return { code: 500, success: false, message: 'Phone Number Existing' };
         }
         try {
             const date = await this.commonservice.convertDatetime(new Date());
             const salt = await bcrypt.genSalt();
             const hashedpassword = await bcrypt.hash(password, salt);
-            const user = this.usermodel.create({ firstName, lastName, password: hashedpassword, email, phoneNumber, CMND, address, role, isChangePassword: date });
+            const user = this.usermodel.create({
+                firstName,
+                lastName,
+                password: hashedpassword,
+                email,
+                phoneNumber,
+                CMND,
+                address,
+                role,
+                isChangePassword: date,
+            });
             await this.mailservice.sendEmail(email, confirm_dto_1.MailAction.PW);
             (await user).save();
             return {
-                code: 200, success: true, message: "Success",
+                code: 200,
+                success: true,
+                message: 'Success',
                 objectreponse: {
-                    _id: (await user)._id, phoneNumber, email, CMND, firstName, lastName, address, role
-                }
+                    _id: (await user)._id,
+                    phoneNumber,
+                    email,
+                    CMND,
+                    firstName,
+                    lastName,
+                    address,
+                    role,
+                },
             };
         }
         catch (err) {
-            return { code: 500, success: false, message: `Failed Because ${err.message}` };
+            return {
+                code: 500,
+                success: false,
+                message: `Failed Because ${err.message}`,
+            };
         }
     }
     async deleteUser(id) {
@@ -84,18 +109,17 @@ let UserService = class UserService {
         try {
             const userExisting = await this.usermodel.findOne({ _id: id });
             if (!userExisting) {
-                return { code: 200, success: false, message: "User not existing" };
+                return { code: 200, success: false, message: 'User not existing' };
             }
         }
         catch (err) {
             session.abortTransaction();
-            return { code: 200, success: false, message: err.message
-            };
+            return { code: 200, success: false, message: err.message };
         }
     }
     async updateProfile(updateprofile, id) {
         const userExisting = await this.usermodel.findOneAndUpdate({ _id: id }, updateprofile);
-        return { code: 200, success: true, message: "Update profile success" };
+        return { code: 200, success: true, message: 'Update profile success' };
     }
     async getByEmail(email) {
         return await this.usermodel.findOne({ email: email });
@@ -111,15 +135,24 @@ let UserService = class UserService {
     }
     async Login({ email, password }) {
         const user = await this.usermodel.findOne({ email: email });
-        if (user && (await bcrypt.compare(password, user.password)) && user.isEmailConfirmed) {
+        if (user &&
+            (await bcrypt.compare(password, user.password)) &&
+            user.isEmailConfirmed) {
             this.phone = user.phoneNumber;
             const code = await this.randomotp();
             await this.mailservice.sendEmail(email, confirm_dto_1.MailAction.LG, code, user.fullName);
             await this.otpmodel.findOneAndDelete({ phoneNumber: user.phoneNumber });
-            const otp = await this.otpmodel.create({ userId: user._id, phoneNumber: user.phoneNumber, code: code });
+            const otp = await this.otpmodel.create({
+                userId: user._id,
+                phoneNumber: user.phoneNumber,
+                code: code,
+            });
             otp.save();
+            console.log(otp);
             return {
-                code: 200, success: true, message: "Check otp"
+                code: 200,
+                success: true,
+                message: 'Check otp',
             };
         }
         else {
@@ -133,21 +166,26 @@ let UserService = class UserService {
         }
         const random = await this.randomotp();
         await this.otpmodel.findOneAndDelete({ phoneNumber: user.phoneNumber });
-        const otp = await this.otpmodel.create({ userId: user._id, phoneNumber: user.phoneNumber });
+        const otp = await this.otpmodel.create({
+            userId: user._id,
+            phoneNumber: user.phoneNumber,
+        });
         otp.save();
         await this.mailservice.sendEmail(user.email, confirm_dto_1.MailAction.LG, random, user.fullName);
     }
     async sendSMS(phoneNumber) {
-        const serviceSid = "VAa8323d40b3ccf4ca0d124b0efde8764d";
+        const serviceSid = 'VAa8323d40b3ccf4ca0d124b0efde8764d';
         this.phone = phoneNumber;
         if (!this.phone) {
             return {
-                code: 500, success: false, message: "Phone number null"
+                code: 500,
+                success: false,
+                message: 'Phone number null',
             };
         }
     }
     async confirmPhoneNumber(verificationCode) {
-        const serviceSid = "VAa8323d40b3ccf4ca0d124b0efde8764d";
+        const serviceSid = 'VAa8323d40b3ccf4ca0d124b0efde8764d';
         const otp = await this.otpmodel.findOne({ code: verificationCode });
         if (!otp) {
             throw new common_1.BadRequestException('OTP is Expries or not existing');
@@ -163,7 +201,7 @@ let UserService = class UserService {
     }
     async markPhoneNumberAsConfirmed(userId) {
         return this.otpmodel.findOneAndUpdate({ userId: userId }, {
-            isPhoneNumberConfirmed: true
+            isPhoneNumberConfirmed: true,
         });
     }
     async changPassword(userId, changepassword) {
@@ -171,16 +209,19 @@ let UserService = class UserService {
         const { newPassword, ConfirmPassword } = changepassword;
         const user = await this.usermodel.findOne({ _id: userId });
         if (!user) {
-            return { code: 400, success: false, message: 'User no longer exists', };
+            return { code: 400, success: false, message: 'User no longer exists' };
         }
         if (newPassword != ConfirmPassword) {
-            return { code: 400, success: false, message: "password does not match"
-            };
+            return { code: 400, success: false, message: 'password does not match' };
         }
         const salt = await bcrypt.genSalt();
         const hashedpassword = await bcrypt.hash(newPassword, salt);
         await this.usermodel.findOneAndUpdate({ _id: userId }, { password: hashedpassword, isChangePassword: date });
-        return { code: 200, success: true, message: 'User password reset successfully', };
+        return {
+            code: 200,
+            success: true,
+            message: 'User password reset successfully',
+        };
     }
     async updateSvd(input, user) {
         const result = await this.usermodel.findByIdAndUpdate({ _id: user._id });
@@ -188,20 +229,24 @@ let UserService = class UserService {
     }
     async updatePassword(changepassword, user) {
         const { oldPassword, newPassword, ConfirmPassword } = changepassword;
-        if ((await bcrypt.compare(oldPassword, user.password))) {
+        if (await bcrypt.compare(oldPassword, user.password)) {
             if (newPassword == ConfirmPassword) {
                 const date = await this.commonservice.convertDatetime(new Date());
                 const salt = await bcrypt.genSalt();
                 const hashedpassword = await bcrypt.hash(newPassword, salt);
                 await this.usermodel.findOneAndUpdate({ _id: user._id }, { password: hashedpassword, isChangePassword: date });
-                return { code: 200, success: true, message: "Update Password Success" };
+                return { code: 200, success: true, message: 'Update Password Success' };
             }
             else {
-                return { code: 400, success: false, message: "Password not match" };
+                return { code: 400, success: false, message: 'Password not match' };
             }
         }
         else {
-            return { code: 400, success: false, message: "Please check old password" };
+            return {
+                code: 400,
+                success: false,
+                message: 'Please check old password',
+            };
         }
     }
     async updateMoney(action, money, user) {
@@ -209,7 +254,9 @@ let UserService = class UserService {
         if (action === HistoryAction_obj_1.Action.OPENPASSBOOK) {
             newMoney = user.currentMoney - money;
         }
-        else if (action == HistoryAction_obj_1.Action.NAPTIENPAYPAL || action == HistoryAction_obj_1.Action.NAPTIENATM || action == HistoryAction_obj_1.Action.WITHDRAWAL) {
+        else if (action == HistoryAction_obj_1.Action.NAPTIENPAYPAL ||
+            action == HistoryAction_obj_1.Action.NAPTIENATM ||
+            action == HistoryAction_obj_1.Action.WITHDRAWAL) {
             newMoney = user.currentMoney + money;
         }
         await this.usermodel.findOneAndUpdate({ _id: user._id }, { currentMoney: newMoney });
@@ -228,7 +275,9 @@ let UserService = class UserService {
         historyaction.money = checkout.money;
         await this.updateNewAction(historyaction, user);
         return {
-            code: 200, success: true, message: "Nap tien thanh cong"
+            code: 200,
+            success: true,
+            message: 'Nap tien thanh cong',
         };
     }
     async getAllTransaction(user) {
@@ -239,12 +288,21 @@ let UserService = class UserService {
         const user = await this.usermodel.findOne({ _id: id });
         if (!user) {
             return {
-                code: 500, success: false, message: "User not existing"
+                code: 500,
+                success: false,
+                message: 'User not existing',
             };
         }
         return {
-            data: { firstname: user.firstName, lastname: user.lastName, fullname: user.fullName, money: user.currentMoney,
-                address: user.address, phonenumnber: user.phoneNumber, email: user.email }
+            data: {
+                firstname: user.firstName,
+                lastname: user.lastName,
+                fullname: user.fullName,
+                money: user.currentMoney,
+                address: user.address,
+                phonenumnber: user.phoneNumber,
+                email: user.email,
+            },
         };
     }
     async updateRole(role, user) {
@@ -252,7 +310,9 @@ let UserService = class UserService {
     }
     async LoginAsAdministrtor({ email, password }) {
         const user = await this.usermodel.findOne({ email: email });
-        if (user && (await bcrypt.compare(password, user.password)) && user.isEmailConfirmed) {
+        if (user &&
+            (await bcrypt.compare(password, user.password)) &&
+            user.isEmailConfirmed) {
             if (user.role == user_dto_1.UserRole.USER) {
                 throw new common_1.ForbiddenException('Ban khong du quyen');
             }
@@ -266,7 +326,10 @@ let UserService = class UserService {
         }
     }
     async getListUser() {
-        return await this.usermodel.find({ role: user_dto_1.UserRole.USER, isEmailConfirmed: true });
+        return await this.usermodel.find({
+            role: user_dto_1.UserRole.USER,
+            isEmailConfirmed: true,
+        });
     }
     async randomotp() {
         let code;
@@ -283,7 +346,8 @@ let UserService = class UserService {
 __decorate([
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [checkout_dto_1.Checkout, User_Schema_1.User]),
+    __metadata("design:paramtypes", [checkout_dto_1.Checkout,
+        User_Schema_1.User]),
     __metadata("design:returntype", Promise)
 ], UserService.prototype, "NaptienATM", null);
 UserService = __decorate([

@@ -33,6 +33,10 @@ __decorate([
     __metadata("design:type", Object)
 ], PassBook.prototype, "createAt", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({ type: Date }),
+    __metadata("design:type", Object)
+], PassBook.prototype, "endAt", void 0);
+__decorate([
     (0, mongoose_1.Prop)({ default: false }),
     __metadata("design:type", Boolean)
 ], PassBook.prototype, "status", void 0);
