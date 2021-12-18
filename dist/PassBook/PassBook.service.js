@@ -37,8 +37,6 @@ let PassBookService = class PassBookService {
         this.commonservice = commonservice;
     }
     async saveSavingsdeposit(passbookdto, user) {
-        const session = await this.connection.startSession();
-        session.startTransaction();
         try {
             const svdp = await this.passbookmodel.create(passbookdto);
             svdp.save();
@@ -46,7 +44,6 @@ let PassBookService = class PassBookService {
             return { code: 200, success: true, message: "Succes", };
         }
         catch (err) {
-            session.abortTransaction();
             return { code: 500, success: false, message: err.message
             };
         }
@@ -121,7 +118,7 @@ let PassBookService = class PassBookService {
         return passbook;
     }
     async getAllPassbook() {
-        return await this.passbookmodel.find().sort('date');
+        return await this.passbookmodel.find().sort({ _id: -1 });
     }
 };
 PassBookService = __decorate([

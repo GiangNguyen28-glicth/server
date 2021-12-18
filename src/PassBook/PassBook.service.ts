@@ -26,8 +26,6 @@ export class PassBookService{
     ){}
 
     async saveSavingsdeposit(passbookdto:PassBookDTO,user:User):Promise<IReponse<PassBook>>{
-        const session = await this.connection.startSession();
-        session.startTransaction();
         try{ 
            
             const svdp=await this.passbookmodel.create(passbookdto);
@@ -36,7 +34,6 @@ export class PassBookService{
             return{ code:200,success:true,message:"Succes",}
         }
         catch(err){
-            session.abortTransaction();
             return{code:500,success:false,message:err.message
             }
         }
@@ -113,6 +110,6 @@ export class PassBookService{
     }
 
     async getAllPassbook():Promise<PassBook[]>{
-        return await this.passbookmodel.find().sort('date');
+        return await this.passbookmodel.find().sort({_id:-1});
     }
 }   

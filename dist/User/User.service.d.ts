@@ -46,7 +46,7 @@ export declare class UserService {
     changPassword(userId: any, changepassword: changePassword): Promise<IReponse<User>>;
     updateSvd(input: PassBook, user: User): Promise<void>;
     updatePassword(changepassword: changePassword, user: User): Promise<IReponse<User>>;
-    updateMoney(action: string, money: number, user: User): Promise<void>;
+    updateMoney(action: string, money: number, user: User): Promise<any>;
     updateNewAction(historyaction: HistoryAction, user: User): Promise<void>;
     NaptienATM(checkout: Checkout, user: User): Promise<IReponse<User>>;
     getAllTransaction(user: User): Promise<[HistoryAction]>;

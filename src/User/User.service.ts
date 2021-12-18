@@ -224,7 +224,7 @@ export class UserService{
       }
     }
 
-    async updateMoney(action:string,money:number,user:User):Promise<void>{
+    async updateMoney(action:string,money:number,user:User):Promise<any>{
       let newMoney;
       if(action===Action.OPENPASSBOOK){
         newMoney=user.currentMoney-money;
@@ -232,7 +232,7 @@ export class UserService{
       else if(action==Action.NAPTIENPAYPAL||action==Action.NAPTIENATM||action==Action.WITHDRAWAL){
         newMoney=user.currentMoney+money;
       }
-      const userExisting=await this.usermodel.findOneAndUpdate({_id:user._id},{currentMoney:newMoney});
+      await this.usermodel.findOneAndUpdate({_id:user._id},{currentMoney:newMoney});
     }
 
     async updateNewAction(historyaction:HistoryAction,user:User):Promise<void>{

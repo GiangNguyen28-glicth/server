@@ -70,9 +70,9 @@ export class CartService{
             return{code:200,success:true,message:"Update cart Success",objectreponse:cartExisting
             }
         }
-        const result=await this.cartmodel.create({userId:user._id,option:cartdto.option,startDate:startDate,
+        const result=await this.cartmodel.create({userId:user._id,option:cartdto.option,optionId:passbookexisting._id,startDate:startDate,
             endDate:endDate,deposits:cartdto.deposits,suggest:cartdto.suggest,totalProfit:totalProfit,profit:profit,
-            depositinpassbook:cartdto.depositinpassbook,profitinpassbook:cartdto.depositinpassbook});
+            depositinpassbook:cartdto.depositinpassbook,profitinpassbook:profitinpassbook});
         result.save();
         return{code:200,success:true,message:"Add to cart Success",objectreponse:result
         }
@@ -150,7 +150,7 @@ export class CartService{
         const passpook=await this.passbookservice.GetPassbookIsActive(user);
         cartExisting.delete();
         return{
-            data:user.currentMoney,passbook:passpook
+            data:user.currentMoney-cartExisting.deposits,passbook:passpook
         }
     }
 }

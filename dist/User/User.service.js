@@ -212,7 +212,7 @@ let UserService = class UserService {
         else if (action == HistoryAction_obj_1.Action.NAPTIENPAYPAL || action == HistoryAction_obj_1.Action.NAPTIENATM || action == HistoryAction_obj_1.Action.WITHDRAWAL) {
             newMoney = user.currentMoney + money;
         }
-        const userExisting = await this.usermodel.findOneAndUpdate({ _id: user._id }, { currentMoney: newMoney });
+        await this.usermodel.findOneAndUpdate({ _id: user._id }, { currentMoney: newMoney });
     }
     async updateNewAction(historyaction, user) {
         const userExisting = await this.usermodel.findOne({ _id: user._id });
