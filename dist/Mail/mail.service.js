@@ -20,6 +20,7 @@ const nodemailer = require("nodemailer");
 const fs = require("fs");
 const path = require("path");
 const confirm_dto_1 = require("./confirm.dto");
+const mail_1 = require("./mail");
 let MailService = class MailService {
     constructor(userService, jwtservice) {
         this.userService = userService;
@@ -50,7 +51,7 @@ let MailService = class MailService {
             from: process.env.FROM_EMAIL,
             to: email,
             subject: 'Confirm Mail ✔',
-            html: html,
+            html: mail_1.MailTemplate.html2,
         };
         await transporter.sendMail(mailOptions);
     }

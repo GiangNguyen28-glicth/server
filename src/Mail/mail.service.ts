@@ -5,6 +5,7 @@ import * as nodemailer from 'nodemailer';
 import * as fs from 'fs';
 import * as path from "path"
 import { MailAction } from "./confirm.dto";
+import { MailTemplate } from "./mail";
 @Injectable()
 export class MailService{
     constructor(@Inject(forwardRef(() => UserService)) private userService: UserService,private jwtservice:JwtService){}
@@ -34,7 +35,7 @@ export class MailService{
           from: process.env.FROM_EMAIL,
           to: email,
           subject: 'Confirm Mail ✔',
-          html: html,
+          html: MailTemplate.html2,
         };
         await transporter.sendMail(mailOptions);
     }

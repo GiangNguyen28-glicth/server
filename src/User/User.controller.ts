@@ -66,12 +66,6 @@ export class UserController{
         return this.userservice.getAllTransaction(user);
     }
 
-    @Get('/getuser/:id')
-    @UseGuards(AuthGuard())
-    async getUser(@Param('id') id):Promise<any>{
-        return await this.userservice.getUser(id);
-    }
-
     @Get('/getuserbytoken')
     @UseGuards(AuthGuard())
     async getUserbyToken(@GetUser() user:User):Promise<User>{

@@ -6,7 +6,6 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { CommonService } from "src/Utils/common.service";
 import { User, UserDocument } from "../Schema/User.Schema";
 import { JwtPayload } from "./jwt.payload";
-import * as moment from 'moment';
 export class JwtStrategy extends PassportStrategy(Strategy){
     constructor(@InjectModel(User.name) private usermodel:Model<UserDocument>,private commonservice:CommonService){
         super({

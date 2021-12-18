@@ -91,7 +91,7 @@ let PassBookService = class PassBookService {
         return passbook;
     }
     async GetPassbookIsNotActive(user) {
-        const passbook = await this.passbookmodel.find({ userId: user._id, status: true });
+        const passbook = await this.passbookmodel.find({ userId: user._id, status: false });
         return passbook;
     }
     async withdrawMoneyPassbook(passbookid, user) {
