@@ -87,11 +87,6 @@ export class PassBookService{
         return passbook;
     }
 
-    async GetPassbookIsActive(user:User):Promise<PassBook[]>{
-        const passbook=await this.passbookmodel.find({userId:user._id,status:false});
-        return passbook;
-    }
-
     async GetPassbookIsNotActive(user:User):Promise<PassBook[]>{
         const passbook=await this.passbookmodel.find({userId:user._id,status:true});
         return passbook;

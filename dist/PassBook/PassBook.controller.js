@@ -37,9 +37,6 @@ let PassBookController = class PassBookController {
     async getPassbook(user) {
         return this.passbookservice.GetAllPassbookByUserId(user);
     }
-    async getPassbookIsActive(user) {
-        return this.passbookservice.GetPassbookIsActive(user);
-    }
     async getPassbookIsNotActive(user) {
         return this.passbookservice.GetPassbookIsNotActive(user);
     }
@@ -73,13 +70,6 @@ __decorate([
     __metadata("design:paramtypes", [User_Schema_1.User]),
     __metadata("design:returntype", Promise)
 ], PassBookController.prototype, "getPassbook", null);
-__decorate([
-    (0, common_1.Get)('/getpassbookisactive'),
-    __param(0, (0, getuser_decorators_1.GetUser)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [User_Schema_1.User]),
-    __metadata("design:returntype", Promise)
-], PassBookController.prototype, "getPassbookIsActive", null);
 __decorate([
     (0, common_1.Get)('/getpassbookisnotactive'),
     __param(0, (0, getuser_decorators_1.GetUser)()),

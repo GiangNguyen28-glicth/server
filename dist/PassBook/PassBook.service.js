@@ -90,10 +90,6 @@ let PassBookService = class PassBookService {
         cache_key_dto_1.CacheKeyPassbook.GET_PASSBOOK_CACHE_KEY_TOTAL_PASSBOOK = user._id.toString() + "GET_PASSBOOK_CACHE_KEY_TOTAL_PASSBOOK";
         return passbook;
     }
-    async GetPassbookIsActive(user) {
-        const passbook = await this.passbookmodel.find({ userId: user._id, status: false });
-        return passbook;
-    }
     async GetPassbookIsNotActive(user) {
         const passbook = await this.passbookmodel.find({ userId: user._id, status: true });
         return passbook;

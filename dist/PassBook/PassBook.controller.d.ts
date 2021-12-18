@@ -9,7 +9,6 @@ export declare class PassBookController {
     saveSavingdeposit(passbookdto: PassBookDTO, user: User): Promise<IReponse<PassBook>>;
     getTotalCycles(passbookid: any, user: User): Promise<any>;
     getPassbook(user: User): Promise<any>;
-    getPassbookIsActive(user: User): Promise<any>;
     getPassbookIsNotActive(user: User): Promise<any>;
     withdrawMoneyPassbook(user: User, passbookid: any): Promise<PassBook>;
     getAllPassbook(): Promise<PassBook[]>;

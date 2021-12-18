@@ -147,7 +147,7 @@ export class CartService{
         historyaction.quantity=cartExisting.suggest;   
         await this.userservice.updateNewAction(historyaction,user);
         await this.userservice.updateMoney(Action.OPENPASSBOOK,cartExisting.deposits,user);
-        const passpook=await this.passbookservice.GetPassbookIsActive(user);
+        const passpook=await this.passbookservice.GetPassbookIsNotActive(user);
         cartExisting.delete();
         return{
             data:user.currentMoney-cartExisting.deposits,passbook:passpook
