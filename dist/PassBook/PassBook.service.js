@@ -45,7 +45,7 @@ let PassBookService = class PassBookService {
     async getTotalCycles(passbookid, user) {
         let endDate = new Date();
         let value;
-        const svd = await this.passbookmodel.findOne({ _id: passbookid });
+        const svd = await this.passbookmodel.findOne({ _id: passbookid, userId: user._id });
         if (!svd) {
             return { code: 500, success: false, message: "Sổ tiết kiệm không hợp lệ" };
         }

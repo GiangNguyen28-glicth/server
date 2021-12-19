@@ -11,7 +11,7 @@ import { PassBookService } from "./PassBook.service";
 import { PassBook } from "./Schema/PassBook.Schema";
 
 @Controller('/passbook')
-// @UseGuards(AuthGuard())
+@UseGuards(AuthGuard())
 export class PassBookController{
     constructor(private passbookservice:PassBookService){}
     @Post('/save')
