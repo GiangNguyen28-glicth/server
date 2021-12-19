@@ -63,9 +63,7 @@ export class CartService {
     let totalProfit =
       (Number(cartdto.deposits * (valueofOption / 100) * (cartdto.option / 12)) +
       cartdto.deposits).toFixed(0); // tong lai suat
-    let profit = Number(
-      cartdto.deposits * (valueofOption / 100) * (cartdto.option / 12),
-    ); //lai suat nhan duoc
+    let profit = Number(cartdto.deposits * (valueofOption / 100) * (cartdto.option / 12)); //lai suat nhan duoc
     cartdto.depositinpassbook = cartdto.deposits / cartdto.suggest; //so tien moi passbook
     let profitinpassbook = (profit / cartdto.suggest).toFixed(0); //lai suat nhan duoc trong moi passbook
     endDate.setMonth(endDate.getMonth() + cartdto.option);
@@ -97,8 +95,8 @@ export class CartService {
       endDate: endDate,
       deposits: cartdto.deposits,
       suggest: cartdto.suggest,
-      totalProfit: totalProfit,
-      profit: profit,
+      totalProfit:totalProfit,
+      profit: Number(profit.toFixed(0)),
       depositinpassbook: cartdto.depositinpassbook,
       profitinpassbook: profitinpassbook,
     });
@@ -114,7 +112,7 @@ export class CartService {
   async updateCart(quantity: number, user: User): Promise<any> {
     const cartExisting = await this.cartmodel.findOne({ userId: user._id });
     if (!cartExisting) {
-      return { message: 'Cart not existing', success: false };
+      return { message: 'Giỏ hàng không tồn tại', success: false };
     }
     const deposit = cartExisting.deposits / quantity;
     if (deposit < 1000000) {
@@ -188,7 +186,7 @@ export class CartService {
       return {
         code: 400,
         success: false,
-        message: 'Cart not exist',
+        message: 'Giỏ hàng không tồn tại',
       };
     }
     if (user.currentMoney < cartExisting.deposits) {

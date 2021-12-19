@@ -48,7 +48,7 @@ export class MailTemplateVerifyCode{
               >
                 Welcome,
               </h3>
-              <p style="font-size: 40px; color: #000; margin: 0">@<b>${this.fullname}</b></p>
+              <p style="font-size: 40px; color: #000; margin: 0"><b>${this.fullname}</b></p>
               <div class="image" style="width: 260px; margin: 50px auto">
                 <img
                   src="https://f002.backblazeb2.com/file/summonshop/welcome.png"
@@ -56,19 +56,21 @@ export class MailTemplateVerifyCode{
                 />
               </div>
               <p style="font-size: 14px; color: #555 !important">
-                We're excited to have you get started. First, you need to confirm your
-                account.<br />
-                Enter the code below to verify:
+              ${this.fullname} thân mến <br />
+              Có vẻ như Quý khách đang đăng nhập vào tài khoản EC <br />
+              Nhập mã OTP dưới đây để xác thực dúng là bạn đã đăng nhập vào EC
               </p>
               <div class="code" style="margin: 20px 0">
                 <span style="font-size: 40px; font-weight: 600">${this.code}</span>
               </div>
               <p style="font-size: 10px; color: #555555">
-                If you didn't request this, you can ignore this email or let us know
+              Mã xác thực này sẽ hết hiệu lực trong 5 phút.Để đảm bảo an toàn, vui lòng không chia sẻ mã này cho bất cứ ai.
               </p>
               <p style="font-size: 10px; color: #555555">
-                If you have any questions, feel free message us at
-                shopme293@gmail.com.<br />
+              Nếu bạn có bất cứ câu hỏi nào hay thắc mắc nào xin hãy liên hệ tới Email shopme293@gmail.com.
+              </p>
+              <p style="font-size: 10px; color: #555555">
+              Nếu bạn có bất cứ câu hỏi nào hay thắc mắc nào xin hãy liên hệ tới Email shopme293@gmail.com.<br />
                 All right reserved. Update
                 <a
                   href="#"

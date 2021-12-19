@@ -104,7 +104,7 @@ let CartService = class CartService {
             deposits: cartdto.deposits,
             suggest: cartdto.suggest,
             totalProfit: totalProfit,
-            profit: profit,
+            profit: Number(profit.toFixed(0)),
             depositinpassbook: cartdto.depositinpassbook,
             profitinpassbook: profitinpassbook,
         });
@@ -119,7 +119,7 @@ let CartService = class CartService {
     async updateCart(quantity, user) {
         const cartExisting = await this.cartmodel.findOne({ userId: user._id });
         if (!cartExisting) {
-            return { message: 'Cart not existing', success: false };
+            return { message: 'Giỏ hàng không tồn tại', success: false };
         }
         const deposit = cartExisting.deposits / quantity;
         if (deposit < 1000000) {
@@ -181,7 +181,7 @@ let CartService = class CartService {
             return {
                 code: 400,
                 success: false,
-                message: 'Cart not exist',
+                message: 'Giỏ hàng không tồn tại',
             };
         }
         if (user.currentMoney < cartExisting.deposits) {

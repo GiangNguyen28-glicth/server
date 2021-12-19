@@ -59,5 +59,4 @@ export declare class UserService {
     getListUser(): Promise<User[]>;
     randomotp(): Promise<string>;
     getnewUser(): Promise<any>;
-    getCookieForLogOut(): string;
 }

@@ -295,9 +295,6 @@ let UserService = class UserService {
             newuser: newuser
         };
     }
-    getCookieForLogOut() {
-        return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
-    }
 };
 UserService = __decorate([
     (0, common_1.Injectable)(),

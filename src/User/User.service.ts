@@ -323,9 +323,5 @@ export class UserService{
         newuser:newuser
       }
     }
-
-    public getCookieForLogOut() {
-      return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
-    }
     
 }

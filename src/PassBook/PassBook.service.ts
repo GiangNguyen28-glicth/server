@@ -6,23 +6,19 @@ import { Action } from "src/User/DTO/HistoryAction.obj";
 import { User } from "src/User/Schema/User.Schema";
 import { UserService } from "src/User/User.service";
 import { IReponse } from "src/Utils/IReponse";
-import { CacheKeyPassbook } from "./DTO/cache.key.dto";
 import { PassBookDTO } from "./DTO/PassBook.dto";
 import { PassBook, PassBookDocument } from "./Schema/PassBook.Schema";
-import { Cache } from 'cache-manager';
 import { CyclesUpdateDTO } from "./DTO/CyclesUpdateDTO";
-import { CommonService } from "src/Utils/common.service";
+import * as date from 'date-and-time'
 @Injectable()
 export class PassBookService{
 
     constructor(@InjectModel(PassBook.name)
     private passbookmodel:mongoose.Model<PassBookDocument>,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @InjectConnection() private readonly connection: mongoose.Connection,
     @Inject(forwardRef(()=>UserService))
     private userservice:UserService,
     private optionservice:OptionService,
-    private commonservice:CommonService
     ){}
 
     async saveSavingsdeposit(passbookdto:PassBookDTO,user:User):Promise<IReponse<PassBook>>{
@@ -40,9 +36,10 @@ export class PassBookService{
     }
 
     async getTotalCycles(passbookid,user:User):Promise<any>{
-        var endDate=new Date();
+        let endDate=new Date();
         let value;
-        const svd=await this.passbookmodel.findOne({_id:passbookid,userId:user._id} );
+        // const svd=await this.passbookmodel.findOne({_id:passbookid,userId:user._id} );
+        const svd=await this.passbookmodel.findOne({_id:passbookid} );
         if(!svd){return {code:500,success:false,message:"Sổ tiết kiệm không hợp lệ"}}
         const startDate=new Date(`${svd.createAt}`);
         let result=[];
@@ -74,14 +71,13 @@ export class PassBookService{
         }
         const diffDays = (date, otherDate)  => Math.ceil(Math.abs(date - otherDate) / (1000 * 60 * 60 * 24));
         const date=diffDays(endDate, result[result.length-1].startDate);
-        if(date-1>0){
-            const nooption=await this.optionservice.GetValueOption(endDate,0);
-            money=Number((money+money*(nooption/100)*(date-1)/360).toFixed(0));
-            result[result.length-1].endDate=endDate;
-            result[result.length-1].value=nooption;
-        }
-        else{result.pop()}
-        return {passbook:svd,cycles:result,songayle:date-1, //so ngay le
+        console.log(date);
+        console.log(endDate);
+        const nooption=await this.optionservice.GetValueOption(endDate,0);
+        money=Number((money+money*(nooption/100)*(date)/360).toFixed(0));
+        result[result.length-1].endDate=endDate;
+        result[result.length-1].value=nooption;
+        return {passbook:svd,cycles:result,songayle:date, //so ngay le
             money:money
         };
     }

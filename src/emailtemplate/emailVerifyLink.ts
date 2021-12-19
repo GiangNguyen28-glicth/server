@@ -48,7 +48,7 @@ export class MailTemplateVerifyLink{
           >
             Welcome,
           </h3>
-          <p style="font-size: 40px; color: #000; margin: 0">@<b>${this.fullname}</b></p>
+          <p style="font-size: 40px; color: #000; margin: 0"><b>${this.fullname}</b></p>
           <div class="image" style="width: 260px; margin: 50px auto">
             <img
               src="https://f002.backblazeb2.com/file/summonshop/welcome.png"
@@ -56,7 +56,7 @@ export class MailTemplateVerifyLink{
             />
           </div>
           <p style="font-size: 14px; color: #555 !important">
-            Chúng tôi rất vui vì bạn đã sử dụng Website của chúng tôi<br />
+          ${this.fullname} thân mếnChúng tôi rất vui vì bạn đã sử dụng Website của chúng tôi<br />
             Nhấn vào đường dẫn dưới đây để xác nhận mail
           </p>
           <div class="code" style="margin: 20px 0">

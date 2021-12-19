@@ -12,7 +12,6 @@ import { UpdateProfileDTO } from "./DTO/UpdateProfile.dto";
 import { UserDTO, UserRole } from "./DTO/user.dto";
 import { User } from "./Schema/User.Schema";
 import { UserService } from "./User.service";
-import { Response } from 'express';
 @Controller()
 export class UserController{
     constructor(private userservice:UserService){}
@@ -86,22 +85,8 @@ export class UserController{
 
     @hasRoles(UserRole.ADMIN)
     @UseGuards(AuthGuard(),RolesGuard)
-    @Get('/getmoneybymonth')
-    async getmoneybymonth():Promise<number>{
-        return null;
-    }
-
-    @hasRoles(UserRole.ADMIN)
-    @UseGuards(AuthGuard(),RolesGuard)
     @Get('/getnewuser')
     async getnewuser():Promise<any>{
         return await this.userservice.getnewUser();
-    }
-
-    @UseGuards(AuthGuard())
-    @Post('log-out')
-    async logOut(@Res() response: Response) {
-        response.setHeader('Set-Cookie', this.userservice.getCookieForLogOut());
-        return response.sendStatus(200);
     }
 }

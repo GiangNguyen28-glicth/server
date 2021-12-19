@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PassBookService = void 0;
 const common_1 = require("@nestjs/common");
@@ -23,17 +22,13 @@ const User_Schema_1 = require("../User/Schema/User.Schema");
 const User_service_1 = require("../User/User.service");
 const IReponse_1 = require("../Utils/IReponse");
 const PassBook_Schema_1 = require("./Schema/PassBook.Schema");
-const cache_manager_1 = require("cache-manager");
 const CyclesUpdateDTO_1 = require("./DTO/CyclesUpdateDTO");
-const common_service_1 = require("../Utils/common.service");
 let PassBookService = class PassBookService {
-    constructor(passbookmodel, cacheManager, connection, userservice, optionservice, commonservice) {
+    constructor(passbookmodel, connection, userservice, optionservice) {
         this.passbookmodel = passbookmodel;
-        this.cacheManager = cacheManager;
         this.connection = connection;
         this.userservice = userservice;
         this.optionservice = optionservice;
-        this.commonservice = commonservice;
     }
     async saveSavingsdeposit(passbookdto, user) {
         try {
@@ -48,9 +43,9 @@ let PassBookService = class PassBookService {
         }
     }
     async getTotalCycles(passbookid, user) {
-        var endDate = new Date();
+        let endDate = new Date();
         let value;
-        const svd = await this.passbookmodel.findOne({ _id: passbookid, userId: user._id });
+        const svd = await this.passbookmodel.findOne({ _id: passbookid });
         if (!svd) {
             return { code: 500, success: false, message: "Sổ tiết kiệm không hợp lệ" };
         }
@@ -84,16 +79,13 @@ let PassBookService = class PassBookService {
         }
         const diffDays = (date, otherDate) => Math.ceil(Math.abs(date - otherDate) / (1000 * 60 * 60 * 24));
         const date = diffDays(endDate, result[result.length - 1].startDate);
-        if (date - 1 > 0) {
-            const nooption = await this.optionservice.GetValueOption(endDate, 0);
-            money = Number((money + money * (nooption / 100) * (date - 1) / 360).toFixed(0));
-            result[result.length - 1].endDate = endDate;
-            result[result.length - 1].value = nooption;
-        }
-        else {
-            result.pop();
-        }
-        return { passbook: svd, cycles: result, songayle: date - 1,
+        console.log(date);
+        console.log(endDate);
+        const nooption = await this.optionservice.GetValueOption(endDate, 0);
+        money = Number((money + money * (nooption / 100) * (date) / 360).toFixed(0));
+        result[result.length - 1].endDate = endDate;
+        result[result.length - 1].value = nooption;
+        return { passbook: svd, cycles: result, songayle: date,
             money: money
         };
     }
@@ -154,12 +146,10 @@ let PassBookService = class PassBookService {
 PassBookService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(PassBook_Schema_1.PassBook.name)),
-    __param(1, (0, common_1.Inject)(common_1.CACHE_MANAGER)),
-    __param(2, (0, mongoose_1.InjectConnection)()),
-    __param(3, (0, common_1.Inject)((0, common_1.forwardRef)(() => User_service_1.UserService))),
-    __metadata("design:paramtypes", [mongoose.Model, typeof (_a = typeof cache_manager_1.Cache !== "undefined" && cache_manager_1.Cache) === "function" ? _a : Object, mongoose.Connection, User_service_1.UserService,
-        Option_service_1.OptionService,
-        common_service_1.CommonService])
+    __param(1, (0, mongoose_1.InjectConnection)()),
+    __param(2, (0, common_1.Inject)((0, common_1.forwardRef)(() => User_service_1.UserService))),
+    __metadata("design:paramtypes", [mongoose.Model, mongoose.Connection, User_service_1.UserService,
+        Option_service_1.OptionService])
 ], PassBookService);
 exports.PassBookService = PassBookService;
 //# sourceMappingURL=PassBook.service.js.map

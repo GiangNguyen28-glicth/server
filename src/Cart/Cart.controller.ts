@@ -15,6 +15,7 @@ import {
   @Controller('/cart')
   export class CartController {
     constructor(private cartservice: CartService) {}
+    
     @Post('/')
     @UseGuards(AuthGuard())
     async addtoCart(
@@ -23,11 +24,6 @@ import {
     ): Promise<any> {
       return this.cartservice.addtoCart(cartdto, user);
     }
-    // @Post('/checkout')
-    // @UseGuards(AuthGuard())
-    // async checkout(@GetUser() user:User):Promise<IReponse<Cart>>{
-    //     return this.cartservice.checkout(user);
-    // }
   
     @Post('/checkout')
     @UseGuards(AuthGuard())
