@@ -18,6 +18,5 @@ export declare class PassBookService {
     getAllPassbook(): Promise<PassBook[]>;
     getnewPassBook(): Promise<any>;
     getpassbookbyUser(userid: any): Promise<any>;
-    getInformationPassbook(passbookid: any, userid: any): Promise<any>;
-    getInformationPassbookForAdmin(passbookid: any): Promise<any>;
+    getInformationPassbook(passbookid: any, user: any): Promise<any>;
 }

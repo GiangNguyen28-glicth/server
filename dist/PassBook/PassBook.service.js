@@ -23,6 +23,7 @@ const User_service_1 = require("../User/User.service");
 const IReponse_1 = require("../Utils/IReponse");
 const PassBook_Schema_1 = require("./Schema/PassBook.Schema");
 const CyclesUpdateDTO_1 = require("./DTO/CyclesUpdateDTO");
+const user_dto_1 = require("../User/DTO/user.dto");
 let PassBookService = class PassBookService {
     constructor(passbookmodel, userservice, optionservice) {
         this.passbookmodel = passbookmodel;
@@ -126,25 +127,16 @@ let PassBookService = class PassBookService {
         const passbook = await this.passbookmodel.find({ userId: userid }).sort({ _id: -1 });
         return passbook;
     }
-    async getInformationPassbook(passbookid, userid) {
-        const passbook = await this.passbookmodel.findOne({ _id: passbookid, userId: userid });
+    async getInformationPassbook(passbookid, user) {
+        let passbook;
+        if (user.role == user_dto_1.UserRole.ADMIN) {
+            passbook = await this.passbookmodel.findOne({ _id: passbookid });
+        }
+        else {
+            passbook = await this.passbookmodel.findOne({ _id: passbookid, userId: user._id });
+        }
         if (!passbook) {
             return { success: false, message: "Không tìm thấy sổ tiết kiệm tương ứng" };
-        }
-        let totalProfit = Number(passbook.deposits * (passbook.option / 100) * (passbook.option / 12)) + passbook.deposits;
-        const value = await this.optionservice.findOption(passbook.option);
-        let profit = totalProfit - passbook.deposits;
-        return {
-            passbook: passbook,
-            value: value.value,
-            profit: Number(profit.toFixed(0)),
-            totalmoney: Number(totalProfit.toFixed(0))
-        };
-    }
-    async getInformationPassbookForAdmin(passbookid) {
-        const passbook = await this.passbookmodel.findOne({ _id: passbookid });
-        if (!passbook) {
-            return { success: false, message: "Sổ tiết kiệm không hợp lệ" };
         }
         let totalProfit = Number(passbook.deposits * (passbook.option / 100) * (passbook.option / 12)) + passbook.deposits;
         const value = await this.optionservice.findOption(passbook.option);

@@ -64,13 +64,6 @@ export class PassBookController{
 
     @Get('/checkInformationpassbook/:passbookid')
     async checkInformationPassbook(@Param('passbookid') passbookid,@GetUser() user:User):Promise<any>{
-        return this.passbookservice.getInformationPassbook(passbookid,user._id);
-    }
-
-    @hasRoles(UserRole.ADMIN)
-    @UseGuards(AuthGuard(),RolesGuard)
-    @Get('/checkInformationpassbookforAdmin/:passbookid')
-    async checkInformationPassbookForAdmin(@Param('passbookid') passbookid):Promise<any>{
-        return this.passbookservice.getInformationPassbookForAdmin(passbookid);
+        return this.passbookservice.getInformationPassbook(passbookid,user);
     }
 }
