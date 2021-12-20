@@ -1,4 +1,4 @@
-import { Body, CacheInterceptor, CacheKey, CacheTTL, Controller, Get, Param, Post, Query, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Body, CacheInterceptor, CacheKey, CacheTTL, Controller, Get, Param, Post, UseGuards} from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { GetUser } from "src/decorators/getuser.decorators";
 import { hasRoles } from "src/decorators/role.decorators";
@@ -65,5 +65,12 @@ export class PassBookController{
     @Get('/checkInformationpassbook/:passbookid')
     async checkInformationPassbook(@Param('passbookid') passbookid,@GetUser() user:User):Promise<any>{
         return this.passbookservice.getInformationPassbook(passbookid,user._id);
+    }
+
+    @hasRoles(UserRole.ADMIN)
+    @UseGuards(AuthGuard(),RolesGuard)
+    @Get('/checkInformationpassbookforAdmin/:passbookid')
+    async checkInformationPassbookForAdmin(@Param('passbookid') passbookid):Promise<any>{
+        return this.passbookservice.getInformationPassbookForAdmin(passbookid);
     }
 }

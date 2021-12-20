@@ -7,10 +7,9 @@ import { PassBookDTO } from "./DTO/PassBook.dto";
 import { PassBook, PassBookDocument } from "./Schema/PassBook.Schema";
 export declare class PassBookService {
     private passbookmodel;
-    private readonly connection;
     private userservice;
     private optionservice;
-    constructor(passbookmodel: mongoose.Model<PassBookDocument>, connection: mongoose.Connection, userservice: UserService, optionservice: OptionService);
+    constructor(passbookmodel: mongoose.Model<PassBookDocument>, userservice: UserService, optionservice: OptionService);
     saveSavingsdeposit(passbookdto: PassBookDTO, user: User): Promise<IReponse<PassBook>>;
     getTotalCycles(passbookid: any, user: User): Promise<any>;
     GetAllPassbookByUserId(user: User): Promise<any>;
@@ -20,4 +19,5 @@ export declare class PassBookService {
     getnewPassBook(): Promise<any>;
     getpassbookbyUser(userid: any): Promise<any>;
     getInformationPassbook(passbookid: any, userid: any): Promise<any>;
+    getInformationPassbookForAdmin(passbookid: any): Promise<any>;
 }

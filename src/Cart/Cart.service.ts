@@ -10,7 +10,6 @@ import { UserService } from 'src/User/User.service';
 import { CommonService } from 'src/Utils/common.service';
 import { CartDTO } from './DTO/Cart.dto';
 import { Cart, CartDocument } from './Schema/Cart.schema';
-
 @Injectable()
 export class CartService {
   constructor(
@@ -101,6 +100,7 @@ export class CartService {
       profitinpassbook: profitinpassbook,
     });
     result.save();
+    result.startDate.setHours(result.startDate.getHours()+7);
     return {
       code: 200,
       success: true,

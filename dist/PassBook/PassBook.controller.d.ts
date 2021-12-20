@@ -15,4 +15,5 @@ export declare class PassBookController {
     getnewpassbook(): Promise<any>;
     getpassbookuser(userid: any): Promise<any>;
     checkInformationPassbook(passbookid: any, user: User): Promise<any>;
+    checkInformationPassbookForAdmin(passbookid: any): Promise<any>;
 }

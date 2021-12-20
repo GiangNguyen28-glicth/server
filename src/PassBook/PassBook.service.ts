@@ -1,5 +1,5 @@
-import { CACHE_MANAGER, forwardRef, Inject, Injectable } from "@nestjs/common";
-import { InjectConnection, InjectModel } from "@nestjs/mongoose";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
+import {  InjectModel } from "@nestjs/mongoose";
 import * as mongoose from 'mongoose';
 import { OptionService } from "src/Option/Option.service";
 import { Action } from "src/User/DTO/HistoryAction.obj";
@@ -9,36 +9,33 @@ import { IReponse } from "src/Utils/IReponse";
 import { PassBookDTO } from "./DTO/PassBook.dto";
 import { PassBook, PassBookDocument } from "./Schema/PassBook.Schema";
 import { CyclesUpdateDTO } from "./DTO/CyclesUpdateDTO";
-import * as date from 'date-and-time'
 @Injectable()
 export class PassBookService{
 
     constructor(@InjectModel(PassBook.name)
     private passbookmodel:mongoose.Model<PassBookDocument>,
-    @InjectConnection() private readonly connection: mongoose.Connection,
     @Inject(forwardRef(()=>UserService))
     private userservice:UserService,
     private optionservice:OptionService,
     ){}
 
     async saveSavingsdeposit(passbookdto:PassBookDTO,user:User):Promise<IReponse<PassBook>>{
-        try{ 
-           
+        try{   
             const svdp=await this.passbookmodel.create(passbookdto);
             svdp.save();
             await this.userservice.updateSvd(svdp,user);
             return{ code:200,success:true,message:"Succes",}
         }
         catch(err){
-            return{code:500,success:false,message:err.message
-            }
+            return{code:500,success:false,message:err.message}
         }
     }
 
     async getTotalCycles(passbookid,user:User):Promise<any>{
         let endDate=new Date();
         let value;
-        const svd=await this.passbookmodel.findOne({_id:passbookid,userId:user._id} );
+        // const svd=await this.passbookmodel.findOne({_id:passbookid,userId:user._id} );
+        const svd=await this.passbookmodel.findOne({_id:passbookid} );
         if(!svd){return {code:500,success:false,message:"Sổ tiết kiệm không hợp lệ"}}
         const startDate=new Date(`${svd.createAt}`);
         let result=[];
@@ -58,6 +55,7 @@ export class PassBookService{
             const startcycle=new CyclesUpdateDTO();
             value=await this.optionservice.GetValueOption(startDate,svd.option);
             startcycle.startDate=new Date(startDate);
+            startDate.setHours(startDate.getHours()+7);
             startDate.setMonth(startDate.getMonth() + svd.option);
             startcycle.endDate=new Date(startDate);
             startcycle.value=value;
@@ -118,9 +116,25 @@ export class PassBookService{
     }
 
     async getInformationPassbook(passbookid,userid):Promise<any>{
-        const passbook=await this.passbookmodel.findOne({_id:passbookid,userId:userid,status:false});
+        const passbook=await this.passbookmodel.findOne({_id:passbookid,userId:userid});
         if(!passbook){
             return {success:false,message:"Không tìm thấy sổ tiết kiệm tương ứng"};
+        }
+        let totalProfit =Number(passbook.deposits *(passbook.option / 100) *(passbook.option / 12))+ passbook.deposits;
+        const value= await this.optionservice.findOption(passbook.option);
+        let profit = totalProfit-passbook.deposits;
+        return {
+            passbook:passbook,
+            value:value.value,
+            profit:Number(profit.toFixed(0)),
+            totalmoney:Number(totalProfit.toFixed(0))           
+        }
+    }
+
+    async getInformationPassbookForAdmin(passbookid):Promise<any>{
+        const passbook=await this.passbookmodel.findOne({_id:passbookid});
+        if(!passbook){
+            return {success:false,message:"Sổ tiết kiệm không hợp lệ"};
         }
         let totalProfit =Number(passbook.deposits *(passbook.option / 100) *(passbook.option / 12))+ passbook.deposits;
         const value= await this.optionservice.findOption(passbook.option);

@@ -56,7 +56,7 @@ export class MailTemplateVerifyLink{
             />
           </div>
           <p style="font-size: 14px; color: #555 !important">
-          ${this.fullname} thân mếnChúng tôi rất vui vì bạn đã sử dụng Website của chúng tôi<br />
+          Quý khách vừa tạo thành công thông tin đăng nhập tài khoản Timo. Đây là thông tin quan trọng dùng để truy cập vào tài khoản Ngân hàng, Quý khách vui lòng ghi nhớ thông tin này và bắt đầu hành trình quản lý tài chính thông minh hơn với ứng dụng Timo hoặc qua Internet Banking tại website my.timo.vn<br />
             Nhấn vào đường dẫn dưới đây để xác nhận mail
           </p>
           <div class="code" style="margin: 20px 0">
@@ -70,11 +70,13 @@ export class MailTemplateVerifyLink{
         ">Verify</a>
           </div>
           <p style="font-size: 10px; color: #555555">
-            If you didn't request this, you can ignore this email or let us know
+          Dưới đây là một số lưu ý trong suốt quá trình sử dụng tài khoản giúp Quý khách đảm bảo an toàn bảo mật và tránh phát sinh rủi ro <br />
+          Không chia sẻ thông tin tên đăng nhập và mật khẩu đăng nhập tài khoản cho bất kỳ ai <br />
+          Không cung cấp mã xác thực SMS OTP/ iOTP trong mọi tình huống. 
           </p>
+          </div>
           <p style="font-size: 10px; color: #555555">
-            If you have any questions, feel free message us at
-            shopme293@gmail.com.<br />
+            Nếu bạn có bất cứ câu hỏi nào hay thắc mắc nào xin hãy liên hệ tới Email shopme293@gmail.com.<br />
             All right reserved. Update
             <a
               href="#"

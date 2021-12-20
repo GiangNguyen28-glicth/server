@@ -24,9 +24,8 @@ const IReponse_1 = require("../Utils/IReponse");
 const PassBook_Schema_1 = require("./Schema/PassBook.Schema");
 const CyclesUpdateDTO_1 = require("./DTO/CyclesUpdateDTO");
 let PassBookService = class PassBookService {
-    constructor(passbookmodel, connection, userservice, optionservice) {
+    constructor(passbookmodel, userservice, optionservice) {
         this.passbookmodel = passbookmodel;
-        this.connection = connection;
         this.userservice = userservice;
         this.optionservice = optionservice;
     }
@@ -38,14 +37,13 @@ let PassBookService = class PassBookService {
             return { code: 200, success: true, message: "Succes", };
         }
         catch (err) {
-            return { code: 500, success: false, message: err.message
-            };
+            return { code: 500, success: false, message: err.message };
         }
     }
     async getTotalCycles(passbookid, user) {
         let endDate = new Date();
         let value;
-        const svd = await this.passbookmodel.findOne({ _id: passbookid, userId: user._id });
+        const svd = await this.passbookmodel.findOne({ _id: passbookid });
         if (!svd) {
             return { code: 500, success: false, message: "Sổ tiết kiệm không hợp lệ" };
         }
@@ -67,6 +65,7 @@ let PassBookService = class PassBookService {
             const startcycle = new CyclesUpdateDTO_1.CyclesUpdateDTO();
             value = await this.optionservice.GetValueOption(startDate, svd.option);
             startcycle.startDate = new Date(startDate);
+            startDate.setHours(startDate.getHours() + 7);
             startDate.setMonth(startDate.getMonth() + svd.option);
             startcycle.endDate = new Date(startDate);
             startcycle.value = value;
@@ -128,9 +127,24 @@ let PassBookService = class PassBookService {
         return passbook;
     }
     async getInformationPassbook(passbookid, userid) {
-        const passbook = await this.passbookmodel.findOne({ _id: passbookid, userId: userid, status: false });
+        const passbook = await this.passbookmodel.findOne({ _id: passbookid, userId: userid });
         if (!passbook) {
             return { success: false, message: "Không tìm thấy sổ tiết kiệm tương ứng" };
+        }
+        let totalProfit = Number(passbook.deposits * (passbook.option / 100) * (passbook.option / 12)) + passbook.deposits;
+        const value = await this.optionservice.findOption(passbook.option);
+        let profit = totalProfit - passbook.deposits;
+        return {
+            passbook: passbook,
+            value: value.value,
+            profit: Number(profit.toFixed(0)),
+            totalmoney: Number(totalProfit.toFixed(0))
+        };
+    }
+    async getInformationPassbookForAdmin(passbookid) {
+        const passbook = await this.passbookmodel.findOne({ _id: passbookid });
+        if (!passbook) {
+            return { success: false, message: "Sổ tiết kiệm không hợp lệ" };
         }
         let totalProfit = Number(passbook.deposits * (passbook.option / 100) * (passbook.option / 12)) + passbook.deposits;
         const value = await this.optionservice.findOption(passbook.option);
@@ -146,9 +160,8 @@ let PassBookService = class PassBookService {
 PassBookService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(PassBook_Schema_1.PassBook.name)),
-    __param(1, (0, mongoose_1.InjectConnection)()),
-    __param(2, (0, common_1.Inject)((0, common_1.forwardRef)(() => User_service_1.UserService))),
-    __metadata("design:paramtypes", [mongoose.Model, mongoose.Connection, User_service_1.UserService,
+    __param(1, (0, common_1.Inject)((0, common_1.forwardRef)(() => User_service_1.UserService))),
+    __metadata("design:paramtypes", [mongoose.Model, User_service_1.UserService,
         Option_service_1.OptionService])
 ], PassBookService);
 exports.PassBookService = PassBookService;

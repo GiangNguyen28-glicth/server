@@ -55,6 +55,9 @@ let PassBookController = class PassBookController {
     async checkInformationPassbook(passbookid, user) {
         return this.passbookservice.getInformationPassbook(passbookid, user._id);
     }
+    async checkInformationPassbookForAdmin(passbookid) {
+        return this.passbookservice.getInformationPassbookForAdmin(passbookid);
+    }
 };
 __decorate([
     (0, common_1.Post)('/save'),
@@ -127,6 +130,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, User_Schema_1.User]),
     __metadata("design:returntype", Promise)
 ], PassBookController.prototype, "checkInformationPassbook", null);
+__decorate([
+    (0, role_decorators_1.hasRoles)(user_dto_1.UserRole.ADMIN),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)(), role_guard_1.RolesGuard),
+    (0, common_1.Get)('/checkInformationpassbookforAdmin/:passbookid'),
+    __param(0, (0, common_1.Param)('passbookid')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], PassBookController.prototype, "checkInformationPassbookForAdmin", null);
 PassBookController = __decorate([
     (0, common_1.Controller)('/passbook'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),

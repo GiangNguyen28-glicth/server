@@ -68,9 +68,6 @@ class MailTemplateVerifyCode {
               Mã xác thực này sẽ hết hiệu lực trong 5 phút.Để đảm bảo an toàn, vui lòng không chia sẻ mã này cho bất cứ ai.
               </p>
               <p style="font-size: 10px; color: #555555">
-              Nếu bạn có bất cứ câu hỏi nào hay thắc mắc nào xin hãy liên hệ tới Email shopme293@gmail.com.
-              </p>
-              <p style="font-size: 10px; color: #555555">
               Nếu bạn có bất cứ câu hỏi nào hay thắc mắc nào xin hãy liên hệ tới Email shopme293@gmail.com.<br />
                 All right reserved. Update
                 <a
