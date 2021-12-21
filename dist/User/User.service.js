@@ -295,6 +295,18 @@ let UserService = class UserService {
             newuser: newuser
         };
     }
+    async login({ email, password }) {
+        const user = await this.usermodel.findOne({ email: email });
+        if (user && (await bcrypt.compare(password, user.password))) {
+            let id = user._id;
+            const payload = { id };
+            const accessToken = await this.jwtservice.sign(payload);
+            return { accessToken };
+        }
+        else {
+            throw new common_1.UnauthorizedException('Please Check Account');
+        }
+    }
 };
 UserService = __decorate([
     (0, common_1.Injectable)(),

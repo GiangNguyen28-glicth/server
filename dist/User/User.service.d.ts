@@ -59,4 +59,8 @@ export declare class UserService {
     getListUser(): Promise<User[]>;
     randomotp(): Promise<string>;
     getnewUser(): Promise<any>;
+    login({ email, password }: {
+        email: any;
+        password: any;
+    }): Promise<any>;
 }

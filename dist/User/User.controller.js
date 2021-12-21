@@ -69,6 +69,9 @@ let UserController = class UserController {
     async getnewuser() {
         return await this.userservice.getnewUser();
     }
+    async login({ email, password }) {
+        return this.userservice.login({ email, password });
+    }
 };
 __decorate([
     (0, common_1.Post)('/signup'),
@@ -174,6 +177,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getnewuser", null);
+__decorate([
+    (0, common_1.Post)('/login'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "login", null);
 UserController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [User_service_1.UserService])

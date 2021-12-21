@@ -35,4 +35,10 @@ export declare class UserController {
     }): Promise<any>;
     getListUser(): Promise<User[]>;
     getnewuser(): Promise<any>;
+    login({ email, password }: {
+        email: any;
+        password: any;
+    }): Promise<{
+        accesstoken: string;
+    }>;
 }

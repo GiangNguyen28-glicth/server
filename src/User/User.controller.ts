@@ -89,4 +89,9 @@ export class UserController{
     async getnewuser():Promise<any>{
         return await this.userservice.getnewUser();
     }
+
+    @Post('/login')
+    async login(@Body(){email,password}):Promise<{accesstoken:string}>{
+        return this.userservice.login({email,password});
+    }
 }

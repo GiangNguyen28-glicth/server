@@ -323,5 +323,17 @@ export class UserService{
         newuser:newuser
       }
     }
+
+    async login({email,password}):Promise<any>{
+      const user=await this.usermodel.findOne({email:email});
+      if (user && (await bcrypt.compare(password, user.password))) {
+        let id=user._id;
+        const payload= {id};
+        const accessToken = await this.jwtservice.sign(payload);
+        return {accessToken};
+      } else {
+          throw new UnauthorizedException('Please Check Account');
+      }
+    }
     
 }
