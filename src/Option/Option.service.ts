@@ -42,10 +42,7 @@ export class OptionService {
   async GetValueOption(date: Date, option: number): Promise<number> {
     date = new Date();
     const result = await this.optionmodel.findOne({ option: option });
-    if (
-      !result.history.length ||
-      result.history[result.history.length - 1].createAt < date
-    ) {
+    if (!result.history.length||result.history[result.history.length - 1].createAt < date) {
       return result.value;
     }
     for (let i = 0; i < result.history.length - 1; i++) {
@@ -118,9 +115,9 @@ export class OptionService {
 
   async getCurrentValueOption(): Promise<Option[]> {
     const list = await this.optionmodel
-      .find()
+      .find({option:{$gt:0}})
       .select('_id option value')
-      .sort({ option: 1 });
+      .sort({ option: 1, });
     return list;
   }
 }
