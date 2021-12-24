@@ -1,5 +1,5 @@
-import { ObjectId } from "mongoose";
-import { OptionObj } from "../DTO/OptionObj.dto";
+import { ObjectId } from 'mongoose';
+import { OptionObj } from '../DTO/OptionObj.dto';
 export declare type OptionDocument = Option & Document;
 export declare class Option {
     _id: ObjectId;

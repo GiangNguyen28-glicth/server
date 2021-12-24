@@ -59,10 +59,13 @@ export class CartService {
     } else {
       cartdto.suggest = 4;
     }
-    let totalProfit =
-      (Number(cartdto.deposits * (valueofOption / 100) * (cartdto.option / 12)) +
-      cartdto.deposits).toFixed(0); // tong lai suat
-    let profit = Number(cartdto.deposits * (valueofOption / 100) * (cartdto.option / 12)); //lai suat nhan duoc
+    let totalProfit = (
+      Number(cartdto.deposits * (valueofOption / 100) * (cartdto.option / 12)) +
+      cartdto.deposits
+    ).toFixed(0); // tong lai suat
+    let profit = Number(
+      cartdto.deposits * (valueofOption / 100) * (cartdto.option / 12),
+    ); //lai suat nhan duoc
     cartdto.depositinpassbook = cartdto.deposits / cartdto.suggest; //so tien moi passbook
     let profitinpassbook = (profit / cartdto.suggest).toFixed(0); //lai suat nhan duoc trong moi passbook
     endDate.setMonth(endDate.getMonth() + cartdto.option);
@@ -73,7 +76,7 @@ export class CartService {
       cartExisting.endDate = endDate;
       cartExisting.option = cartdto.option;
       cartExisting.deposits = cartdto.deposits; //so tien ban dau gui
-      cartExisting.profit =Number(profit.toFixed(0));
+      cartExisting.profit = Number(profit.toFixed(0));
       cartExisting.suggest = cartdto.suggest;
       cartExisting.depositinpassbook = cartdto.depositinpassbook;
       cartExisting.profitinpassbook = Number(profitinpassbook);
@@ -94,13 +97,13 @@ export class CartService {
       endDate: endDate,
       deposits: cartdto.deposits,
       suggest: cartdto.suggest,
-      totalProfit:totalProfit,
+      totalProfit: totalProfit,
       profit: Number(profit.toFixed(0)),
       depositinpassbook: cartdto.depositinpassbook,
       profitinpassbook: profitinpassbook,
     });
     result.save();
-    result.startDate.setHours(result.startDate.getHours()+7);
+    result.startDate.setHours(result.startDate.getHours() + 7);
     return {
       code: 200,
       success: true,
@@ -117,9 +120,10 @@ export class CartService {
     const deposit = cartExisting.deposits / quantity;
     if (deposit < 1000000) {
       return {
+        code: 400,
+        success: false,
         message:
           'Số tiền gửi tiết kiệm trên một gói phải lớn hơn 1.000.000 VND',
-        success: false,
       };
     }
     const startDate = new Date(Date.now());
@@ -142,17 +146,17 @@ export class CartService {
         (cartExisting.option / 12),
     ).toFixed(0);
     cartExisting.depositinpassbook = cartExisting.deposits / quantity;
-    let profitinpassbook = (+profit/ quantity).toFixed(0);
+    let profitinpassbook = (+profit / quantity).toFixed(0);
     endDate.setMonth(endDate.getMonth() + cartExisting.option);
     if (cartExisting) {
       cartExisting.totalProfit = totalProfit;
       cartExisting.endDate = endDate;
       cartExisting.option = cartExisting.option;
       cartExisting.deposits = cartExisting.deposits;
-      cartExisting.profit =Number(profit);
+      cartExisting.profit = Number(profit);
       cartExisting.suggest = quantity;
       cartExisting.depositinpassbook = cartExisting.depositinpassbook;
-      cartExisting.profitinpassbook =Number(profitinpassbook);
+      cartExisting.profitinpassbook = Number(profitinpassbook);
       cartExisting.update();
       cartExisting.save();
       return {

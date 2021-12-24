@@ -19,11 +19,11 @@ __decorate([
     __metadata("design:type", Object)
 ], Option.prototype, "_id", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ unique: true, require: true }),
     __metadata("design:type", Number)
 ], Option.prototype, "option", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ require: true }),
     __metadata("design:type", Number)
 ], Option.prototype, "value", void 0);
 __decorate([

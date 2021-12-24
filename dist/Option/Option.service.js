@@ -49,11 +49,13 @@ let OptionService = class OptionService {
     async GetValueOption(date, option) {
         date = new Date();
         const result = await this.optionmodel.findOne({ option: option });
-        if (!result.history.length || result.history[result.history.length - 1].createAt < date) {
+        if (!result.history.length ||
+            result.history[result.history.length - 1].createAt < date) {
             return result.value;
         }
         for (let i = 0; i < result.history.length - 1; i++) {
-            if (result.history[i].createAt < date && result.history[i + 1].createAt > date) {
+            if (result.history[i].createAt < date &&
+                result.history[i + 1].createAt > date) {
                 return result.history[i].value;
             }
         }
@@ -63,25 +65,41 @@ let OptionService = class OptionService {
         date.setDate(date.getDate() + 1);
         console.log(date);
         if (!date.getMonth()) {
-            return { code: 500, success: false, message: "Thời Giang Không Hợp Lệ !!" };
+            return {
+                code: 500,
+                success: false,
+                message: 'Thời Gian Không Hợp Lệ !!',
+            };
         }
         let arr = [];
         const currentvalue = await this.optionmodel.find();
         for (var i in currentvalue) {
             if (currentvalue[i].createAt <= date) {
-                arr.push({ _id: currentvalue[i]._id, option: currentvalue[i].option, value: currentvalue[i].value });
+                arr.push({
+                    _id: currentvalue[i]._id,
+                    option: currentvalue[i].option,
+                    value: currentvalue[i].value,
+                });
             }
             else {
                 for (var j = 0; j < currentvalue[i].history.length; j++) {
                     if (currentvalue[i].history[j].createAt >= date) {
                         if (currentvalue[i].history[j - 1] != null) {
-                            arr.push({ _id: currentvalue[i]._id, option: currentvalue[i].option, value: currentvalue[i].history[j - 1].value });
+                            arr.push({
+                                _id: currentvalue[i]._id,
+                                option: currentvalue[i].option,
+                                value: currentvalue[i].history[j - 1].value,
+                            });
                             break;
                         }
                     }
                     if (j == currentvalue[i].history.length - 1) {
                         if (currentvalue[i].history[j].createAt <= date) {
-                            arr.push({ _id: currentvalue[i]._id, option: currentvalue[i].option, value: currentvalue[i].history[j].value });
+                            arr.push({
+                                _id: currentvalue[i]._id,
+                                option: currentvalue[i].option,
+                                value: currentvalue[i].history[j].value,
+                            });
                         }
                     }
                 }
@@ -93,13 +111,17 @@ let OptionService = class OptionService {
         const result = await this.optionmodel.findOne({ option: option });
         if (!result) {
             return {
-                code: "500", message: "Option not found"
+                code: '500',
+                message: 'Option not found',
             };
         }
         return result;
     }
     async getCurrentValueOption() {
-        const list = await this.optionmodel.find().select('_id option value');
+        const list = await this.optionmodel
+            .find()
+            .select('_id option value')
+            .sort({ option: 1 });
         return list;
     }
 };

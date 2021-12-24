@@ -125,8 +125,9 @@ let CartService = class CartService {
         const deposit = cartExisting.deposits / quantity;
         if (deposit < 1000000) {
             return {
-                message: 'Số tiền gửi tiết kiệm trên một gói phải lớn hơn 1.000.000 VND',
+                code: 400,
                 success: false,
+                message: 'Số tiền gửi tiết kiệm trên một gói phải lớn hơn 1.000.000 VND',
             };
         }
         const startDate = new Date(Date.now());

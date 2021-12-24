@@ -1,7 +1,7 @@
-import { Model } from "mongoose";
-import { newOptionDTO } from "./DTO/newOption.dto";
-import { OptionDTO } from "./DTO/Option.dto";
-import { OptionDocument, Option } from "./Schema/Option.chema";
+import { Model } from 'mongoose';
+import { newOptionDTO } from './DTO/newOption.dto';
+import { OptionDTO } from './DTO/Option.dto';
+import { OptionDocument, Option } from './Schema/Option.chema';
 export declare class OptionService {
     private optionmodel;
     constructor(optionmodel: Model<OptionDocument>);
