@@ -138,7 +138,8 @@ let PassBookService = class PassBookService {
         if (!passbook) {
             return { success: false, message: "Không tìm thấy sổ tiết kiệm tương ứng" };
         }
-        let totalProfit = Number(passbook.deposits * (passbook.option / 100) * (passbook.option / 12)) + passbook.deposits;
+        const valueOfoption = await this.optionservice.GetValueOption(new Date(), passbook.option);
+        let totalProfit = Number(passbook.deposits * (valueOfoption / 100) * (passbook.option / 12)) + passbook.deposits;
         const value = await this.optionservice.findOption(passbook.option);
         let profit = totalProfit - passbook.deposits;
         return {
