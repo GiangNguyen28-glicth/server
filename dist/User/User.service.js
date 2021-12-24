@@ -22,8 +22,6 @@ const bcrypt = require("bcrypt");
 const mail_service_1 = require("../Mail/mail.service");
 const jwt_1 = require("@nestjs/jwt");
 const sms_schema_1 = require("./Schema/sms.schema");
-const nestjs_twilio_1 = require("nestjs-twilio");
-const twilio_1 = require("twilio");
 const IReponse_1 = require("../Utils/IReponse");
 const mongoose = require("mongoose");
 const HistoryAction_obj_1 = require("./DTO/HistoryAction.obj");
@@ -33,16 +31,14 @@ const PassBook_Schema_1 = require("../PassBook/Schema/PassBook.Schema");
 const common_service_1 = require("../Utils/common.service");
 const confirm_dto_1 = require("../Mail/confirm.dto");
 let UserService = class UserService {
-    constructor(usermodel, otpmodel, twilioClient, connection, passbookservice, mailservice, jwtservice, commonservice) {
+    constructor(usermodel, otpmodel, connection, passbookservice, mailservice, jwtservice, commonservice) {
         this.usermodel = usermodel;
         this.otpmodel = otpmodel;
-        this.twilioClient = twilioClient;
         this.connection = connection;
         this.passbookservice = passbookservice;
         this.mailservice = mailservice;
         this.jwtservice = jwtservice;
         this.commonservice = commonservice;
-        this.twilioClient = new twilio_1.Twilio("AC6217c0554f4b02fd75b70f57d12e77b", process.env.TWL1 + process.env.TWL2);
     }
     async register(userdto) {
         const role = user_dto_1.UserRole.USER;
@@ -137,28 +133,23 @@ let UserService = class UserService {
     async forgotpassword(email) {
         const user = await this.usermodel.findOne({ email: email });
         if (!user) {
-            throw new common_1.UnauthorizedException('Email not existing');
+            return {
+                code: 500, success: false, message: "Email không tồn tại !"
+            };
         }
         const random = await this.randomotp();
         await this.otpmodel.findOneAndDelete({ phoneNumber: user.phoneNumber });
-        const otp = await this.otpmodel.create({ userId: user._id, phoneNumber: user.phoneNumber });
+        const otp = await this.otpmodel.create({ userId: user._id, code: random, phoneNumber: user.phoneNumber });
         otp.save();
-        await this.mailservice.sendEmail(user.email, confirm_dto_1.MailAction.LG, random, user.fullName);
-    }
-    async sendSMS(phoneNumber) {
-        const serviceSid = "VAa8323d40b3ccf4ca0d124b0efde8764d";
-        this.phone = phoneNumber;
-        if (!this.phone) {
-            return {
-                code: 500, success: false, message: "Phone number null"
-            };
-        }
+        await this.mailservice.sendEmail(user.email, confirm_dto_1.MailAction.RS, random, user.fullName);
+        return {
+            code: 200, success: true, message: "Kiểm tra Mail để lấy OTP"
+        };
     }
     async confirmPhoneNumber(verificationCode) {
-        const serviceSid = "VAa8323d40b3ccf4ca0d124b0efde8764d";
         const otp = await this.otpmodel.findOne({ code: verificationCode });
         if (!otp) {
-            throw new common_1.BadRequestException('OTP is Expries or not existing');
+            throw new common_1.BadRequestException('OTP đã hết hạn hoặc không tồn tại');
         }
         if (otp.code != verificationCode) {
             throw new common_1.BadRequestException('Wrong code provided');
@@ -174,42 +165,49 @@ let UserService = class UserService {
             isPhoneNumberConfirmed: true
         });
     }
-    async changPassword(userId, changepassword) {
+    async changPassword(changepassword) {
         const date = await this.commonservice.convertDatetime(new Date());
-        const { newPassword, ConfirmPassword } = changepassword;
-        const user = await this.usermodel.findOne({ _id: userId });
-        if (!user) {
-            return { code: 400, success: false, message: 'User no longer exists', };
+        const { code, password, passwordConfirm } = changepassword;
+        const otpexisting = await this.otpmodel.findOne({ code: code });
+        if (!otpexisting) {
+            return { code: 500, success: false, message: "Mã OTP đã hết hạn hoặc không tồn tại" };
         }
-        if (newPassword != ConfirmPassword) {
-            return { code: 400, success: false, message: "password does not match"
+        if (otpexisting.code != code) {
+            return { code: 500, success: false, message: "Mã OTP không đúng" };
+        }
+        const user = await this.usermodel.findOne({ _id: otpexisting.userId });
+        if (!user) {
+            return { code: 500, success: false, message: 'User không tồn tại', };
+        }
+        if (password != passwordConfirm) {
+            return { code: 500, success: false, message: "Mật khâu không khớp !!"
             };
         }
         const salt = await bcrypt.genSalt();
-        const hashedpassword = await bcrypt.hash(newPassword, salt);
-        await this.usermodel.findOneAndUpdate({ _id: userId }, { password: hashedpassword, isChangePassword: date });
-        return { code: 200, success: true, message: 'User password reset successfully', };
+        const hashedpassword = await bcrypt.hash(password, salt);
+        await this.usermodel.findOneAndUpdate({ _id: otpexisting.userId }, { password: hashedpassword, isChangePassword: date });
+        return { code: 200, success: true, message: 'Cập nhật mật khẩu thành công', };
     }
     async updateSvd(input, user) {
         const result = await this.usermodel.findByIdAndUpdate({ _id: user._id });
         result.save();
     }
     async updatePassword(changepassword, user) {
-        const { oldPassword, newPassword, ConfirmPassword } = changepassword;
-        if ((await bcrypt.compare(oldPassword, user.password))) {
-            if (newPassword == ConfirmPassword) {
+        const { oldpassword, password, passwordConfirm } = changepassword;
+        if ((await bcrypt.compare(oldpassword, user.password))) {
+            if (password == passwordConfirm) {
                 const date = await this.commonservice.convertDatetime(new Date());
                 const salt = await bcrypt.genSalt();
-                const hashedpassword = await bcrypt.hash(newPassword, salt);
+                const hashedpassword = await bcrypt.hash(password, salt);
                 await this.usermodel.findOneAndUpdate({ _id: user._id }, { password: hashedpassword, isChangePassword: date });
-                return { code: 200, success: true, message: "Update Password Success" };
+                return { code: 200, success: true, message: "Cập nhật mật khẩu thành công" };
             }
             else {
-                return { code: 400, success: false, message: "Password not match" };
+                return { code: 500, success: false, message: "Mật khẩu không khớp" };
             }
         }
         else {
-            return { code: 400, success: false, message: "Please check old password" };
+            return { code: 500, success: false, message: "Mật khẩu cũ không đúng" };
         }
     }
     async updateMoney(action, money, user) {
@@ -262,7 +260,7 @@ let UserService = class UserService {
         const user = await this.usermodel.findOne({ email: email });
         if (user && (await bcrypt.compare(password, user.password)) && user.isEmailConfirmed) {
             if (user.role == user_dto_1.UserRole.USER) {
-                throw new common_1.ForbiddenException('Ban khong du quyen');
+                throw new common_1.UnauthorizedException('Đăng nhập này chỉ dành riêng cho ADMIN');
             }
             let id = user._id;
             const payload = { id };
@@ -312,12 +310,11 @@ UserService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(User_Schema_1.User.name)),
     __param(1, (0, mongoose_1.InjectModel)(sms_schema_1.OTP.name)),
-    __param(2, (0, nestjs_twilio_1.InjectTwilio)()),
-    __param(3, (0, mongoose_1.InjectConnection)()),
-    __param(4, (0, common_1.Inject)((0, common_1.forwardRef)(() => PassBook_service_1.PassBookService))),
-    __param(5, (0, common_1.Inject)((0, common_1.forwardRef)(() => mail_service_1.MailService))),
+    __param(2, (0, mongoose_1.InjectConnection)()),
+    __param(3, (0, common_1.Inject)((0, common_1.forwardRef)(() => PassBook_service_1.PassBookService))),
+    __param(4, (0, common_1.Inject)((0, common_1.forwardRef)(() => mail_service_1.MailService))),
     __metadata("design:paramtypes", [mongoose_2.Model,
-        mongoose_2.Model, Object, mongoose.Connection, PassBook_service_1.PassBookService,
+        mongoose_2.Model, mongoose.Connection, PassBook_service_1.PassBookService,
         mail_service_1.MailService,
         jwt_1.JwtService,
         common_service_1.CommonService])

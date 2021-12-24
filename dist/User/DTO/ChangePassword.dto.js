@@ -19,6 +19,6 @@ __decorate([
         message: '8 Ký tự bao gồm 1 chữ hoa, 1 ký tự đặc biệt',
     }),
     __metadata("design:type", String)
-], changePassword.prototype, "newPassword", void 0);
+], changePassword.prototype, "password", void 0);
 exports.changePassword = changePassword;
 //# sourceMappingURL=ChangePassword.dto.js.map

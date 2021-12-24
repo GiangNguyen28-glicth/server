@@ -1,5 +1,6 @@
 export declare class changePassword {
-    oldPassword?: string;
-    newPassword: string;
-    ConfirmPassword: string;
+    oldpassword?: string;
+    code?: string;
+    password: string;
+    passwordConfirm: string;
 }

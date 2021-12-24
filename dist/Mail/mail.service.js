@@ -20,6 +20,7 @@ const nodemailer = require("nodemailer");
 const confirm_dto_1 = require("./confirm.dto");
 const emailVerifyLink_1 = require("../emailtemplate/emailVerifyLink");
 const emailVerifycode_1 = require("../emailtemplate/emailVerifycode");
+const emailResetPassword_1 = require("../emailtemplate/emailResetPassword");
 let MailService = class MailService {
     constructor(userService, jwtservice) {
         this.userService = userService;
@@ -31,7 +32,11 @@ let MailService = class MailService {
             emailVerifycode_1.MailTemplateVerifyCode.code = code;
             emailVerifycode_1.MailTemplateVerifyCode.fullname = fullname;
             html = emailVerifycode_1.MailTemplateVerifyCode.HTMLCode();
-            ;
+        }
+        else if (option == confirm_dto_1.MailAction.RS) {
+            emailResetPassword_1.MailResetPassword.code = code;
+            emailResetPassword_1.MailResetPassword.fullname = fullname;
+            html = emailResetPassword_1.MailResetPassword.ResetPassword();
         }
         else {
             const payload = { email };

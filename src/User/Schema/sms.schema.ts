@@ -14,7 +14,7 @@ export class OTP{
 
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User'})
     @Type(()=>User)
-    userId:User;
+    userId:ObjectId;
 
     @Prop({default:false})
     isPhoneNumberConfirmed:boolean;

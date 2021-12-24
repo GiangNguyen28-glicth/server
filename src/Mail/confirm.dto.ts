@@ -7,5 +7,6 @@ export class confirmEmail{
 }
 export enum MailAction{
     LG="LG",
-    PW="PW"
+    PW="PW",
+    RS="RS"
 }

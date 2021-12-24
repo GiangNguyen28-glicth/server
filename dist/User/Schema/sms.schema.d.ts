@@ -1,11 +1,10 @@
 import { ObjectId } from "mongoose";
 import * as mongoose from 'mongoose';
-import { User } from "./User.Schema";
 export declare type OTPDocument = OTP & Document;
 export declare class OTP {
     _id: ObjectId;
     phoneNumber: string;
-    userId: User;
+    userId: ObjectId;
     isPhoneNumberConfirmed: boolean;
     isVerifyOtp: Date;
     code: string;

@@ -4,7 +4,6 @@ import { User, UserDocument } from "./Schema/User.Schema";
 import { MailService } from "src/Mail/mail.service";
 import { JwtService } from "@nestjs/jwt";
 import { OTP, OTPDocument } from "src/User/Schema/sms.schema";
-import { TwilioClient } from "nestjs-twilio";
 import { changePassword } from "./DTO/ChangePassword.dto";
 import { IReponse } from "src/Utils/IReponse";
 import * as mongoose from 'mongoose';
@@ -17,13 +16,12 @@ import { CommonService } from "src/Utils/common.service";
 export declare class UserService {
     private usermodel;
     private otpmodel;
-    private readonly twilioClient;
     private readonly connection;
     private passbookservice;
     private mailservice;
     private jwtservice;
     private commonservice;
-    constructor(usermodel: Model<UserDocument>, otpmodel: Model<OTPDocument>, twilioClient: TwilioClient, connection: mongoose.Connection, passbookservice: PassBookService, mailservice: MailService, jwtservice: JwtService, commonservice: CommonService);
+    constructor(usermodel: Model<UserDocument>, otpmodel: Model<OTPDocument>, connection: mongoose.Connection, passbookservice: PassBookService, mailservice: MailService, jwtservice: JwtService, commonservice: CommonService);
     phone: any;
     register(userdto: UserDTO): Promise<IReponse<User>>;
     deleteUser(id: any): Promise<IReponse<User>>;
@@ -35,15 +33,14 @@ export declare class UserService {
         email: any;
         password: any;
     }): Promise<any>;
-    forgotpassword(email: string): Promise<void>;
-    sendSMS(phoneNumber: string): Promise<any>;
+    forgotpassword(email: string): Promise<any>;
     confirmPhoneNumber(verificationCode: string): Promise<{
         accessToken: any;
     }>;
     markPhoneNumberAsConfirmed(userId: any): Promise<mongoose.Document<any, any, OTPDocument> & OTP & Document & {
         _id: mongoose.Schema.Types.ObjectId;
     }>;
-    changPassword(userId: any, changepassword: changePassword): Promise<IReponse<User>>;
+    changPassword(changepassword: changePassword): Promise<IReponse<User>>;
     updateSvd(input: PassBook, user: User): Promise<void>;
     updatePassword(changepassword: changePassword, user: User): Promise<IReponse<User>>;
     updateMoney(action: string, money: number, user: User): Promise<any>;

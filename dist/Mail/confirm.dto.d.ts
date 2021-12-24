@@ -3,5 +3,6 @@ export declare class confirmEmail {
 }
 export declare enum MailAction {
     LG = "LG",
-    PW = "PW"
+    PW = "PW",
+    RS = "RS"
 }

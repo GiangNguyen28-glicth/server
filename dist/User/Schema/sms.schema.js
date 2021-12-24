@@ -27,7 +27,7 @@ __decorate([
 __decorate([
     (0, mongoose_1.Prop)({ type: mongoose.Schema.Types.ObjectId, ref: 'User' }),
     (0, class_transformer_1.Type)(() => User_Schema_1.User),
-    __metadata("design:type", User_Schema_1.User)
+    __metadata("design:type", Object)
 ], OTP.prototype, "userId", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: false }),

@@ -20,11 +20,11 @@ export declare class UserController {
     updateprofile(updatepfl: UpdateProfileDTO, user: User): Promise<IReponse<User>>;
     forgotpassword({ email }: {
         email: any;
-    }): Promise<void>;
-    checkVerificationCode(user: User, confirmPhonedto: ConfirmPhoneDTO): Promise<{
+    }): Promise<any>;
+    checkVerificationCode(confirmPhonedto: ConfirmPhoneDTO): Promise<{
         accessToken: any;
     }>;
-    changePassword(user: User, changepassword: changePassword): Promise<IReponse<User>>;
+    changePassword(changepassword: changePassword): Promise<IReponse<User>>;
     updatePassword(changepassword: changePassword, user: User): Promise<IReponse<User>>;
     Addmoney(checkout: Checkout, user: User): Promise<IReponse<User>>;
     GetAllTransaction(user: User): Promise<[HistoryAction]>;

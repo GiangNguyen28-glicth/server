@@ -7,8 +7,6 @@ import * as bcrypt from 'bcrypt';
 import { MailService } from "src/Mail/mail.service";
 import { JwtService } from "@nestjs/jwt";
 import { OTP, OTPDocument } from "src/User/Schema/sms.schema";
-import { InjectTwilio, TwilioClient } from "nestjs-twilio";
-import { Twilio } from "twilio";
 import { changePassword } from "./DTO/ChangePassword.dto";
 import { IReponse } from "src/Utils/IReponse";
 import * as mongoose from 'mongoose';
@@ -25,7 +23,6 @@ export class UserService{
     constructor(
     @InjectModel(User.name) private usermodel:Model<UserDocument>,
     @InjectModel(OTP.name) private otpmodel:Model<OTPDocument>,
-    @InjectTwilio() private readonly twilioClient: TwilioClient,
     @InjectConnection() private readonly connection: mongoose.Connection,
     @Inject(forwardRef(() => PassBookService))
     private passbookservice: PassBookService,
@@ -33,7 +30,6 @@ export class UserService{
     private mailservice: MailService,
     private jwtservice:JwtService,
     private commonservice:CommonService){
-      this.twilioClient = new Twilio("AC6217c0554f4b02fd75b70f57d12e77b",process.env.TWL1+process.env.TWL2)
     }
     phone;
     async register(userdto:UserDTO):Promise<IReponse<User>>{
@@ -132,50 +128,31 @@ export class UserService{
       }
     }
 
-    async forgotpassword(email:string):Promise<void>{
-      // let phonereplace="+84"+phoneNumber.slice(1,phoneNumber.length);
+    async forgotpassword(email:string):Promise<any>{
       const user=await this.usermodel.findOne({email:email});
       if(!user){
-        throw new UnauthorizedException('Email not existing');
+        return{
+          code:500,success:false,message:"Email không tồn tại !"
+        }
       }
       const random=await this.randomotp();
       await this.otpmodel.findOneAndDelete({phoneNumber:user.phoneNumber});
-      const otp=await this.otpmodel.create({userId:user._id,phoneNumber:user.phoneNumber});
+      const otp=await this.otpmodel.create({userId:user._id,code:random,phoneNumber:user.phoneNumber});
       otp.save();
-      await this.mailservice.sendEmail(user.email,MailAction.LG,random,user.fullName);
-      //await this.sendSMS(user.phoneNumber);
-    }
-
-    async sendSMS(phoneNumber:string):Promise<any> {
-      const serviceSid = "VAa8323d40b3ccf4ca0d124b0efde8764d";
-      this.phone=phoneNumber;
-      if(!this.phone){
-        return{
-          code:500,success:false,message:"Phone number null"
-        }
+      await this.mailservice.sendEmail(user.email,MailAction.RS,random,user.fullName);
+      return{
+        code:200,success:true,message:"Kiểm tra Mail để lấy OTP"
       }
-      // await this.mailservice.sendEmail()
-      // this.twilioClient.verify.services(serviceSid)
-      // .verifications
-      // .create({ to: phoneNumber, channel: 'sms' })
-      // await this.twilioClient.messages.create({body: code,to:phoneNumber,from:process.env.TWILIO_PHONE_NUMBER})
     }
 
     async confirmPhoneNumber(verificationCode: string):Promise<{accessToken}>{
-      const serviceSid = "VAa8323d40b3ccf4ca0d124b0efde8764d";
       const otp=await this.otpmodel.findOne({code:verificationCode});
       if(!otp){
-        throw new BadRequestException('OTP is Expries or not existing');
+        throw new BadRequestException('OTP đã hết hạn hoặc không tồn tại');
       }
       if(otp.code!=verificationCode){
         throw new BadRequestException('Wrong code provided');
       }
-      // const result = await this.twilioClient.verify.services(serviceSid)
-      // .verificationChecks
-      // .create({to: otp.phoneNumber, code: verificationCode})
-      // if (!result.valid || result.status !== 'approved') {
-      //   throw new BadRequestException('Wrong code provided');
-      // }
       let id=otp.userId;
       const payload= {id};
       const accessToken = await this.jwtservice.sign(payload);
@@ -190,21 +167,28 @@ export class UserService{
     }
 
 
-    async changPassword(userId,changepassword:changePassword):Promise<IReponse<User>>{
+    async changPassword(changepassword:changePassword):Promise<IReponse<User>>{
       const date=await this.commonservice.convertDatetime(new Date())
-      const {newPassword,ConfirmPassword}=changepassword;
-      const user = await this.usermodel.findOne({_id:userId});
+      const {code,password,passwordConfirm}=changepassword;
+      const otpexisting=await this.otpmodel.findOne({code:code});
+      if(!otpexisting){
+        return{code:500,success:false,message:"Mã OTP đã hết hạn hoặc không tồn tại"}
+      }
+      if(otpexisting.code!=code){
+        return{code:500,success:false,message:"Mã OTP không đúng"}
+      }
+      const user = await this.usermodel.findOne({_id:otpexisting.userId});
       if (!user) {
-				return {	code: 400,success: false,message: 'User no longer exists',}
+				return {	code: 500,success: false,message: 'User không tồn tại',}
 			}
-      if(newPassword!=ConfirmPassword){
-        return{code:400,success:false,message:"password does not match"
+      if(password!=passwordConfirm){
+        return{code:500,success:false,message:"Mật khâu không khớp !!"
         }
       }
       const salt = await bcrypt.genSalt();
-      const hashedpassword = await bcrypt.hash(newPassword, salt);
-      await this.usermodel.findOneAndUpdate({ _id:userId }, { password: hashedpassword,isChangePassword:date })
-      return {code: 200,success: true,message: 'User password reset successfully',}
+      const hashedpassword = await bcrypt.hash(password, salt);
+      await this.usermodel.findOneAndUpdate({ _id:otpexisting.userId}, { password: hashedpassword,isChangePassword:date })
+      return {code: 200,success: true,message: 'Cập nhật mật khẩu thành công',}
     }
     
     async updateSvd(input:PassBook,user:User):Promise<void>{
@@ -214,21 +198,21 @@ export class UserService{
     }
 
     async updatePassword(changepassword:changePassword,user:User):Promise<IReponse<User>>{
-      const {oldPassword,newPassword,ConfirmPassword}=changepassword;
-      if((await bcrypt.compare(oldPassword,user.password))){
-        if(newPassword==ConfirmPassword){
+      const {oldpassword,password,passwordConfirm}=changepassword;
+      if((await bcrypt.compare(oldpassword,user.password))){
+        if(password==passwordConfirm){
           const date=await this.commonservice.convertDatetime(new Date());
           const salt = await bcrypt.genSalt();
-          const hashedpassword = await bcrypt.hash(newPassword, salt);
+          const hashedpassword = await bcrypt.hash(password, salt);
           await this.usermodel.findOneAndUpdate({_id:user._id},{password:hashedpassword,isChangePassword:date});
-          return{code:200,success:true,message:"Update Password Success"}
+          return{code:200,success:true,message:"Cập nhật mật khẩu thành công"}
         }
         else{
-          return{code:400,success:false,message:"Password not match"}
+          return{code:500,success:false,message:"Mật khẩu không khớp"}
         }
       }
       else{
-        return{code:400,success:false,message:"Please check old password"}
+        return{code:500,success:false,message:"Mật khẩu cũ không đúng"}
       }
     }
 
@@ -288,7 +272,7 @@ export class UserService{
       const user=await this.usermodel.findOne({email:email});
       if (user && (await bcrypt.compare(password, user.password))&&user.isEmailConfirmed) {
         if(user.role==UserRole.USER){
-          throw new ForbiddenException('Ban khong du quyen');
+          throw new UnauthorizedException('Đăng nhập này chỉ dành riêng cho ADMIN');
         }
         let id=user._id;
         const payload= {id};

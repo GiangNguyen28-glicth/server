@@ -5,6 +5,7 @@ import * as nodemailer from 'nodemailer';
 import { MailAction } from "./confirm.dto";
 import { MailTemplateVerifyLink } from "../emailtemplate/emailVerifyLink";
 import { MailTemplateVerifyCode } from "src/emailtemplate/emailVerifycode";
+import { MailResetPassword } from "src/emailtemplate/emailResetPassword";
 @Injectable()
 export class MailService{
     constructor(@Inject(forwardRef(() => UserService)) private userService: UserService,private jwtservice:JwtService){}
@@ -14,7 +15,12 @@ export class MailService{
         if(option==MailAction.LG){
           MailTemplateVerifyCode.code=code
           MailTemplateVerifyCode.fullname=fullname;
-          html=MailTemplateVerifyCode.HTMLCode();;
+          html=MailTemplateVerifyCode.HTMLCode();
+        }
+        else if(option==MailAction.RS){
+          MailResetPassword.code=code;
+          MailResetPassword.fullname=fullname;
+          html=MailResetPassword.ResetPassword();
         }
         else{
           const payload={email};

@@ -23,5 +23,6 @@ var MailAction;
 (function (MailAction) {
     MailAction["LG"] = "LG";
     MailAction["PW"] = "PW";
+    MailAction["RS"] = "RS";
 })(MailAction = exports.MailAction || (exports.MailAction = {}));
 //# sourceMappingURL=confirm.dto.js.map

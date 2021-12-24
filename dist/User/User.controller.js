@@ -42,11 +42,11 @@ let UserController = class UserController {
     async forgotpassword({ email }) {
         return this.userservice.forgotpassword(email);
     }
-    async checkVerificationCode(user, confirmPhonedto) {
+    async checkVerificationCode(confirmPhonedto) {
         return this.userservice.confirmPhoneNumber(confirmPhonedto.code);
     }
-    async changePassword(user, changepassword) {
-        return this.userservice.changPassword(user._id, changepassword);
+    async changePassword(changepassword) {
+        return this.userservice.changPassword(changepassword);
     }
     async updatePassword(changepassword, user) {
         return this.userservice.updatePassword(changepassword, user);
@@ -105,19 +105,16 @@ __decorate([
 ], UserController.prototype, "forgotpassword", null);
 __decorate([
     (0, common_1.Post)('/check-verification-code'),
-    __param(0, (0, getuser_decorators_1.GetUser)()),
-    __param(1, (0, common_1.Body)()),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [User_Schema_1.User, ConfirmPhone_dto_1.ConfirmPhoneDTO]),
+    __metadata("design:paramtypes", [ConfirmPhone_dto_1.ConfirmPhoneDTO]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "checkVerificationCode", null);
 __decorate([
     (0, common_1.Put)('/reset-password'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
-    __param(0, (0, getuser_decorators_1.GetUser)()),
-    __param(1, (0, common_1.Body)()),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [User_Schema_1.User, ChangePassword_dto_1.changePassword]),
+    __metadata("design:paramtypes", [ChangePassword_dto_1.changePassword]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "changePassword", null);
 __decorate([

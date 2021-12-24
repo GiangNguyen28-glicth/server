@@ -32,20 +32,19 @@ export class UserController{
     }
 
     @Post('/forgot-password')
-    async forgotpassword(@Body() {email}):Promise<void>{
+    async forgotpassword(@Body() {email}):Promise<any>{
         return this.userservice.forgotpassword(email);
     }
 
 
     @Post('/check-verification-code')
-    async checkVerificationCode(@GetUser() user:User,@Body() confirmPhonedto:ConfirmPhoneDTO) {
+    async checkVerificationCode(@Body() confirmPhonedto:ConfirmPhoneDTO) {
         return this.userservice.confirmPhoneNumber(confirmPhonedto.code);
     }
 
     @Put('/reset-password')
-    @UseGuards(AuthGuard())
-    async changePassword(@GetUser() user:User,@Body() changepassword:changePassword):Promise<IReponse<User>>{
-        return this.userservice.changPassword(user._id,changepassword);
+    async changePassword(@Body()changepassword:changePassword):Promise<IReponse<User>>{
+        return this.userservice.changPassword(changepassword);
     }
     @Put('/update-password')
     @UseGuards(AuthGuard())
