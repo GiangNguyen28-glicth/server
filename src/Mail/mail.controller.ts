@@ -1,6 +1,4 @@
-import { Controller, Get, Post, Query, Res, UseGuards } from "@nestjs/common";;
-import { GetUser } from "src/decorators/getuser.decorators";
-import { User } from "src/User/Schema/User.Schema";
+import { Controller, Get, Query, Res } from "@nestjs/common";;
 import { confirmEmail } from "./confirm.dto";
 import { MailService } from "./mail.service";
 import { Response } from "express";

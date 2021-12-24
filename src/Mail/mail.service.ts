@@ -10,29 +10,14 @@ import { MailResetPassword } from "src/emailtemplate/emailResetPassword";
 export class MailService{
     constructor(@Inject(forwardRef(() => UserService)) private userService: UserService,private jwtservice:JwtService){}
   
-    async sendEmail(email:string,option:string,code?:string,fullname?:string): Promise<void>{
-      let html;
-        if(option==MailAction.LG){
-          MailTemplateVerifyCode.code=code
-          MailTemplateVerifyCode.fullname=fullname;
-          html=MailTemplateVerifyCode.HTMLCode();
-        }
-        else if(option==MailAction.RS){
-          MailResetPassword.code=code;
-          MailResetPassword.fullname=fullname;
-          html=MailResetPassword.ResetPassword();
-        }
-        else{
-          const payload={email};
-          const token =await this.jwtservice.sign(payload, {
-          secret: process.env.JWT_VERIFICATION_TOKEN_SECRET,
-          expiresIn: `${process.env.JWT_VERIFICATION_TOKEN_EXPIRATION_TIME}s`
-          });
-          MailTemplateVerifyLink.link= `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
-          MailTemplateVerifyLink.fullname=fullname;
-          console.log(fullname);
-          html=MailTemplateVerifyLink.HTMLLink();
-        }
+    async sendEmail(email:string,option:string,code?:string,fullname?:string,message?:string): Promise<void>{
+        let html;
+        const payload={email};
+        const token =await this.jwtservice.sign(payload, {
+        secret: process.env.JWT_VERIFICATION_TOKEN_SECRET,
+        expiresIn: `${process.env.JWT_VERIFICATION_TOKEN_EXPIRATION_TIME}s`
+        });
+        html=this.configtemplate(option,code,fullname,message,token)
         const transporter =await nodemailer.createTransport({
           service:"gmail",
           auth: {
@@ -73,4 +58,26 @@ export class MailService{
         }
         await this.userService.markEmailAsConfirmed(email);
       }  
+
+      configtemplate(option:string,code?:string,fullname?:string,message?:string,token?:string):any{
+        let html;
+        if(option==MailAction.LG){
+          MailTemplateVerifyCode.code=code
+          MailTemplateVerifyCode.fullname=fullname;
+          html=MailTemplateVerifyCode.HTMLCode();
+        }
+        else if(option==MailAction.RS){
+          MailResetPassword.fullname=fullname;
+          html=MailResetPassword.ResetPassword();
+        }
+        else if(option==MailAction.MN){
+
+        }
+        else{
+          MailTemplateVerifyLink.link= `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
+          MailTemplateVerifyLink.fullname=fullname;
+          html=MailTemplateVerifyLink.HTMLLink();
+        }
+        return html;
+      }
 }

@@ -139,7 +139,7 @@ export class UserService{
       await this.otpmodel.findOneAndDelete({phoneNumber:user.phoneNumber});
       const otp=await this.otpmodel.create({userId:user._id,code:random,phoneNumber:user.phoneNumber});
       otp.save();
-      await this.mailservice.sendEmail(user.email,MailAction.RS,random,user.fullName);
+      await this.mailservice.sendEmail(user.email,MailAction.PW,random,user.fullName);
       return{
         code:200,success:true,message:"Kiểm tra Mail để lấy OTP"
       }

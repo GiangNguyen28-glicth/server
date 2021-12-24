@@ -5,8 +5,8 @@ export class HistoryAction{
     quantity?:number;
 }
 export enum Action {
-    OPENPASSBOOK = 'openpassbook',
-    NAPTIENPAYPAL = 'naptienpaypal',
-    WITHDRAWAL='withdrawal', // rut tien tu so tiet kiem
-    NAPTIENATM='naptienatm'
+    OPENPASSBOOK = 'Mở sổ tiết kiệm',
+    NAPTIENPAYPAL = 'Nạp tiền',
+    WITHDRAWAL='Rút tiền', // rut tien tu so tiet kiem
+    NAPTIENATM='Nạp tiền'
 }

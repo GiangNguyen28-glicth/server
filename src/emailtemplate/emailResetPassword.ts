@@ -1,5 +1,4 @@
 export class MailResetPassword{
-    static code="";
     static fullname="";
     static message="";
     public static ResetPassword():any{

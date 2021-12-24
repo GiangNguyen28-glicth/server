@@ -15,8 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MailController = void 0;
 const common_1 = require("@nestjs/common");
 ;
-const getuser_decorators_1 = require("../decorators/getuser.decorators");
-const User_Schema_1 = require("../User/Schema/User.Schema");
 const confirm_dto_1 = require("./confirm.dto");
 const mail_service_1 = require("./mail.service");
 let MailController = class MailController {

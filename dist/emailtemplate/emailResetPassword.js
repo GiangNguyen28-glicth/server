@@ -86,7 +86,6 @@ class MailResetPassword {
     }
 }
 exports.MailResetPassword = MailResetPassword;
-MailResetPassword.code = "";
 MailResetPassword.fullname = "";
 MailResetPassword.message = "";
 //# sourceMappingURL=emailResetPassword.js.map

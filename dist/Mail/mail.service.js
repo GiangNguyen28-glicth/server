@@ -26,29 +26,14 @@ let MailService = class MailService {
         this.userService = userService;
         this.jwtservice = jwtservice;
     }
-    async sendEmail(email, option, code, fullname) {
+    async sendEmail(email, option, code, fullname, message) {
         let html;
-        if (option == confirm_dto_1.MailAction.LG) {
-            emailVerifycode_1.MailTemplateVerifyCode.code = code;
-            emailVerifycode_1.MailTemplateVerifyCode.fullname = fullname;
-            html = emailVerifycode_1.MailTemplateVerifyCode.HTMLCode();
-        }
-        else if (option == confirm_dto_1.MailAction.RS) {
-            emailResetPassword_1.MailResetPassword.code = code;
-            emailResetPassword_1.MailResetPassword.fullname = fullname;
-            html = emailResetPassword_1.MailResetPassword.ResetPassword();
-        }
-        else {
-            const payload = { email };
-            const token = await this.jwtservice.sign(payload, {
-                secret: process.env.JWT_VERIFICATION_TOKEN_SECRET,
-                expiresIn: `${process.env.JWT_VERIFICATION_TOKEN_EXPIRATION_TIME}s`
-            });
-            emailVerifyLink_1.MailTemplateVerifyLink.link = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
-            emailVerifyLink_1.MailTemplateVerifyLink.fullname = fullname;
-            console.log(fullname);
-            html = emailVerifyLink_1.MailTemplateVerifyLink.HTMLLink();
-        }
+        const payload = { email };
+        const token = await this.jwtservice.sign(payload, {
+            secret: process.env.JWT_VERIFICATION_TOKEN_SECRET,
+            expiresIn: `${process.env.JWT_VERIFICATION_TOKEN_EXPIRATION_TIME}s`
+        });
+        html = this.configtemplate(option, code, fullname, message, token);
         const transporter = await nodemailer.createTransport({
             service: "gmail",
             auth: {
@@ -88,6 +73,26 @@ let MailService = class MailService {
             throw new common_1.BadRequestException('Email already confirmed');
         }
         await this.userService.markEmailAsConfirmed(email);
+    }
+    configtemplate(option, code, fullname, message, token) {
+        let html;
+        if (option == confirm_dto_1.MailAction.LG) {
+            emailVerifycode_1.MailTemplateVerifyCode.code = code;
+            emailVerifycode_1.MailTemplateVerifyCode.fullname = fullname;
+            html = emailVerifycode_1.MailTemplateVerifyCode.HTMLCode();
+        }
+        else if (option == confirm_dto_1.MailAction.RS) {
+            emailResetPassword_1.MailResetPassword.fullname = fullname;
+            html = emailResetPassword_1.MailResetPassword.ResetPassword();
+        }
+        else if (option == confirm_dto_1.MailAction.MN) {
+        }
+        else {
+            emailVerifyLink_1.MailTemplateVerifyLink.link = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
+            emailVerifyLink_1.MailTemplateVerifyLink.fullname = fullname;
+            html = emailVerifyLink_1.MailTemplateVerifyLink.HTMLLink();
+        }
+        return html;
     }
 };
 MailService = __decorate([

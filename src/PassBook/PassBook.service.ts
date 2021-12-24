@@ -25,7 +25,7 @@ export class PassBookService{
             const svdp=await this.passbookmodel.create(passbookdto);
             svdp.save();
             await this.userservice.updateSvd(svdp,user);
-            return{ code:200,success:true,message:"Succes",}
+            return{ code:200,success:true,message:"Thêm mới thành công !!",}
         }
         catch(err){
             return{code:500,success:false,message:err.message}

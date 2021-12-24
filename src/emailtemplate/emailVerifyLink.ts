@@ -56,7 +56,7 @@ export class MailTemplateVerifyLink{
             />
           </div>
           <p style="font-size: 14px; color: #555 !important">
-          Quý khách vừa tạo thành công thông tin đăng nhập tài khoản Timo. Đây là thông tin quan trọng dùng để truy cập vào tài khoản Ngân hàng, Quý khách vui lòng ghi nhớ thông tin này và bắt đầu hành trình quản lý tài chính thông minh hơn với ứng dụng Timo hoặc qua Internet Banking tại website my.timo.vn<br />
+          Quý khách vừa tạo thành công thông tin đăng nhập tài khoản Web ngân hàng của chúng tôi. Đây là thông tin quan trọng dùng để truy cập vào tài khoản Ngân hàng, Quý khách vui lòng ghi nhớ thông tin này và bắt đầu hành trình quản lý tài chính thông minh hơn với ứng dụng Timo hoặc qua Internet Banking tại website https://fe-next-ecommerce.vercel.app/home<br />
             Nhấn vào đường dẫn dưới đây để xác nhận mail
           </p>
           <div class="code" style="margin: 20px 0">
