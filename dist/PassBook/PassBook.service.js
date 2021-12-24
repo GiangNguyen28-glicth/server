@@ -24,11 +24,14 @@ const IReponse_1 = require("../Utils/IReponse");
 const PassBook_Schema_1 = require("./Schema/PassBook.Schema");
 const CyclesUpdateDTO_1 = require("./DTO/CyclesUpdateDTO");
 const user_dto_1 = require("../User/DTO/user.dto");
+const mail_service_1 = require("../Mail/mail.service");
+const confirm_dto_1 = require("../Mail/confirm.dto");
 let PassBookService = class PassBookService {
-    constructor(passbookmodel, userservice, optionservice) {
+    constructor(passbookmodel, userservice, optionservice, mailservice) {
         this.passbookmodel = passbookmodel;
         this.userservice = userservice;
         this.optionservice = optionservice;
+        this.mailservice = mailservice;
     }
     async saveSavingsdeposit(passbookdto, user) {
         try {
@@ -114,6 +117,8 @@ let PassBookService = class PassBookService {
         passbook.status = true;
         passbook.save();
         await this.userservice.updateMoney(HistoryAction_obj_1.Action.WITHDRAWAL, data.money, user);
+        const message = `Bạn vừa rút thành công sổ tiết kiệm với mã số là ${passbookid} số dư hiện tại ${user.currentMoney} VND`;
+        await this.mailservice.sendEmail(user.email, confirm_dto_1.MailAction.MN, "", user.fullName, message);
         return { passbook: passbook, songayle: data.songayle, money: Number(data.money.toFixed(0)) };
     }
     async getAllPassbook() {
@@ -155,7 +160,8 @@ PassBookService = __decorate([
     __param(0, (0, mongoose_1.InjectModel)(PassBook_Schema_1.PassBook.name)),
     __param(1, (0, common_1.Inject)((0, common_1.forwardRef)(() => User_service_1.UserService))),
     __metadata("design:paramtypes", [mongoose.Model, User_service_1.UserService,
-        Option_service_1.OptionService])
+        Option_service_1.OptionService,
+        mail_service_1.MailService])
 ], PassBookService);
 exports.PassBookService = PassBookService;
 //# sourceMappingURL=PassBook.service.js.map

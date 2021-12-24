@@ -73,9 +73,9 @@ export class MailService{
           html=EmailResetPassword.MailResetPassword()
         }
         else if(option==MailAction.MN){
-          html=MailNotification.MailNotification()
           MailNotification.message=message;
-          console.log(MailNotification.message)
+          MailNotification.fullname=fullname;
+          html=MailNotification.MailNotification()
         }
         else{
           MailTemplateVerifyLink.link= `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;

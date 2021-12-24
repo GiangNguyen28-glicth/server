@@ -88,9 +88,9 @@ let MailService = class MailService {
             html = emailResetPassword_1.EmailResetPassword.MailResetPassword();
         }
         else if (option == confirm_dto_1.MailAction.MN) {
-            html = emailNotification_1.MailNotification.MailNotification();
             emailNotification_1.MailNotification.message = message;
-            console.log(emailNotification_1.MailNotification.message);
+            emailNotification_1.MailNotification.fullname = fullname;
+            html = emailNotification_1.MailNotification.MailNotification();
         }
         else {
             emailVerifyLink_1.MailTemplateVerifyLink.link = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;

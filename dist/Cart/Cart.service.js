@@ -16,20 +16,21 @@ exports.CartService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const confirm_dto_1 = require("../Mail/confirm.dto");
+const mail_service_1 = require("../Mail/mail.service");
 const Option_service_1 = require("../Option/Option.service");
 const PassBook_dto_1 = require("../PassBook/DTO/PassBook.dto");
 const PassBook_service_1 = require("../PassBook/PassBook.service");
 const HistoryAction_obj_1 = require("../User/DTO/HistoryAction.obj");
 const User_Schema_1 = require("../User/Schema/User.Schema");
 const User_service_1 = require("../User/User.service");
-const common_service_1 = require("../Utils/common.service");
 const Cart_schema_1 = require("./Schema/Cart.schema");
 let CartService = class CartService {
-    constructor(cartmodel, passbookservice, userservice, commonservice, optionservice) {
+    constructor(cartmodel, passbookservice, userservice, mailservice, optionservice) {
         this.cartmodel = cartmodel;
         this.passbookservice = passbookservice;
         this.userservice = userservice;
-        this.commonservice = commonservice;
+        this.mailservice = mailservice;
         this.optionservice = optionservice;
     }
     async addtoCart(cartdto, user) {
@@ -215,6 +216,8 @@ let CartService = class CartService {
         await this.userservice.updateNewAction(historyaction, user);
         await this.userservice.updateMoney(HistoryAction_obj_1.Action.OPENPASSBOOK, cartExisting.deposits, user);
         const passbooks = await this.passbookservice.GetPassbookIsNotActive(user);
+        const message = `Bạn vừa mở thành công ${historyaction.quantity} sổ tiết kiệm với tổng số tiền là ${historyaction.quantity * historyaction.money} VND`;
+        await this.mailservice.sendEmail(user.email, confirm_dto_1.MailAction.MN, "", user.fullName, message);
         cartExisting.delete();
         return {
             currentMoney: (user.currentMoney - cartExisting.deposits).toFixed(0),
@@ -228,7 +231,7 @@ CartService = __decorate([
     __metadata("design:paramtypes", [mongoose_2.Model,
         PassBook_service_1.PassBookService,
         User_service_1.UserService,
-        common_service_1.CommonService,
+        mail_service_1.MailService,
         Option_service_1.OptionService])
 ], CartService);
 exports.CartService = CartService;

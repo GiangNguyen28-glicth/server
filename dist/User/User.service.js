@@ -233,7 +233,7 @@ let UserService = class UserService {
         historyaction.createAt = new Date();
         historyaction.money = checkout.vnd;
         await this.updateNewAction(historyaction, user);
-        const message = `Bạn vừa nạp tiền vào thành công vào tài khoản với số tiền là ${historyaction.money}`;
+        const message = `Bạn vừa nạp tiền vào thành công vào tài khoản với số tiền là ${historyaction.money} VND`;
         await this.mailservice.sendEmail(user.email, confirm_dto_1.MailAction.MN, "", user.fullName, message);
         return {
             code: 200, success: true, message: "Nạp tiền thành công"

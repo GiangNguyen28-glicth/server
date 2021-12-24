@@ -15,14 +15,17 @@ const PassBook_controller_1 = require("./PassBook.controller");
 const PassBook_Schema_1 = require("./Schema/PassBook.Schema");
 const PassBook_service_1 = require("./PassBook.service");
 const common_service_1 = require("../Utils/common.service");
+const mail_module_1 = require("../Mail/mail.module");
+const mail_service_1 = require("../Mail/mail.service");
+const jwt_1 = require("@nestjs/jwt");
 let PassBookModule = class PassBookModule {
 };
 PassBookModule = __decorate([
     (0, common_1.Module)({
-        imports: [mongoose_1.MongooseModule.forFeature([{ name: PassBook_Schema_1.PassBook.name, schema: PassBook_Schema_1.PassBookSchema }]),
+        imports: [mongoose_1.MongooseModule.forFeature([{ name: PassBook_Schema_1.PassBook.name, schema: PassBook_Schema_1.PassBookSchema }]), (0, common_1.forwardRef)(() => mail_module_1.MailModule), jwt_1.JwtModule.register({}),
             (0, common_1.forwardRef)(() => User_module_1.UserModule), (0, common_1.forwardRef)(() => Option_module_1.OptionModule), common_1.CacheModule.register()],
         controllers: [PassBook_controller_1.PassBookController],
-        providers: [PassBook_service_1.PassBookService, common_service_1.CommonService],
+        providers: [PassBook_service_1.PassBookService, common_service_1.CommonService, mail_service_1.MailService],
         exports: [PassBook_service_1.PassBookService]
     })
 ], PassBookModule);

@@ -10,6 +10,8 @@ import { PassBookDTO } from "./DTO/PassBook.dto";
 import { PassBook, PassBookDocument } from "./Schema/PassBook.Schema";
 import { CyclesUpdateDTO } from "./DTO/CyclesUpdateDTO";
 import { UserRole } from "src/User/DTO/user.dto";
+import { MailService } from "src/Mail/mail.service";
+import { MailAction } from "src/Mail/confirm.dto";
 @Injectable()
 export class PassBookService{
 
@@ -18,6 +20,7 @@ export class PassBookService{
     @Inject(forwardRef(()=>UserService))
     private userservice:UserService,
     private optionservice:OptionService,
+    private mailservice:MailService
     ){}
 
     async saveSavingsdeposit(passbookdto:PassBookDTO,user:User):Promise<IReponse<PassBook>>{
@@ -99,6 +102,8 @@ export class PassBookService{
         passbook.status=true;
         passbook.save();
         await this.userservice.updateMoney(Action.WITHDRAWAL,data.money,user);
+        const message=`Bạn vừa rút thành công sổ tiết kiệm với mã số là ${passbookid} số dư hiện tại ${user.currentMoney} VND`;
+        await this.mailservice.sendEmail(user.email,MailAction.MN,"",user.fullName,message)
         return {passbook:passbook,songayle:data.songayle,money:Number(data.money.toFixed(0))};
     }
 

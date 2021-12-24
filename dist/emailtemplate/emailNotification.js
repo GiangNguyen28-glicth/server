@@ -3,8 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MailNotification = void 0;
 class MailNotification {
     static MailNotification() {
-        console.log(this.message);
-        console.log(this.fullname);
         const htmlresetpassword = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
         <html xmlns="http://www.w3.org/1999/xhtml">
           <head>
@@ -54,7 +52,6 @@ class MailNotification {
                 <p style="font-size: 40px; color: #000; margin: 0">
                   <b>${this.fullname}</b>
                 </p>
-        
                 ${this.message}
                 <div class="image" style="width: 260px; margin: 50px auto">
                   <img

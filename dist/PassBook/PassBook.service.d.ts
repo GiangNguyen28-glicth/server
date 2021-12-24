@@ -5,11 +5,13 @@ import { UserService } from "src/User/User.service";
 import { IReponse } from "src/Utils/IReponse";
 import { PassBookDTO } from "./DTO/PassBook.dto";
 import { PassBook, PassBookDocument } from "./Schema/PassBook.Schema";
+import { MailService } from "src/Mail/mail.service";
 export declare class PassBookService {
     private passbookmodel;
     private userservice;
     private optionservice;
-    constructor(passbookmodel: mongoose.Model<PassBookDocument>, userservice: UserService, optionservice: OptionService);
+    private mailservice;
+    constructor(passbookmodel: mongoose.Model<PassBookDocument>, userservice: UserService, optionservice: OptionService, mailservice: MailService);
     saveSavingsdeposit(passbookdto: PassBookDTO, user: User): Promise<IReponse<PassBook>>;
     getTotalCycles(passbookid: any, user: User): Promise<any>;
     GetAllPassbookByUserId(user: User): Promise<any>;

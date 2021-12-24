@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { MailAction } from 'src/Mail/confirm.dto';
+import { MailService } from 'src/Mail/mail.service';
 import { OptionService } from 'src/Option/Option.service';
 import { PassBookDTO } from 'src/PassBook/DTO/PassBook.dto';
 import { PassBookService } from 'src/PassBook/PassBook.service';
 import { Action, HistoryAction } from 'src/User/DTO/HistoryAction.obj';
 import { User } from 'src/User/Schema/User.Schema';
 import { UserService } from 'src/User/User.service';
-import { CommonService } from 'src/Utils/common.service';
 import { CartDTO } from './DTO/Cart.dto';
 import { Cart, CartDocument } from './Schema/Cart.schema';
 @Injectable()
@@ -16,7 +17,7 @@ export class CartService {
     @InjectModel(Cart.name) private cartmodel: Model<CartDocument>,
     private passbookservice: PassBookService,
     private userservice: UserService,
-    private commonservice: CommonService,
+    private mailservice:MailService,
     private optionservice: OptionService,
   ) {}
 
@@ -226,6 +227,8 @@ export class CartService {
       user,
     );
     const passbooks = await this.passbookservice.GetPassbookIsNotActive(user);
+    const message=`Bạn vừa mở thành công ${historyaction.quantity} sổ tiết kiệm với tổng số tiền là ${historyaction.quantity*historyaction.money} VND`
+    await this.mailservice.sendEmail(user.email,MailAction.MN,"",user.fullName,message)
     cartExisting.delete();
     return {
       currentMoney: (user.currentMoney - cartExisting.deposits).toFixed(0),
