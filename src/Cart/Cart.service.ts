@@ -196,7 +196,7 @@ export class CartService {
     if (user.currentMoney < cartExisting.deposits) {
       const tienthieu = cartExisting.deposits - user.currentMoney;
       return {
-        code: 400,
+        code: 500,
         success: false,
         message: `Bạn cần thêm ${tienthieu} VND để mở sổ tiết kiệm`,
         money: tienthieu,
