@@ -120,7 +120,7 @@ export class CartService {
     const deposit = cartExisting.deposits / quantity;
     if (deposit < 1000000) {
       return {
-        code: 400,
+        code: 500,
         success: false,
         message:
           'Số tiền gửi tiết kiệm trên một gói phải lớn hơn 1.000.000 VND',
@@ -188,7 +188,7 @@ export class CartService {
     const cartExisting = await this.cartmodel.findOne({ userId: user._id });
     if (!cartExisting) {
       return {
-        code: 400,
+        code: 500,
         success: false,
         message: 'Giỏ hàng không tồn tại',
       };
