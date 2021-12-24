@@ -5,7 +5,8 @@ import * as nodemailer from 'nodemailer';
 import { MailAction } from "./confirm.dto";
 import { MailTemplateVerifyLink } from "../emailtemplate/emailVerifyLink";
 import { MailTemplateVerifyCode } from "src/emailtemplate/emailVerifycode";
-import { MailResetPassword } from "src/emailtemplate/emailResetPassword";
+import { EmailResetPassword } from "src/emailtemplate/emailResetPassword";
+import { MailNotification } from "src/emailtemplate/emailNotification";
 @Injectable()
 export class MailService{
     constructor(@Inject(forwardRef(() => UserService)) private userService: UserService,private jwtservice:JwtService){}
@@ -67,11 +68,14 @@ export class MailService{
           html=MailTemplateVerifyCode.HTMLCode();
         }
         else if(option==MailAction.RS){
-          MailResetPassword.fullname=fullname;
-          html=MailResetPassword.ResetPassword();
+          EmailResetPassword.fullname=fullname;
+          EmailResetPassword.code=code;
+          html=EmailResetPassword.MailResetPassword()
         }
         else if(option==MailAction.MN){
-
+          html=MailNotification.MailNotification()
+          MailNotification.message=message;
+          console.log(MailNotification.message)
         }
         else{
           MailTemplateVerifyLink.link= `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;

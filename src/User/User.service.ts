@@ -139,7 +139,7 @@ export class UserService{
       await this.otpmodel.findOneAndDelete({phoneNumber:user.phoneNumber});
       const otp=await this.otpmodel.create({userId:user._id,code:random,phoneNumber:user.phoneNumber});
       otp.save();
-      await this.mailservice.sendEmail(user.email,MailAction.PW,random,user.fullName);
+      await this.mailservice.sendEmail(user.email,MailAction.RS,random,user.fullName);
       return{
         code:200,success:true,message:"Kiểm tra Mail để lấy OTP"
       }
@@ -241,8 +241,10 @@ export class UserService{
       historyaction.createAt=new Date();
       historyaction.money=checkout.vnd;
       await this.updateNewAction(historyaction,user);
+      const message=`Bạn vừa nạp tiền vào thành công vào tài khoản với số tiền là ${historyaction.money}`;
+      await this.mailservice.sendEmail(user.email,MailAction.MN,"",user.fullName,message)
       return{
-        code:200,success:true,message:"Nap tien thanh cong"
+        code:200,success:true,message:"Nạp tiền thành công"
       }
     }
 

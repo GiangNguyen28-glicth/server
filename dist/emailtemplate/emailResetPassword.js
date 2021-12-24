@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MailResetPassword = void 0;
-class MailResetPassword {
-    static ResetPassword() {
-        const htmlresetpassword = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+exports.EmailResetPassword = void 0;
+class EmailResetPassword {
+    static MailResetPassword() {
+        let html = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
         <html xmlns="http://www.w3.org/1999/xhtml">
           <head>
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -52,19 +52,23 @@ class MailResetPassword {
                 <p style="font-size: 40px; color: #000; margin: 0">
                   <b>${this.fullname}</b>
                 </p>
-        
-                ${this.message}
                 <div class="image" style="width: 260px; margin: 50px auto">
                   <img
-                    src="https://media1.thehungryjpeg.com/thumbs2/ori_3813613_s5wybphhhf8mr9o3zl8ry3bqnnxu6vatudpot9il_businesspeople-add-money-to-piggy-bank-vector.jpg"
+                    src="https://f002.backblazeb2.com/file/summonshop/resetpassword.png"
                     style="display: block; height: 100%; width: 100%; object-fit: cover"
                   />
                 </div>
                 <p style="font-size: 14px; color: #555 !important">
                   ${this.fullname} thân mến <br />
-                  ${this.message}
+                  Vui lòng nhập mã OTP dưới đây để thay đổi mật khẩu mới
                 </p>
-        
+                <div class="code" style="margin: 20px 0">
+                  <span style="font-size: 40px; font-weight: 600">${this.code}</span>
+                </div>
+                <p style="font-size: 10px; color: #555555">
+                  Mã xác thực này sẽ hết hiệu lực trong 5 phút. Để đảm bảo an toàn, vui
+                  lòng không chia sẻ mã này cho bất cứ ai.
+                </p>
                 <p style="font-size: 10px; color: #555555">
                   Nếu bạn có bất cứ câu hỏi nào hay thắc mắc nào xin hãy liên hệ tới
                   Email shopme293@gmail.com.<br />
@@ -82,10 +86,10 @@ class MailResetPassword {
             </div>
           </body>
         </html>`;
-        return htmlresetpassword;
+        return html;
     }
 }
-exports.MailResetPassword = MailResetPassword;
-MailResetPassword.fullname = "";
-MailResetPassword.message = "";
+exports.EmailResetPassword = EmailResetPassword;
+EmailResetPassword.fullname = "";
+EmailResetPassword.code = "";
 //# sourceMappingURL=emailResetPassword.js.map

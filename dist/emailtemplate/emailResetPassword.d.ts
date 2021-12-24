@@ -1,5 +1,5 @@
-export declare class MailResetPassword {
+export declare class EmailResetPassword {
     static fullname: string;
-    static message: string;
-    static ResetPassword(): any;
+    static code: string;
+    static MailResetPassword(): any;
 }

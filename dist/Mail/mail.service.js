@@ -21,6 +21,7 @@ const confirm_dto_1 = require("./confirm.dto");
 const emailVerifyLink_1 = require("../emailtemplate/emailVerifyLink");
 const emailVerifycode_1 = require("../emailtemplate/emailVerifycode");
 const emailResetPassword_1 = require("../emailtemplate/emailResetPassword");
+const emailNotification_1 = require("../emailtemplate/emailNotification");
 let MailService = class MailService {
     constructor(userService, jwtservice) {
         this.userService = userService;
@@ -82,10 +83,14 @@ let MailService = class MailService {
             html = emailVerifycode_1.MailTemplateVerifyCode.HTMLCode();
         }
         else if (option == confirm_dto_1.MailAction.RS) {
-            emailResetPassword_1.MailResetPassword.fullname = fullname;
-            html = emailResetPassword_1.MailResetPassword.ResetPassword();
+            emailResetPassword_1.EmailResetPassword.fullname = fullname;
+            emailResetPassword_1.EmailResetPassword.code = code;
+            html = emailResetPassword_1.EmailResetPassword.MailResetPassword();
         }
         else if (option == confirm_dto_1.MailAction.MN) {
+            html = emailNotification_1.MailNotification.MailNotification();
+            emailNotification_1.MailNotification.message = message;
+            console.log(emailNotification_1.MailNotification.message);
         }
         else {
             emailVerifyLink_1.MailTemplateVerifyLink.link = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
