@@ -66,7 +66,7 @@ let PassBookService = class PassBookService {
                 datetemp = diffDays(t.endDate, t.startDate);
                 datetemp = datetemp - 1;
             }
-            return { passbook: svd, cycles: svd.cyclesupdate, songayle: datetemp, money: t.money };
+            return { passbook: svd, cycles: svd.cyclesupdate, songayle: datetemp, money: t.currentMoney };
         }
         const startDate = new Date(`${svd.createAt}`);
         let result = [];
