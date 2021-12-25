@@ -21,4 +21,5 @@ export declare class PassBookService {
     getnewPassBook(): Promise<any>;
     getpassbookbyUser(userid: any): Promise<any>;
     getInformationPassbook(passbookid: any, user: any): Promise<any>;
+    getenddate(array: any): any;
 }

@@ -49,6 +49,10 @@ export class PassBookService {
         message: 'Sổ tiết kiệm không hợp lệ',
       };
     }
+    if(svd.status){
+      const t=this.getenddate(svd.cyclesupdate)
+      return {passbook:svd,cycles:svd.cyclesupdate,money:t.money};
+    }
     const startDate = new Date(`${svd.createAt}`);
     let result = [];
     if (
@@ -95,6 +99,7 @@ export class PassBookService {
     );
     result[result.length - 1].endDate = endDate;
     result[result.length - 1].value = nooption;
+    result[result.length-1].money=money;
     return {
       passbook: svd,
       cycles: result,
@@ -134,7 +139,7 @@ export class PassBookService {
     passbook.status = true;
     passbook.save();
     await this.userservice.updateMoney(Action.WITHDRAWAL, data.money, user);
-    const message = `Bạn vừa rút thành công sổ tiết kiệm với mã số là ${passbookid} số dư hiện tại ${user.currentMoney} VND`;
+    const message = `Bạn vừa rút thành công sổ tiết kiệm với mã số ${passbookid} số dư hiện tại ${user.currentMoney+data.money} VND`;
     await this.mailservice.sendEmail(
       user.email,
       MailAction.MN,
@@ -202,4 +207,12 @@ export class PassBookService {
       totalmoney: Number(totalProfit.toFixed(0)),
     };
   }
+
+  getenddate(array):any{
+    for(let i=0;;i++){
+      if(array[i]==undefined){
+          return array[i-1]
+      }
+    }
+  }  
 }

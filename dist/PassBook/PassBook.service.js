@@ -55,6 +55,10 @@ let PassBookService = class PassBookService {
                 message: 'Sổ tiết kiệm không hợp lệ',
             };
         }
+        if (svd.status) {
+            const t = this.getenddate(svd.cyclesupdate);
+            return { passbook: svd, cycles: svd.cyclesupdate, money: t.money };
+        }
         const startDate = new Date(`${svd.createAt}`);
         let result = [];
         if (startDate.getFullYear() == endDate.getFullYear() &&
@@ -96,6 +100,7 @@ let PassBookService = class PassBookService {
         money = Number((money + (money * (nooption / 100) * date) / 360).toFixed(0));
         result[result.length - 1].endDate = endDate;
         result[result.length - 1].value = nooption;
+        result[result.length - 1].money = money;
         return {
             passbook: svd,
             cycles: result,
@@ -132,7 +137,7 @@ let PassBookService = class PassBookService {
         passbook.status = true;
         passbook.save();
         await this.userservice.updateMoney(HistoryAction_obj_1.Action.WITHDRAWAL, data.money, user);
-        const message = `Bạn vừa rút thành công sổ tiết kiệm với mã số là ${passbookid} số dư hiện tại ${user.currentMoney} VND`;
+        const message = `Bạn vừa rút thành công sổ tiết kiệm với mã số ${passbookid} số dư hiện tại ${user.currentMoney + data.money} VND`;
         await this.mailservice.sendEmail(user.email, confirm_dto_1.MailAction.MN, '', user.fullName, message);
         return {
             passbook: passbook,
@@ -184,6 +189,13 @@ let PassBookService = class PassBookService {
             profit: Number(profit.toFixed(0)),
             totalmoney: Number(totalProfit.toFixed(0)),
         };
+    }
+    getenddate(array) {
+        for (let i = 0;; i++) {
+            if (array[i] == undefined) {
+                return array[i - 1];
+            }
+        }
     }
 };
 PassBookService = __decorate([
