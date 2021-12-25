@@ -41,11 +41,11 @@ export class UserService {
     const {firstName,lastName,password,email,CMND,address,passwordConfirm} = userdto;
     if(CMND.length==9 || CMND.length==12){
       if(!this.checknumber(CMND)){
-        return { code: 500, success: false, message: 'CMND không hợp lệ , bao gồm là số' };
+        return { code: 500, success: false, message: 'CMND không hợp lệ , CMND là những chữ số' };
       }
     }
     else{
-      return { code: 500, success: false, message: 'CMND không hợp lệ CMND chỉ gồm 9 hoặc 12 số'};
+      return { code: 500, success: false, message: 'CMND không hợp lệ CMND chỉ gồm 9 hoặc 12 chữ số'};
     }
     if(!this.checkPhone(userdto.phoneNumber)){
       return { code: 500, success: false, message: 'Số điện thoại không hợp lệ , số điện thoại gồm 10 chữ số' };
