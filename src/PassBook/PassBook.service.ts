@@ -113,7 +113,7 @@ export class PassBookService {
   }
 
   async GetAllPassbookByUserId(user: User): Promise<any> {
-    const passbook = await this.passbookmodel.find({ userId: user._id });
+    const passbook = await this.passbookmodel.find({ userId: user._id }).sort({_id:-1});
     return passbook;
   }
 

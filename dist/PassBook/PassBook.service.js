@@ -120,7 +120,7 @@ let PassBookService = class PassBookService {
         };
     }
     async GetAllPassbookByUserId(user) {
-        const passbook = await this.passbookmodel.find({ userId: user._id });
+        const passbook = await this.passbookmodel.find({ userId: user._id }).sort({ _id: -1 });
         return passbook;
     }
     async GetPassbookIsNotActive(user) {
