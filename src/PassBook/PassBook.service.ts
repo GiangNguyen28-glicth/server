@@ -101,7 +101,7 @@ export class PassBookService {
       );
       result[result.length - 1].endDate = endDate;
       result[result.length - 1].value = nooption;
-      result[result.length-1].money=money;
+      result[result.length-1].currentMoney=money;
     }
     else{ result.pop() }
     return {

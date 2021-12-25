@@ -107,7 +107,7 @@ let PassBookService = class PassBookService {
             money = Number((money + (money * (nooption / 100) * date) / 360).toFixed(0));
             result[result.length - 1].endDate = endDate;
             result[result.length - 1].value = nooption;
-            result[result.length - 1].money = money;
+            result[result.length - 1].currentMoney = money;
         }
         else {
             result.pop();
