@@ -24,7 +24,7 @@ let MailController = class MailController {
     async confirm(token, response) {
         const email = await this.mailservice.decodeConfirmationToken(token.token);
         await this.mailservice.confirmEmail(email);
-        response.redirect("https://fe-next-ecommerce.vercel.app");
+        response.redirect("https://fe-next-ecommerce-nine.vercel.app");
     }
 };
 __decorate([

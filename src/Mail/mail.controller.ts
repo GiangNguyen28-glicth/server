@@ -9,6 +9,6 @@ export class MailController{
     async confirm(@Query() token:confirmEmail,@Res() response:Response) {
       const email = await this.mailservice.decodeConfirmationToken(token.token);
       await this.mailservice.confirmEmail(email);
-      response.redirect("https://fe-next-ecommerce.vercel.app");
+      response.redirect("https://fe-next-ecommerce-nine.vercel.app");
     }
 }
