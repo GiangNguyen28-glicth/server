@@ -14,7 +14,7 @@ const class_validator_1 = require("class-validator");
 class CartDTO {
 }
 __decorate([
-    (0, class_validator_1.Min)(100),
+    (0, class_validator_1.Min)(1000),
     __metadata("design:type", Number)
 ], CartDTO.prototype, "deposits", void 0);
 exports.CartDTO = CartDTO;

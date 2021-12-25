@@ -44,8 +44,8 @@ export class OptionController{
         return this.optionService.getCurrentValueOption();
     }
 
-    @hasRoles(UserRole.ADMIN)
-    @UseGuards(AuthGuard(),RolesGuard)
+    // @hasRoles(UserRole.ADMIN)
+    // @UseGuards(AuthGuard(),RolesGuard)
     @Get('/getoptionbydatetime/:datetime')
     async getValueByDateTime(@Param('datetime') datetime):Promise<any>{
         return this.optionService.GetValueByDateTime(datetime);

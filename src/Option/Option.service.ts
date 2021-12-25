@@ -57,8 +57,8 @@ export class OptionService {
 
   async GetValueByDateTime(time: string): Promise<any> {
     const date = new Date(time);
-    date.setDate(date.getDate() + 1);
-    console.log(date);
+    date.setDate(date.getDate()+1)
+    date.setMilliseconds(date.getMilliseconds()-1)
     if (!date.getMonth()) {
       return {
         code: 500,
