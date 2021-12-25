@@ -47,7 +47,6 @@ export class OptionService {
     if(result.history[result.history.length - 1].createAt < date&&date<result.createAt){
       return result.history[result.history.length - 1].value;
     }
-    
     for (let i = 0; i < result.history.length - 1; i++) {
       if (result.history[i].createAt < date &&result.history[i + 1].createAt > date) {
         return result.history[i].value;

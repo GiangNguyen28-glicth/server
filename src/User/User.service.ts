@@ -1,6 +1,4 @@
 import {
-  BadRequestException,
-  ForbiddenException,
   forwardRef,
   Inject,
   Injectable,
@@ -40,20 +38,21 @@ export class UserService {
   phone;
   async register(userdto: UserDTO): Promise<IReponse<User>> {
     const role = UserRole.USER;
-    let phoneNumber =
-      '+84' + userdto.phoneNumber.slice(1, userdto.phoneNumber.length);
-    const {
-      firstName,
-      lastName,
-      password,
-      email,
-      CMND,
-      address,
-      passwordConfirm,
-    } = userdto;
+    const {firstName,lastName,password,email,CMND,address,passwordConfirm} = userdto;
+    if(CMND.length==9 || CMND.length==12){
+      if(!this.checknumber(CMND)){
+        return { code: 500, success: false, message: 'CMND không hợp lệ , bao gồm là số' };
+      }
+    }
+    else{
+      return { code: 500, success: false, message: 'CMND không hợp lệ CMND chỉ gồm 9 hoặc 12 số'};
+    }
+    if(!this.checkPhone(userdto.phoneNumber)){
+      return { code: 500, success: false, message: 'Số điện thoại không hợp lệ , số điện thoại gồm 10 chữ số' };
+    }
     userdto.role = role;
     if (passwordConfirm != password) {
-      return { code: 500, success: false, message: 'Password not match' };
+      return { code: 500, success: false, message: 'Mật khẩu không khớp' };
     }
     const userExistingEmail = await this.usermodel.findOne({ email: email });
     if (userExistingEmail) {
@@ -63,6 +62,8 @@ export class UserService {
         return { code: 500, success: false, message: 'Email đã tồn tại' };
       }
     }
+    let phoneNumber =
+    '+84' + userdto.phoneNumber.slice(1, userdto.phoneNumber.length);
     const userExistingPhone = await this.usermodel.findOne({
       phoneNumber: phoneNumber,
     });
@@ -471,4 +472,27 @@ export class UserService {
     };
   }
 
+  checknumber(str:string):boolean{
+    let check;
+    for(let i=0;i<str.length;i++){
+      if(str[i]>='0'&&str[i]<='9'){
+        check=true;
+      }
+      else{
+        check=false;
+        break;
+      }
+    }
+    return check;
+  }
+  
+  checkPhone(str:string):boolean{
+    if(str[0]!='0'||str.length!=10){
+      return false;
+    }
+    if(!this.checknumber(str)){
+      return false;
+    }
+    return true;
+  }
 }

@@ -58,4 +58,6 @@ export declare class UserService {
         password: any;
     }): Promise<any>;
     setRole(isAdmin: boolean, userId: string): Promise<any>;
+    checknumber(str: string): boolean;
+    checkPhone(str: string): boolean;
 }

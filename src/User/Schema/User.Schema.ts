@@ -23,7 +23,7 @@ export class User{
     @Prop()
     password?:string;
 
-    @Prop({unique:true})
+    @Prop()
     phoneNumber:string;
 
     @Prop({unique:true})
@@ -35,7 +35,7 @@ export class User{
     @Prop({default:false})
     isEmailConfirmed?:boolean;
 
-    @Prop()
+    @Prop({unique:true})
     CMND:string;
 
     @Prop({type:Object})
