@@ -38,7 +38,7 @@ let PassBookService = class PassBookService {
             const svdp = await this.passbookmodel.create(passbookdto);
             svdp.save();
             await this.userservice.updateSvd(svdp, user);
-            return { code: 200, success: true, message: "Thêm mới thành công !!", };
+            return { code: 200, success: true, message: 'Thêm mới thành công !!' };
         }
         catch (err) {
             return { code: 500, success: false, message: err.message };
@@ -49,20 +49,28 @@ let PassBookService = class PassBookService {
         let value;
         const svd = await this.passbookmodel.findOne({ _id: passbookid });
         if (!svd) {
-            return { code: 500, success: false, message: "Sổ tiết kiệm không hợp lệ" };
+            return {
+                code: 500,
+                success: false,
+                message: 'Sổ tiết kiệm không hợp lệ',
+            };
         }
         const startDate = new Date(`${svd.createAt}`);
         let result = [];
-        if (startDate.getFullYear() == endDate.getFullYear() && startDate.getMonth() == endDate.getMonth()
-            && startDate.getDate() == endDate.getDate()) {
+        if (startDate.getFullYear() == endDate.getFullYear() &&
+            startDate.getMonth() == endDate.getMonth() &&
+            startDate.getDate() == endDate.getDate()) {
             const startcycle = new CyclesUpdateDTO_1.CyclesUpdateDTO();
             startcycle.startDate = startDate;
             startcycle.endDate = endDate;
             const nooption = await this.optionservice.GetValueOption(endDate, 0);
             startcycle.value = nooption;
             result.push(startcycle);
-            return { passbook: svd, cycles: result, songayle: 0,
-                money: svd.deposits
+            return {
+                passbook: svd,
+                cycles: result,
+                songayle: 0,
+                money: svd.deposits,
             };
         }
         while (startDate <= endDate) {
@@ -77,7 +85,7 @@ let PassBookService = class PassBookService {
         }
         let money = svd.deposits;
         for (let i = 0; i < result.length - 1; i++) {
-            money = ((money * (result[i].value / 100)) * svd.option / 12) + money;
+            money = (money * (result[i].value / 100) * svd.option) / 12 + money;
             result[i].currentMoney = Number(money.toFixed(0));
         }
         const diffDays = (date, otherDate) => Math.ceil(Math.abs(date - otherDate) / (1000 * 60 * 60 * 24));
@@ -85,11 +93,14 @@ let PassBookService = class PassBookService {
         console.log(date);
         console.log(endDate);
         const nooption = await this.optionservice.GetValueOption(endDate, 0);
-        money = Number((money + money * (nooption / 100) * (date) / 360).toFixed(0));
+        money = Number((money + (money * (nooption / 100) * date) / 360).toFixed(0));
         result[result.length - 1].endDate = endDate;
         result[result.length - 1].value = nooption;
-        return { passbook: svd, cycles: result, songayle: date,
-            money: money
+        return {
+            passbook: svd,
+            cycles: result,
+            songayle: date,
+            money: money,
         };
     }
     async GetAllPassbookByUserId(user) {
@@ -97,39 +108,53 @@ let PassBookService = class PassBookService {
         return passbook;
     }
     async GetPassbookIsNotActive(user) {
-        const passbook = await this.passbookmodel.find({ userId: user._id, status: false });
+        const passbook = await this.passbookmodel.find({
+            userId: user._id,
+            status: false,
+        });
         return passbook;
     }
     async withdrawMoneyPassbook(passbookid, user) {
-        const passbook = await this.passbookmodel.findOne({ _id: passbookid, userId: user._id });
+        const passbook = await this.passbookmodel.findOne({
+            _id: passbookid,
+            userId: user._id,
+        });
         if (!passbook) {
-            console.log("Passbook not found");
-            return { success: false, message: "Không Tìm Thấy Sổ Tiết Kiệm" };
+            console.log('Passbook not found');
+            return { success: false, message: 'Không Tìm Thấy Sổ Tiết Kiệm' };
         }
-        ;
         if (passbook.status) {
-            console.log("Passbook is Active");
-            return { success: false, message: "Sổ tiết kiệm đã được rút" };
+            console.log('Passbook is Active');
+            return { success: false, message: 'Sổ tiết kiệm đã được rút' };
         }
-        ;
         const data = await this.getTotalCycles(passbookid, user);
         passbook.cyclesupdate = data.cycles;
         passbook.status = true;
         passbook.save();
         await this.userservice.updateMoney(HistoryAction_obj_1.Action.WITHDRAWAL, data.money, user);
         const message = `Bạn vừa rút thành công sổ tiết kiệm với mã số là ${passbookid} số dư hiện tại ${user.currentMoney} VND`;
-        await this.mailservice.sendEmail(user.email, confirm_dto_1.MailAction.MN, "", user.fullName, message);
-        return { passbook: passbook, songayle: data.songayle, money: Number(data.money.toFixed(0)) };
+        await this.mailservice.sendEmail(user.email, confirm_dto_1.MailAction.MN, '', user.fullName, message);
+        return {
+            passbook: passbook,
+            songayle: data.songayle,
+            money: Number(data.money.toFixed(0)),
+        };
     }
     async getAllPassbook() {
-        return await this.passbookmodel.find({ status: false }).sort({ _id: -1 });
+        return await this.passbookmodel.find().sort({ createAt: -1 });
     }
     async getnewPassBook() {
-        const newpassbook = await this.passbookmodel.find({ status: false }).sort({ _id: -1 }).limit(10).lean();
+        const newpassbook = await this.passbookmodel
+            .find({ status: false })
+            .sort({ createAt: -1 })
+            .limit(10)
+            .lean();
         return { newpassbook: newpassbook };
     }
     async getpassbookbyUser(userid) {
-        const passbook = await this.passbookmodel.find({ userId: userid }).sort({ _id: -1 });
+        const passbook = await this.passbookmodel
+            .find({ userId: userid })
+            .sort({ _id: -1 });
         return passbook;
     }
     async getInformationPassbook(passbookid, user) {
@@ -138,10 +163,16 @@ let PassBookService = class PassBookService {
             passbook = await this.passbookmodel.findOne({ _id: passbookid });
         }
         else {
-            passbook = await this.passbookmodel.findOne({ _id: passbookid, userId: user._id });
+            passbook = await this.passbookmodel.findOne({
+                _id: passbookid,
+                userId: user._id,
+            });
         }
         if (!passbook) {
-            return { success: false, message: "Không tìm thấy sổ tiết kiệm tương ứng" };
+            return {
+                success: false,
+                message: 'Không tìm thấy sổ tiết kiệm tương ứng',
+            };
         }
         const valueOfoption = await this.optionservice.GetValueOption(new Date(), passbook.option);
         let totalProfit = Number(passbook.deposits * (valueOfoption / 100) * (passbook.option / 12)) + passbook.deposits;
@@ -151,7 +182,7 @@ let PassBookService = class PassBookService {
             passbook: passbook,
             value: value.value,
             profit: Number(profit.toFixed(0)),
-            totalmoney: Number(totalProfit.toFixed(0))
+            totalmoney: Number(totalProfit.toFixed(0)),
         };
     }
 };

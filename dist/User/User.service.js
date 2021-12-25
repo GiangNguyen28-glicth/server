@@ -42,11 +42,11 @@ let UserService = class UserService {
     }
     async register(userdto) {
         const role = user_dto_1.UserRole.USER;
-        let phoneNumber = "+84" + userdto.phoneNumber.slice(1, userdto.phoneNumber.length);
-        const { firstName, lastName, password, email, CMND, address, passwordConfirm } = userdto;
+        let phoneNumber = '+84' + userdto.phoneNumber.slice(1, userdto.phoneNumber.length);
+        const { firstName, lastName, password, email, CMND, address, passwordConfirm, } = userdto;
         userdto.role = role;
         if (passwordConfirm != password) {
-            return { code: 500, success: false, message: "Password not match" };
+            return { code: 500, success: false, message: 'Password not match' };
         }
         const userExistingEmail = await this.usermodel.findOne({ email: email });
         if (userExistingEmail) {
@@ -54,29 +54,54 @@ let UserService = class UserService {
                 await this.usermodel.findOneAndDelete({ email: email });
             }
             else {
-                return { code: 500, success: false, message: "Email đã tồn tại" };
+                return { code: 500, success: false, message: 'Email đã tồn tại' };
             }
         }
-        const userExistingPhone = await this.usermodel.findOne({ phoneNumber: phoneNumber });
+        const userExistingPhone = await this.usermodel.findOne({
+            phoneNumber: phoneNumber,
+        });
         if (userExistingPhone) {
-            return { code: 500, success: false, message: "Số điện thoại đã tồn tại" };
+            return { code: 500, success: false, message: 'Số điện thoại đã tồn tại' };
         }
         try {
             const date = new Date();
             const salt = await bcrypt.genSalt();
             const hashedpassword = await bcrypt.hash(password, salt);
-            const user = this.usermodel.create({ firstName, lastName, password: hashedpassword, email, phoneNumber, CMND, address, role, isChangePassword: date });
-            await this.mailservice.sendEmail(email, confirm_dto_1.MailAction.PW, "", firstName + lastName);
+            const user = this.usermodel.create({
+                firstName,
+                lastName,
+                password: hashedpassword,
+                email,
+                phoneNumber,
+                CMND,
+                address,
+                role,
+                isChangePassword: date,
+            });
+            await this.mailservice.sendEmail(email, confirm_dto_1.MailAction.PW, '', firstName + lastName);
             (await user).save();
             return {
-                code: 200, success: true, message: "Đăng ký tài khoản thành công",
+                code: 200,
+                success: true,
+                message: 'Đăng ký tài khoản thành công',
                 objectreponse: {
-                    _id: (await user)._id, phoneNumber, email, CMND, firstName, lastName, address, role
-                }
+                    _id: (await user)._id,
+                    phoneNumber,
+                    email,
+                    CMND,
+                    firstName,
+                    lastName,
+                    address,
+                    role,
+                },
             };
         }
         catch (err) {
-            return { code: 500, success: false, message: `Failed Because ${err.message}` };
+            return {
+                code: 500,
+                success: false,
+                message: `Failed Because ${err.message}`,
+            };
         }
     }
     async deleteUser(id) {
@@ -85,21 +110,24 @@ let UserService = class UserService {
         try {
             const userExisting = await this.usermodel.findOne({ _id: id });
             if (!userExisting) {
-                return { code: 200, success: false, message: "User not existing" };
+                return { code: 200, success: false, message: 'User not existing' };
             }
         }
         catch (err) {
             session.abortTransaction();
-            return { code: 200, success: false, message: err.message
-            };
+            return { code: 200, success: false, message: err.message };
         }
     }
     async updateProfile(updateprofile, id) {
         const userExisting = await this.usermodel.findOneAndUpdate({ _id: id }, updateprofile);
         if (!userExisting) {
-            return { code: 200, success: false, message: "User không tồn tại" };
+            return { code: 200, success: false, message: 'User không tồn tại' };
         }
-        return { code: 200, success: true, message: "Cập nhật thông tin User thành công !" };
+        return {
+            code: 200,
+            success: true,
+            message: 'Cập nhật thông tin User thành công !',
+        };
     }
     async getByEmail(email) {
         return await this.usermodel.findOne({ email: email });
@@ -115,15 +143,23 @@ let UserService = class UserService {
     }
     async Login({ email, password }) {
         const user = await this.usermodel.findOne({ email: email });
-        if (user && (await bcrypt.compare(password, user.password)) && user.isEmailConfirmed) {
+        if (user &&
+            (await bcrypt.compare(password, user.password)) &&
+            user.isEmailConfirmed) {
             this.phone = user.phoneNumber;
             const code = await this.randomotp();
             await this.mailservice.sendEmail(email, confirm_dto_1.MailAction.LG, code, user.fullName);
             await this.otpmodel.findOneAndDelete({ phoneNumber: user.phoneNumber });
-            const otp = await this.otpmodel.create({ userId: user._id, phoneNumber: user.phoneNumber, code: code });
+            const otp = await this.otpmodel.create({
+                userId: user._id,
+                phoneNumber: user.phoneNumber,
+                code: code,
+            });
             otp.save();
             return {
-                code: 200, success: true, message: "Check otp"
+                code: 200,
+                success: true,
+                message: 'Check otp',
             };
         }
         else {
@@ -134,16 +170,24 @@ let UserService = class UserService {
         const user = await this.usermodel.findOne({ email: email });
         if (!user) {
             return {
-                code: 500, success: false, message: "Email không tồn tại !"
+                code: 500,
+                success: false,
+                message: 'Email không tồn tại !',
             };
         }
         const random = await this.randomotp();
         await this.otpmodel.findOneAndDelete({ phoneNumber: user.phoneNumber });
-        const otp = await this.otpmodel.create({ userId: user._id, code: random, phoneNumber: user.phoneNumber });
+        const otp = await this.otpmodel.create({
+            userId: user._id,
+            code: random,
+            phoneNumber: user.phoneNumber,
+        });
         otp.save();
         await this.mailservice.sendEmail(user.email, confirm_dto_1.MailAction.RS, random, user.fullName);
         return {
-            code: 200, success: true, message: "Kiểm tra Mail để lấy OTP"
+            code: 200,
+            success: true,
+            message: 'Kiểm tra Mail để lấy OTP',
         };
     }
     async confirmPhoneNumber(verificationCode) {
@@ -162,7 +206,7 @@ let UserService = class UserService {
     }
     async markPhoneNumberAsConfirmed(userId) {
         return this.otpmodel.findOneAndUpdate({ userId: userId }, {
-            isPhoneNumberConfirmed: true
+            isPhoneNumberConfirmed: true,
         });
     }
     async changPassword(changepassword) {
@@ -170,23 +214,30 @@ let UserService = class UserService {
         const { code, password, passwordConfirm } = changepassword;
         const otpexisting = await this.otpmodel.findOne({ code: code });
         if (!otpexisting) {
-            return { code: 500, success: false, message: "Mã OTP đã hết hạn hoặc không tồn tại" };
+            return {
+                code: 500,
+                success: false,
+                message: 'Mã OTP đã hết hạn hoặc không tồn tại',
+            };
         }
         if (otpexisting.code != code) {
-            return { code: 500, success: false, message: "Mã OTP không đúng" };
+            return { code: 500, success: false, message: 'Mã OTP không đúng' };
         }
         const user = await this.usermodel.findOne({ _id: otpexisting.userId });
         if (!user) {
-            return { code: 500, success: false, message: 'User không tồn tại', };
+            return { code: 500, success: false, message: 'User không tồn tại' };
         }
         if (password != passwordConfirm) {
-            return { code: 500, success: false, message: "Mật khâu không khớp !!"
-            };
+            return { code: 500, success: false, message: 'Mật khâu không khớp !!' };
         }
         const salt = await bcrypt.genSalt();
         const hashedpassword = await bcrypt.hash(password, salt);
         await this.usermodel.findOneAndUpdate({ _id: otpexisting.userId }, { password: hashedpassword, isChangePassword: date });
-        return { code: 200, success: true, message: 'Cập nhật mật khẩu thành công', };
+        return {
+            code: 200,
+            success: true,
+            message: 'Cập nhật mật khẩu thành công',
+        };
     }
     async updateSvd(input, user) {
         const result = await this.usermodel.findByIdAndUpdate({ _id: user._id });
@@ -194,20 +245,24 @@ let UserService = class UserService {
     }
     async updatePassword(changepassword, user) {
         const { oldpassword, password, passwordConfirm } = changepassword;
-        if ((await bcrypt.compare(oldpassword, user.password))) {
+        if (await bcrypt.compare(oldpassword, user.password)) {
             if (password == passwordConfirm) {
                 const date = await this.commonservice.convertDatetime(new Date());
                 const salt = await bcrypt.genSalt();
                 const hashedpassword = await bcrypt.hash(password, salt);
                 await this.usermodel.findOneAndUpdate({ _id: user._id }, { password: hashedpassword, isChangePassword: date });
-                return { code: 200, success: true, message: "Cập nhật mật khẩu thành công" };
+                return {
+                    code: 200,
+                    success: true,
+                    message: 'Cập nhật mật khẩu thành công',
+                };
             }
             else {
-                return { code: 500, success: false, message: "Mật khẩu không khớp" };
+                return { code: 500, success: false, message: 'Mật khẩu không khớp' };
             }
         }
         else {
-            return { code: 500, success: false, message: "Mật khẩu cũ không đúng" };
+            return { code: 500, success: false, message: 'Mật khẩu cũ không đúng' };
         }
     }
     async updateMoney(action, money, user) {
@@ -215,7 +270,9 @@ let UserService = class UserService {
         if (action === HistoryAction_obj_1.Action.OPENPASSBOOK) {
             newMoney = user.currentMoney - money;
         }
-        else if (action == HistoryAction_obj_1.Action.NAPTIENPAYPAL || action == HistoryAction_obj_1.Action.NAPTIENATM || action == HistoryAction_obj_1.Action.WITHDRAWAL) {
+        else if (action == HistoryAction_obj_1.Action.NAPTIENPAYPAL ||
+            action == HistoryAction_obj_1.Action.NAPTIENATM ||
+            action == HistoryAction_obj_1.Action.WITHDRAWAL) {
             newMoney = user.currentMoney + money;
         }
         await this.usermodel.findOneAndUpdate({ _id: user._id }, { currentMoney: newMoney });
@@ -234,9 +291,11 @@ let UserService = class UserService {
         historyaction.money = checkout.vnd;
         await this.updateNewAction(historyaction, user);
         const message = `Bạn vừa nạp tiền vào thành công vào tài khoản với số tiền là ${historyaction.money} VND`;
-        await this.mailservice.sendEmail(user.email, confirm_dto_1.MailAction.MN, "", user.fullName, message);
+        await this.mailservice.sendEmail(user.email, confirm_dto_1.MailAction.MN, '', user.fullName, message);
         return {
-            code: 200, success: true, message: "Nạp tiền thành công"
+            code: 200,
+            success: true,
+            message: 'Nạp tiền thành công',
         };
     }
     async getAllTransaction(user) {
@@ -247,12 +306,21 @@ let UserService = class UserService {
         const user = await this.usermodel.findOne({ _id: id });
         if (!user) {
             return {
-                code: 500, success: false, message: "User not existing"
+                code: 500,
+                success: false,
+                message: 'User not existing',
             };
         }
         return {
-            data: { firstname: user.firstName, lastname: user.lastName, fullname: user.fullName, money: user.currentMoney,
-                address: user.address, phonenumnber: user.phoneNumber, email: user.email }
+            data: {
+                firstname: user.firstName,
+                lastname: user.lastName,
+                fullname: user.fullName,
+                money: user.currentMoney,
+                address: user.address,
+                phonenumnber: user.phoneNumber,
+                email: user.email,
+            },
         };
     }
     async updateRole(role, user) {
@@ -260,7 +328,9 @@ let UserService = class UserService {
     }
     async LoginAsAdministrtor({ email, password }) {
         const user = await this.usermodel.findOne({ email: email });
-        if (user && (await bcrypt.compare(password, user.password)) && user.isEmailConfirmed) {
+        if (user &&
+            (await bcrypt.compare(password, user.password)) &&
+            user.isEmailConfirmed) {
             if (user.role == user_dto_1.UserRole.USER) {
                 throw new common_1.UnauthorizedException('Đăng nhập này chỉ dành riêng cho ADMIN');
             }
@@ -274,7 +344,10 @@ let UserService = class UserService {
         }
     }
     async getListUser() {
-        return await this.usermodel.find({ role: user_dto_1.UserRole.USER, isEmailConfirmed: true }).select('firstName lastName email address currentMoney phoneNumber');
+        return await this.usermodel
+            .find({ isEmailConfirmed: true })
+            .select('firstName lastName email address currentMoney phoneNumber role')
+            .sort({ create: -1, role: -1 });
     }
     async randomotp() {
         let code;
@@ -288,11 +361,14 @@ let UserService = class UserService {
         return code;
     }
     async getnewUser() {
-        const newuser = await this.usermodel.find({ isEmailConfirmed: true, role: user_dto_1.UserRole.USER }).sort({ _id: -1 })
+        const newuser = await this.usermodel
+            .find({ isEmailConfirmed: true, role: user_dto_1.UserRole.USER })
+            .sort({ _id: -1 })
             .select('firstName lastName email phoneNumber')
-            .limit(10).lean();
+            .limit(10)
+            .lean();
         return {
-            newuser: newuser
+            newuser: newuser,
         };
     }
     async login({ email, password }) {
