@@ -22,4 +22,5 @@ export declare class PassBookService {
     getpassbookbyUser(userid: any): Promise<any>;
     getInformationPassbook(passbookid: any, user: any): Promise<any>;
     getenddate(array: any): any;
+    checkDate(date1: any, date2: any, option: any): boolean;
 }

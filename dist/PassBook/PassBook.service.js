@@ -47,6 +47,7 @@ let PassBookService = class PassBookService {
     async getTotalCycles(passbookid, user) {
         let endDate = new Date();
         let value;
+        const diffDays = (date, otherDate) => Math.ceil(Math.abs(date - otherDate) / (1000 * 60 * 60 * 24));
         const svd = await this.passbookmodel.findOne({ _id: passbookid });
         if (!svd) {
             return {
@@ -57,7 +58,15 @@ let PassBookService = class PassBookService {
         }
         if (svd.status) {
             const t = this.getenddate(svd.cyclesupdate);
-            return { passbook: svd, cycles: svd.cyclesupdate, money: t.money };
+            let datetemp;
+            console.log(t);
+            if (this.checkDate(t.endDate, t.startDate, svd.option)) {
+                datetemp = 0;
+            }
+            else {
+                datetemp = diffDays(t.endDate, t.startDate);
+            }
+            return { passbook: svd, cycles: svd.cyclesupdate, songayle: datetemp, money: t.currentMoney };
         }
         const startDate = new Date(`${svd.createAt}`);
         let result = [];
@@ -81,7 +90,6 @@ let PassBookService = class PassBookService {
             const startcycle = new CyclesUpdateDTO_1.CyclesUpdateDTO();
             value = await this.optionservice.GetValueOption(startDate, svd.option);
             startcycle.startDate = new Date(startDate);
-            startDate.setHours(startDate.getHours() + 7);
             startDate.setMonth(startDate.getMonth() + svd.option);
             startcycle.endDate = new Date(startDate);
             startcycle.value = value;
@@ -92,19 +100,21 @@ let PassBookService = class PassBookService {
             money = (money * (result[i].value / 100) * svd.option) / 12 + money;
             result[i].currentMoney = Number(money.toFixed(0));
         }
-        const diffDays = (date, otherDate) => Math.ceil(Math.abs(date - otherDate) / (1000 * 60 * 60 * 24));
         const date = diffDays(endDate, result[result.length - 1].startDate);
-        console.log(date);
-        console.log(endDate);
-        const nooption = await this.optionservice.GetValueOption(endDate, 0);
-        money = Number((money + (money * (nooption / 100) * date) / 360).toFixed(0));
-        result[result.length - 1].endDate = endDate;
-        result[result.length - 1].value = nooption;
-        result[result.length - 1].money = money;
+        if (date - 1 > 0) {
+            const nooption = await this.optionservice.GetValueOption(endDate, 0);
+            money = Number((money + (money * (nooption / 100) * date) / 360).toFixed(0));
+            result[result.length - 1].endDate = endDate;
+            result[result.length - 1].value = nooption;
+            result[result.length - 1].money = money;
+        }
+        else {
+            result.pop();
+        }
         return {
             passbook: svd,
             cycles: result,
-            songayle: date,
+            songayle: date - 1,
             money: money,
         };
     }
@@ -125,11 +135,9 @@ let PassBookService = class PassBookService {
             userId: user._id,
         });
         if (!passbook) {
-            console.log('Passbook not found');
             return { success: false, message: 'Không Tìm Thấy Sổ Tiết Kiệm' };
         }
         if (passbook.status) {
-            console.log('Passbook is Active');
             return { success: false, message: 'Sổ tiết kiệm đã được rút' };
         }
         const data = await this.getTotalCycles(passbookid, user);
@@ -196,6 +204,16 @@ let PassBookService = class PassBookService {
                 return array[i - 1];
             }
         }
+    }
+    checkDate(date1, date2, option) {
+        date2.setMonth(date2.getMonth() + option);
+        if (date1.getFullYear() == date2.getFullYear() &&
+            date1.getMonth() == date2.getMonth() &&
+            date1.getDate() == date2.getDate()) {
+            date2.setMonth(date2.getMonth() - option);
+            return true;
+        }
+        return false;
     }
 };
 PassBookService = __decorate([
