@@ -40,25 +40,27 @@ export class OptionService {
   }
 
   async GetValueOption(date: Date, option: number): Promise<number> {
-    date = new Date();
     const result = await this.optionmodel.findOne({ option: option });
-    if (!result.history.length||result.history[result.history.length - 1].createAt < date) {
+    if (!result.history.length) {
       return result.value;
     }
+    if(result.history[result.history.length - 1].createAt < date&&date<result.createAt){
+      return result.history[result.history.length - 1].value;
+    }
+    
     for (let i = 0; i < result.history.length - 1; i++) {
-      if (
-        result.history[i].createAt < date &&
-        result.history[i + 1].createAt > date
-      ) {
+      if (result.history[i].createAt < date &&result.history[i + 1].createAt > date) {
         return result.history[i].value;
       }
     }
+    return result.value
   }
 
   async GetValueByDateTime(time: string): Promise<any> {
     const date = new Date(time);
     date.setDate(date.getDate()+1)
     date.setMilliseconds(date.getMilliseconds()-1)
+    console.log(date)
     if (!date.getMonth()) {
       return {
         code: 500,

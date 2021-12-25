@@ -86,8 +86,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], OptionController.prototype, "GetCurrentOptionValue", null);
 __decorate([
-    (0, role_decorators_1.hasRoles)(user_dto_1.UserRole.ADMIN),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)(), role_guard_1.RolesGuard),
     (0, common_1.Get)('/getoptionbydatetime/:datetime'),
     __param(0, (0, common_1.Param)('datetime')),
     __metadata("design:type", Function),
