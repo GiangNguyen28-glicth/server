@@ -52,7 +52,7 @@ let UserService = class UserService {
             return { code: 500, success: false, message: 'CMND không hợp lệ CMND chỉ gồm 9 hoặc 12 số' };
         }
         if (!this.checkPhone(userdto.phoneNumber)) {
-            return { code: 500, success: false, message: 'Số điện thoại không hợp lệ' };
+            return { code: 500, success: false, message: 'Số điện thoại không hợp lệ , số điện thoại gồm 10 chữ số' };
         }
         userdto.role = role;
         if (passwordConfirm != password) {
