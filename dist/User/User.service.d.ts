@@ -48,7 +48,6 @@ export declare class UserService {
     NaptienATM(checkout: Checkout, user: User): Promise<IReponse<User>>;
     getAllTransaction(user: User): Promise<[HistoryAction]>;
     getUser(id: any): Promise<any>;
-    updateRole(role: string, user: User): Promise<any>;
     LoginAsAdministrtor({ email, password }: {
         email: any;
         password: any;
@@ -60,4 +59,5 @@ export declare class UserService {
         email: any;
         password: any;
     }): Promise<any>;
+    setRole(isAdmin: boolean, userId: string): Promise<any>;
 }

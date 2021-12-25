@@ -93,4 +93,11 @@ export class UserController{
     async login(@Body(){email,password}):Promise<{accesstoken:string}>{
         return this.userservice.login({email,password});
     }
+
+    @hasRoles(UserRole.ADMIN)
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Post('setRole')
+    async setRole(@Body() { isAdmin, userId }): Promise<any> {
+        return await this.userservice.setRole(isAdmin, userId);
+    }
 }

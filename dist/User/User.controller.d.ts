@@ -41,4 +41,8 @@ export declare class UserController {
     }): Promise<{
         accesstoken: string;
     }>;
+    setRole({ isAdmin, userId }: {
+        isAdmin: any;
+        userId: any;
+    }): Promise<any>;
 }

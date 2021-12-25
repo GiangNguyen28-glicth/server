@@ -64,8 +64,9 @@ let PassBookService = class PassBookService {
             }
             else {
                 datetemp = diffDays(t.endDate, t.startDate);
+                datetemp = datetemp - 1;
             }
-            return { passbook: svd, cycles: svd.cyclesupdate, songayle: datetemp, money: t.currentMoney };
+            return { passbook: svd, cycles: svd.cyclesupdate, songayle: datetemp, money: t.money };
         }
         const startDate = new Date(`${svd.createAt}`);
         let result = [];
@@ -206,8 +207,6 @@ let PassBookService = class PassBookService {
         }
     }
     checkDate(date1, date2, option) {
-        console.log(date2);
-        console.log(date1);
         date2.setMonth(date2.getMonth() + option);
         if (date1.getFullYear() == date2.getFullYear() &&
             date1.getMonth() == date2.getMonth() &&
@@ -215,6 +214,7 @@ let PassBookService = class PassBookService {
             date2.setMonth(date2.getMonth() - option);
             return true;
         }
+        date2.setMonth(date2.getMonth() - option);
         return false;
     }
 };

@@ -42,7 +42,6 @@ export class PassBookService {
     let value;
     const diffDays = (date, otherDate) =>
     Math.ceil(Math.abs(date - otherDate) / (1000 * 60 * 60 * 24));
-    // const svd=await this.passbookmodel.findOne({_id:passbookid,userId:user._id} );
     const svd = await this.passbookmodel.findOne({ _id: passbookid });
     if (!svd) {
       return {
@@ -56,9 +55,8 @@ export class PassBookService {
       let datetemp;
       if(this.checkDate(t.endDate,t.startDate,svd.option)){
         datetemp=0
-      }else{
-         datetemp = diffDays(t.endDate,t.startDate);}
-      return {passbook:svd,cycles:svd.cyclesupdate,songayle:datetemp,money:t.currentMoney};
+      }else{datetemp = diffDays(t.endDate,t.startDate);datetemp=datetemp-1}
+      return {passbook:svd,cycles:svd.cyclesupdate,songayle:datetemp,money:t.money};
     }
     const startDate = new Date(`${svd.createAt}`);
     let result = [];
@@ -221,8 +219,6 @@ export class PassBookService {
   }
 
   checkDate(date1,date2,option):boolean{
-    console.log(date2)
-    console.log(date1)
     date2.setMonth(date2.getMonth()+option)
     if (
       date1.getFullYear() == date2.getFullYear() &&
@@ -232,7 +228,7 @@ export class PassBookService {
       date2.setMonth(date2.getMonth()-option)
       return true
     }
-    
+    date2.setMonth(date2.getMonth()-option)
     return false
   }
 }

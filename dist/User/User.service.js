@@ -323,9 +323,6 @@ let UserService = class UserService {
             },
         };
     }
-    async updateRole(role, user) {
-        const updateuser = await this.usermodel.findOneAndUpdate({ _id: user._id }, { role: user_dto_1.UserRole.ADMIN });
-    }
     async LoginAsAdministrtor({ email, password }) {
         const user = await this.usermodel.findOne({ email: email });
         if (user &&
@@ -382,6 +379,20 @@ let UserService = class UserService {
         else {
             throw new common_1.UnauthorizedException('Please Check Account');
         }
+    }
+    async setRole(isAdmin, userId) {
+        let role = user_dto_1.UserRole.USER;
+        if (isAdmin) {
+            role = user_dto_1.UserRole.ADMIN;
+        }
+        const updateuser = await this.usermodel.findByIdAndUpdate(userId, {
+            role: role,
+        });
+        return {
+            code: 200,
+            success: true,
+            message: 'Cập nhật quyền thành công',
+        };
     }
 };
 UserService = __decorate([
