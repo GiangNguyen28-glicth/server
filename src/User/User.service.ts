@@ -226,13 +226,13 @@ export class UserService {
     };
   }
 
-  async confirmPhoneNumber(verificationCode: string): Promise<{ accessToken }> {
+  async confirmPhoneNumber(verificationCode: string): Promise<any> {
     const otp = await this.otpmodel.findOne({ code: verificationCode });
     if (!otp) {
-      throw new BadRequestException('OTP đã hết hạn hoặc không tồn tại');
+      return {code: 500, success: false, message: 'OTP đã hết hạn hoặc không tồn tại' };
     }
     if (otp.code != verificationCode) {
-      throw new BadRequestException('Wrong code provided');
+      return {code: 500, success: false, message: 'Mã OTP không đúng vui lòng kiểm tra lại' };
     }
     let id = otp.userId;
     const payload = { id };

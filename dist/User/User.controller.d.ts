@@ -21,9 +21,7 @@ export declare class UserController {
     forgotpassword({ email }: {
         email: any;
     }): Promise<any>;
-    checkVerificationCode(confirmPhonedto: ConfirmPhoneDTO): Promise<{
-        accessToken: any;
-    }>;
+    checkVerificationCode(confirmPhonedto: ConfirmPhoneDTO): Promise<any>;
     changePassword(changepassword: changePassword): Promise<IReponse<User>>;
     updatePassword(changepassword: changePassword, user: User): Promise<IReponse<User>>;
     Addmoney(checkout: Checkout, user: User): Promise<IReponse<User>>;

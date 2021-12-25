@@ -34,9 +34,7 @@ export declare class UserService {
         password: any;
     }): Promise<any>;
     forgotpassword(email: string): Promise<any>;
-    confirmPhoneNumber(verificationCode: string): Promise<{
-        accessToken: any;
-    }>;
+    confirmPhoneNumber(verificationCode: string): Promise<any>;
     markPhoneNumberAsConfirmed(userId: any): Promise<mongoose.Document<any, any, OTPDocument> & OTP & Document & {
         _id: mongoose.Schema.Types.ObjectId;
     }>;
