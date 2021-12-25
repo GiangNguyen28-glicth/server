@@ -72,6 +72,7 @@ export class PassBookService {
       startcycle.endDate = endDate;
       const nooption = await this.optionservice.GetValueOption(endDate, 0);
       startcycle.value = nooption;
+      startcycle.currentMoney=svd.deposits;
       result.push(startcycle);
       return {
         passbook: svd,
@@ -220,6 +221,8 @@ export class PassBookService {
   }
 
   checkDate(date1,date2,option):boolean{
+    console.log(date2)
+    console.log(date1)
     date2.setMonth(date2.getMonth()+option)
     if (
       date1.getFullYear() == date2.getFullYear() &&
@@ -229,6 +232,7 @@ export class PassBookService {
       date2.setMonth(date2.getMonth()-option)
       return true
     }
+    
     return false
   }
 }

@@ -59,7 +59,6 @@ let PassBookService = class PassBookService {
         if (svd.status) {
             const t = this.getenddate(svd.cyclesupdate);
             let datetemp;
-            console.log(t);
             if (this.checkDate(t.endDate, t.startDate, svd.option)) {
                 datetemp = 0;
             }
@@ -78,6 +77,7 @@ let PassBookService = class PassBookService {
             startcycle.endDate = endDate;
             const nooption = await this.optionservice.GetValueOption(endDate, 0);
             startcycle.value = nooption;
+            startcycle.currentMoney = svd.deposits;
             result.push(startcycle);
             return {
                 passbook: svd,
@@ -206,6 +206,8 @@ let PassBookService = class PassBookService {
         }
     }
     checkDate(date1, date2, option) {
+        console.log(date2);
+        console.log(date1);
         date2.setMonth(date2.getMonth() + option);
         if (date1.getFullYear() == date2.getFullYear() &&
             date1.getMonth() == date2.getMonth() &&
