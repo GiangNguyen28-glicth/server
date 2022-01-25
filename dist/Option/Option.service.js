@@ -65,14 +65,6 @@ let OptionService = class OptionService {
         const date = new Date(time);
         date.setDate(date.getDate() + 1);
         date.setMilliseconds(date.getMilliseconds() - 1);
-        console.log(date);
-        if (!date.getMonth()) {
-            return {
-                code: 500,
-                success: false,
-                message: 'Thời Gian Không Hợp Lệ !!',
-            };
-        }
         let arr = [];
         const currentvalue = await this.optionmodel.find();
         for (var i in currentvalue) {

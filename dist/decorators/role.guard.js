@@ -23,9 +23,12 @@ let RolesGuard = class RolesGuard {
     }
     canActivate(context) {
         const roles = this.reflector.get('roles', context.getHandler());
+        const methodkey = context.getHandler();
+        console.log(methodkey);
         if (!roles) {
             return true;
         }
+        console.log(roles);
         const request = context.switchToHttp().getRequest();
         const user = request.user;
         return roles.some((role) => { var _a; return (_a = user.role) === null || _a === void 0 ? void 0 : _a.includes(role); });
